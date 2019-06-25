@@ -1,0 +1,27 @@
+
+allsel
+solve
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Post Analysis !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+no_nodes = 3001
+
+allsel
+*do,i,1,no_nodes,1
+*get,node_Temp%i%,temp,i,
+*enddo
+
+*cfopen,Temperature_Data,txt
+*do,i,1,no_nodes,1
+  *vwrite,i,node_Temp%i%,
+(2(ES16.7))
+*enddo
+*cfclose
+
+*cfopen,Process_Finished,txt
+*vwrite,1
+(1(ES16.7))
+*cfclose
+
+! restarting simulation to change element assignment
+!allsel
+!parsav,all,parameter_file,txt,

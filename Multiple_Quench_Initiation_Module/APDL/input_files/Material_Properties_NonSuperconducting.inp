@@ -1,0 +1,52 @@
+pi = acos(-1)
+Cu_diameter = 0.8404e-3 ! m
+
+Cu_area = (pi*Cu_diameter**2)/4 ! m2
+Cu_current = 10 ! A
+Cu_density = 8960 ! kg/m3
+
+! value of magnetic field - constant
+B_field = 2.88
+
+!!!!!!!!!!!!!!!!!!!!!! Material Definition !!!!!!!!!!!!!!!!!!!!!!
+
+! element 1 - quenched zone
+! element 2 - superconducting zone, no heat generation
+
+et,1,link68
+r,1,Cu_area
+
+et,2,link68
+r,2,Cu_area
+
+mp,dens,1,Cu_density
+mp,dens,2,Cu_density
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,kxx,1,,10
+  mpdata,kxx,2,,10
+*enddo
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,c,1,,1
+  mpdata,c,2,,1
+*enddo
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,rsvx,1,,4.0e-10
+  mpdata,rsvx,2,,1.0e-16
+  ! mpdata,rsvx,2,,1.0e-20  not convergent
+  ! mpdata,rsvx,2,,1.0e-18  convergent
+  ! mpdata,rsvx,2,,1.0e-16  convergent
+  ! mpdata,rsvx,2,,1.0e-12  convergent
+*enddo
+
+! if file input finished, create file - for communication with Python
+*cfopen,Process_Finished,txt
+*vwrite,1
+(1(ES16.7))
+*cfclose
+
