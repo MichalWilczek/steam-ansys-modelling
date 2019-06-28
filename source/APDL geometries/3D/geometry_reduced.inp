@@ -1,0 +1,386 @@
+
+/clear
+
+!!! Creation of a prototype corrector 3D geometry
+height = 431.21             ! [mm]
+width = 126.81              ! [mm]
+! radius_1 = 21.805         ! [mm]
+radius_1 = 9+0.15           ! [mm]
+span = 5                    ! [mm]
+! spires = 29
+! layers = 26
+spires = 3
+layers = 3
+circle_divisions = 4
+
+d_coil = 0.7                ! [mm]
+d_ins = 0.84                ! [mm]
+coil_span = 0.941           ! [mm]
+
+knum = 1
+/prep7
+
+et,1,solid226 ! coil
+et,2,solid90  ! insulation
+et,3,solid90  ! resin
+
+y1 = 0
+area_counter = 1
+
+*do,number_spires,1,spires
+
+  x1 = 0
+  z1 = 0
+  x2 = 0
+  z2 = 0
+
+  *do,i,1,layers
+
+    k,knum,-(i-1)*coil_span+coil_span/2,-coil_span/2+y1,0
+    k,knum+1,-(i-1)*coil_span+coil_span/2,y1,0
+
+    k,knum+2,-(i-1)*coil_span+coil_span/2,coil_span-coil_span/2+y1,0
+    k,knum+3,-(i-1)*coil_span,coil_span-coil_span/2+y1,0
+
+    k,knum+4,-(i-1)*coil_span-coil_span+coil_span/2,coil_span-coil_span/2+y1,0
+    k,knum+5,-(i-1)*coil_span-coil_span+coil_span/2,y1,0
+
+    k,knum+6,-(i-1)*coil_span-coil_span+coil_span/2,-coil_span/2+y1,0
+    k,knum+7,-(i-1)*coil_span-coil_span+coil_span,-coil_span/2+y1,0
+
+    k,knum+8,-(i-1)*coil_span,y1,0  ! center of cable
+    circle_center = knum+8
+
+    *do,x,knum,knum+7,1
+      *if,x,eq,knum+7,then
+        l,knum+7,knum+0
+      *else
+        l,x,x+1
+      *endif
+    *enddo
+
+    circle,circle_center,d_coil/2,,,,circle_divisions
+    allsel
+    *get,knum1,kp,,count
+    *do,j,knum1+1-circle_divisions,knum1
+      l,circle_center,j
+    *enddo
+
+    circle_mesh_division = 2
+
+    allsel
+    *get,lnum,line,,count
+    lsel,s,line,,lnum-3,lnum ! lines inside the conductor circle
+    lesize,all,,,2
+    lsel,s,line,,lnum-7,lnum-4 ! lines of the conductor circle
+    lesize,all,,,circle_mesh_division
+
+    allsel
+    *get,lnum,line,,count
+    *do,j,lnum-(circle_divisions-1),lnum
+      *if,j,eq,lnum,then
+        lsel,s,line,,j
+        lsel,a,line,,j-circle_divisions,j-(circle_divisions-1)
+      *else
+        lsel,s,line,,j,j+1
+        lsel,a,line,,j-circle_divisions
+      *endif
+      al,all
+    *enddo
+
+    allsel
+    *get,anum,area,,count
+    asel,s,area,,anum-(circle_divisions-1),anum
+    cm,coil%i%%spires%,area
+
+    circle,circle_center,d_ins/2,,,,circle_divisions
+    allsel
+    *get,lnum,line,,count
+    lsel,s,line,,lnum-11,lnum
+    lesize,all,,,circle_mesh_division
+
+    allsel
+    *get,knum1,kp,,count
+    *do,a,knum1-(2*circle_divisions-1),knum1-circle_divisions
+      l,a,a+circle_divisions
+    *enddo
+    allsel
+    *get,lnum,line,,count
+    lsel,s,line,,lnum-(circle_divisions-1),lnum
+    lesize,all,,,3,3
+
+    allsel
+    *get,lnum,line,,count
+    *do,j,lnum-(4*circle_divisions-1),lnum-(3*circle_divisions)
+      *if,j,eq,lnum-(3*circle_divisions),then
+        lsel,s,line,,j
+        lsel,a,line,,j+2*circle_divisions
+        lsel,a,line,,j+3*circle_divisions
+        lsel,a,line,,lnum-(circle_divisions-1)
+      *else
+        lsel,s,line,,j
+        lsel,a,line,,j+(2*circle_divisions)
+        lsel,a,line,,j+(3*circle_divisions),j+(3*circle_divisions+1)
+      *endif
+      al,all
+    *enddo
+
+    allsel
+    *get,anum,area,,count
+    asel,s,area,,anum-(circle_divisions-1),anum
+    cm,insulation%i%%spires%,area
+
+    allsel
+    *get,knum1,kp,,count
+    keypoint_resin1 = knum1-(4*circle_divisions-1)
+    keypoint_resin2 = knum1-(circle_divisions-1)
+    *do,j,1,4
+      l,keypoint_resin1,keypoint_resin2
+      keypoint_resin1 = keypoint_resin1+2
+      keypoint_resin2 = keypoint_resin2+1
+    *enddo
+    allsel
+    *get,lnum,line,,count
+    lsel,s,line,,lnum-3,lnum
+
+    allsel
+    *get,lnum,line,,count
+    line_resin1=lnum-27
+    line_resin2=lnum-(2*circle_divisions+3)
+    line_resin3=lnum-(circle_divisions-1)
+
+    *do,j,1,4
+      *if,j,eq,4,then
+        lsel,s,line,,line_resin1+1
+        lsel,a,line,,lnum-27
+        lsel,a,line,,line_resin2
+        lsel,a,line,,line_resin3
+        lsel,a,line,,lnum-(circle_divisions-1)
+      *else
+        lsel,s,line,,line_resin1+1,line_resin1+2
+        lsel,a,line,,line_resin2
+        lsel,a,line,,line_resin3,line_resin3+1
+      *endif
+      al,all
+      line_resin1 = line_resin1+2
+      line_resin2 = line_resin2+1
+      line_resin3 = line_resin3+1
+      *enddo
+
+    allsel
+    *get,anum,area,,count
+    asel,s,area,,anum-3,anum
+    cm,resin%i%%spires%,area
+
+    ! Creation of 3D spline
+    variable_j = 1
+    *do,variable_j,1,3
+
+      allsel
+      *get,knum1,kp,,count
+      k,knum1+1,x1,y1,0
+      k,knum1+2,x1,y1,height/2-radius_1
+      k,knum1+3,radius_1,y1,z1+height/2
+      k,knum1+4,+width-radius_1+coil_span,y1,z1+height/2
+      k,knum1+5,x2+width+coil_span,y1,height/2-radius_1
+      k,knum1+6,x2+width+coil_span,y1,-height/2+radius_1
+      k,knum1+7,width-radius_1+coil_span,y1,z2-height/2
+      k,knum1+8,radius_1,y1,z2-height/2
+      k,knum1+9,x1,y1,-height/2+radius_1
+      k,knum1+10,x1,y1,-span
+
+      *do,j,knum1+1,knum1+10,2
+        l,j,j+1
+      *enddo
+
+      allsel
+      *get,lnum,line,,count
+      lsel,s,line,,lnum-4
+      lsel,a,line,,lnum
+      lesize,all,,,15
+
+      lsel,s,line,,lnum-2
+      lesize,all,,,15
+
+      lsel,s,line,,lnum-3
+      lsel,a,line,,lnum-1
+      lesize,all,,,8
+
+      allsel
+      *get,lnum,line,,count
+      l2tan,lnum-4,lnum-3
+      l2tan,lnum-3,lnum-2
+      l2tan,lnum-2,lnum-1
+      l2tan,lnum-1,lnum
+
+      allsel
+      *get,lnum,line,,count
+      lsel,s,line,,lnum-3,lnum
+      lesize,all,,,3
+
+      a = lnum-8
+      b = lnum-3
+      c = lnum-7
+      d = lnum-2
+      e = lnum-6
+      f = lnum-1
+      g = lnum-5
+      h = lnum
+      k = lnum-4
+      *if,variable_j,eq,1,then
+        allsel
+        cmsel,s,coil%i%%spires%
+        vdrag,all,,,,,,a,b,c,d,e,f
+        allsel
+        *get,anum,area,,num,max
+        asel,s,area,,anum
+        asel,a,area,,anum-2
+        asel,a,area,,anum-5
+        asel,a,area,,anum-8
+        vdrag,all,,,,,,g,h,k
+        allsel
+        *get,vnum,volu,,count
+        vsel,s,volu,,vnum-(circle_divisions*9-1),vnum
+        allsel,below,volu
+        cm,coil%i%%spires%_volu,volu
+        mshape,0,3D
+        mshkey,1
+        type,1
+        real,1
+        vmesh,all
+      *elseif,variable_j,eq,2,then
+        allsel
+        cmsel,s,insulation%i%%spires%
+        vdrag,all,,,,,,a,b,c,d,e,f
+        allsel
+        *get,anum,area,,num,max
+        asel,s,area,,anum
+        asel,a,area,,anum-3
+        asel,a,area,,anum-7
+        asel,a,area,,anum-11
+        vdrag,all,,,,,,g,h,k
+        allsel
+        *get,vnum,volu,,count
+        vsel,s,volu,,vnum-(circle_divisions*9-1),vnum
+        allsel,below,volu
+        cm,insulation%i%%spires%_volu,volu
+        mshape,0,3D
+        mshkey,1
+        type,2
+        real,2
+        vmesh,all
+      *elseif,variable_j,eq,3,then
+        allsel
+        cmsel,s,resin%i%%spires%
+        vdrag,all,,,,,,a,b,c,d,e,f
+        allsel
+        *get,anum,area,,num,max
+        asel,s,area,,anum
+        asel,a,area,,anum-4
+        asel,a,area,,anum-9
+        asel,a,area,,anum-14
+        vdrag,all,,,,,,g,h,k
+        allsel
+        *get,vnum,volu,,count
+        vsel,s,volu,,vnum-(circle_divisions*9-1),vnum
+        allsel,below,volu
+        cm,resin%i%%spires%_volu,volu
+
+        allsel
+        *get,anum,area,,count
+        area_volume = 179
+
+        *do,each_area_set,1,4
+          *if,each_area_set,eq,1,then
+            area_sel = anum
+            *do,volu_extrusions,1,9
+              asel,s,area,,area_sel-area_volume,area_sel-(area_volume-1)
+              accat,all
+              area_sel = area_sel+20
+            *enddo
+            area_volume = area_volume-6
+          *endif
+          *if,each_area_set,eq,2,then
+            area_sel = anum
+            *do,volu_extrusions,1,9
+              asel,s,area,,area_sel-area_volume,area_sel-(area_volume-1)
+              accat,all
+              area_sel = area_sel+20
+            *enddo
+            area_volume = area_volume-5
+          *endif
+          *if,each_area_set,eq,3,then
+            area_sel = anum
+            *do,volu_extrusions,1,9
+              asel,s,area,,area_sel-area_volume,area_sel-(area_volume-1)
+              accat,all
+              area_sel = area_sel+20
+            *enddo
+            area_volume = area_volume-5
+          *endif
+          *if,each_area_set,eq,4,then
+            area_sel = anum
+            *do,volu_extrusions,1,9
+              asel,s,area,,area_sel-area_volume
+              asel,a,area,,area_sel-(area_volume-2)
+              accat,all
+              area_sel = area_sel+20
+            *enddo
+          *endif
+        *enddo
+
+        allsel
+        cmsel,s,resin%i%%spires%_volu
+        allsel,below,volume
+        mshape,0,3D
+        mshkey,1
+        type,3
+        real,3
+        vmesh,all
+
+      *endif
+
+    *enddo
+
+    x1 = x1-coil_span
+    x2 = x2+coil_span
+    z1 = z1+coil_span
+    z2 = z2-coil_span
+
+    allsel
+    *get,knum,kp,,count
+    knum = knum+1
+    area_counter=area_counter+1
+
+  *enddo
+  y1 = y1+coil_span
+*enddo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  !
