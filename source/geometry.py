@@ -32,22 +32,58 @@ class Geometry:
     def create_1d_imaginary_coil_length(file_position_directory):
         files_in_directory = Geometry.search_files_names_in_directory(directory=file_position_directory)
         list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
+        dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=file_position_directory)
+        file_node_position = Geometry.load_file_with_winding_nodes_position(directory=file_position_directory, filename="Node_Position.txt")
+        center_plane_position = Geometry.calculate_windings_lengths(position_array=file_node_position, winding_set=dict_winding_nodes)
+        coil_data = Geometry.calculate_coil_length_data(windings_lengths=center_plane_position)
+        coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=coil_data)
+        return coil_length_1d
+
+    @staticmethod
+    def create_1d_imaginary_temperature_profile(directory, npoints=5736, filename="Temperature_Data.txt"):
+        files_in_directory = Geometry.search_files_names_in_directory(directory=directory)
+        list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
         dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=directory)
         file_node_position = Geometry.load_file_with_winding_nodes_position(directory=directory, filename="Node_Position.txt")
         center_plane_position = Geometry.calculate_windings_lengths(position_array=file_node_position, winding_set=dict_winding_nodes)
         coil_data = Geometry.calculate_coil_length_data(windings_lengths=center_plane_position)
-        return coil_data
-
-    @staticmethod
-    def create_1d_imaginary_temperature_profile(directory, coil_data, npoints=5736, filename="Temperature_Data.txt"):
-        files_in_directory = Geometry.search_files_names_in_directory(directory=directory)
-        list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
-        dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=directory)
         coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=coil_data)
         node_map = Geometry.translate_3d_domain_into_1d_cable(coil_data=coil_data, winding_set=dict_winding_nodes)
         temperature_profile = Geometry.load_file(directory=directory, npoints=npoints, filename=filename)
         coil_temperature_1d = Geometry.map_3d_max_temperature_into_1d_cable(node_mapping=node_map, temperature_profile=temperature_profile, coil_1d=coil_length_1d)
         return coil_temperature_1d
+
+    @staticmethod
+    def convert_imaginary_quench_front_up_into_real_nodes(file_position_directory, previous_x_up_node=20, x_up_node=50):
+        files_in_directory = Geometry.search_files_names_in_directory(directory=file_position_directory)
+        list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
+        dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=file_position_directory)
+        file_node_position = Geometry.load_file_with_winding_nodes_position(directory=file_position_directory, filename="Node_Position.txt")
+        center_plane_position = Geometry.calculate_windings_lengths(position_array=file_node_position, winding_set=dict_winding_nodes)
+        coil_data = Geometry.calculate_coil_length_data(windings_lengths=center_plane_position)
+
+        imaginary_1d_node_set = coil_data[:, 2]
+
+
+
+        print(type(coil_data[1,0]))
+        quenched_coil_set = coil_data[np.where(imaginary_1d_node_set[:] == previous_x_up_node)]
+        # each_zone[np.where(each_zone[:, 1] >= critical_temperature)]
+
+        print(np.where(coil_data[:, 2] == previous_x_up_node))
+        quenched_coil_set = coil_data[np.where(coil_data[:, 2] == previous_x_up_node)]
+        # quenched_coil_set = coil_data[np.where(coil_data[:, 2] >= previous_x_up_node and coil_data[:, 2]<=x_up_node)]
+        quenched_nodes = []
+        for i in range(len(quenched_coil_set)):
+            real_nodes_in_imaginary_node = dict_winding_nodes[temporary_key][:, i]
+            temporary_key = quenched_coil_set[i, 0]
+            # for j in range(len(real_nodes_in_imaginary_node):
+
+
+
+
+
+
 
     @staticmethod
     def search_files_names_in_directory(directory):
@@ -213,3 +249,14 @@ class Geometry:
             imaginary_1d_temperature[i, 0] = node_mapping[i, 0]
             imaginary_1d_temperature[i, 1] = np.max(node_temperature_array[:, 1])
         return imaginary_1d_temperature
+
+
+directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D_Mapping_Input_Files"
+coil_data = Geometry.create_1d_imaginary_coil_length(file_position_directory=directory)
+print(coil_data)
+
+temperature_profile = Geometry.create_1d_imaginary_temperature_profile(directory=directory)
+print(temperature_profile)
+
+quenched_nodes_up = Geometry.convert_imaginary_quench_front_up_into_real_nodes(file_position_directory=directory)
+print(quenched_nodes_up)

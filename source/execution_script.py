@@ -7,12 +7,12 @@ from quench_velocity import QuenchFront
 from quench_merge import QuenchMerge
 from quench_detection import QuenchDetect
 
-analysis_directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL"
-ans = Commands(directory=analysis_directory)
-
+analysis_directory = None
+dimensionality = "2D"
 division = 1000
 npoints = division+1           # number of nodes
-coil_length = 10                # [m]
+coil_length = 10               # [m]
+
 quench_init_pos = 0.5          # [m]
 quench_init_length = 0.01      # [m]
 total_time = 1.0               # [s]
@@ -23,6 +23,13 @@ init_x_down = quench_init_pos - quench_init_length
 # variables for ansys boundary/initial conditions
 current = 100  # [A]
 initial_temperature = 1.9  # [K]
+
+if dimensionality == "1D":
+    analysis_directory = "C:\\gitlab\\steam-ansys-modelling\\source\APDL\\Quench_Detection_Input_Files"
+elif dimensionality == "2D" or dimensionality == "3D":
+    analysis_directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D_Mapping_Input_Files"
+ans = Commands(directory=analysis_directory)
+
 
 # analysis initialization
 ans.delete_file(filename='Variable_Input.inp')
@@ -35,7 +42,7 @@ ans.input_file(filename='Variable_Input', extension='inp')
 ans.input_file(filename='Material_Properties_Superconducting', extension='inp', add_directory='Quench_Detection_Input_Files')
 ans.input_file(filename='Geometry', extension='inp', add_directory='Quench_Detection_Input_Files')
 
-coil_geometry = Geometry().length_coil(directory=analysis_directory, filename="File_Position.txt", division=division)
+coil_geometry = Geometry.create_1d_imaginary_coil_length(directory=analysis_directory)
 q_det = QuenchDetect(coil_length=coil_geometry, directory=analysis_directory, npoints=npoints)
 min_coil_length = coil_geometry[0, 1]
 max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
@@ -68,23 +75,6 @@ ans.select_elem_from_nodes()
 ans.modify_material_type(element_number=1)
 ans.modify_material_constant(constant_number=1)
 ans.modify_material_number(material_number=1)
-
-# temporary material properties to imitate turn-2-turn propagation
-ans.select_nodes(node_down=495, node_up=505)
-ans.select_elem_from_nodes()
-ans.modify_material_number(material_number=6)
-ans.select_nodes(node_down=895, node_up=905)
-ans.select_elem_from_nodes()
-ans.modify_material_number(material_number=7)
-ans.enter_solver()
-ans.set_analysis_setting()
-ans.set_initial_temperature(temperature=initial_temperature)
-ans.select_nodes(node_down=quench_fronts[0].x_down_node, node_up=quench_fronts[0].x_up_node)
-ans.set_quench_temperature(q_temperature=q_det.calculate_critical_temperature())
-ans.set_current(node_number=1, value=current)
-ans.set_ground(node_number=npoints, value=0)
-ans.set_time_step(time_step=t)
-ans.input_file(filename='Solve_Get_Temp', extension='inp', add_directory='Quench_Detection_Input_Files')
 
 # calculate new quench velocity
 quench_fronts[0].calculate_q_front_pos_down(t_step=t, min_length=min_coil_length)

@@ -17,7 +17,7 @@ class QuenchDetect:
         self.analysis_directory = directory
         self.npoints = npoints
 
-    def detect_quench(self, input_quench_front_vector, temperature_profile_file, magnetic_field=MAGNETIC_FIELD_STRENGTH):
+    def detect_quench_1d(self, input_quench_front_vector, temperature_profile_file, magnetic_field=MAGNETIC_FIELD_STRENGTH):
         """
         :param input_quench_front_vector: list of QuenchFront objects
         :param temperature_profile_file: file with nodal temperature as string
@@ -29,6 +29,24 @@ class QuenchDetect:
         read_temperature_profile = QuenchDetect.load_file(filename=temperature_profile_file, file_lines_length=temperature_profile_file_length, analysis_directory=self.analysis_directory, npoints=self.npoints)
         critical_temperature = QuenchDetect.calculate_critical_temperature(magnetic_field=magnetic_field)
         temperature_profile_sliced = QuenchDetect.slice_temperature_profile(input_quench_front_vector=input_quench_front_vector_sorted, temperature_profile=read_temperature_profile)
+        temp_profile_sliced_quench_detection = QuenchDetect.find_quenched_nodes(sliced_temperature_profile=temperature_profile_sliced, critical_temperature=critical_temperature)
+        new_quenched_fronts_before_rejection = QuenchDetect.find_new_quench_fronts(quenched_nodes=temp_profile_sliced_quench_detection)
+        new_quench_fronts_list = QuenchDetect.create_new_quench_fronts_list(input_quench_front_vector=input_quench_front_vector_sorted, new_quench_fronts=new_quenched_fronts_before_rejection)
+        new_quench_fronts_list_without_repetitions = QuenchDetect.find_repetitive_fronts(new_quench_fronts_list)
+        new_quench_fronts_sorted = QuenchDetect.define_final_new_quench_fronts(fronts_list=new_quench_fronts_list_without_repetitions, new_quench_fronts_nodes=new_quenched_fronts_before_rejection)
+        quench_fronts_position = QuenchDetect.search_quench_length(coil_length=self.coil_length, new_quench_fronts_nodes=new_quench_fronts_sorted)
+        return quench_fronts_position
+
+    def detect_quench_3d(self, input_quench_front_vector, temperature_profile, magnetic_field=MAGNETIC_FIELD_STRENGTH):
+        """
+        :param input_quench_front_vector: list of QuenchFront objects
+        :param temperature_profile_file: file with nodal temperature as string
+        :param magnetic_field: magnetic fields strength value as float
+        :return: list of new quench fronts positions in meters
+        """
+        input_quench_front_vector_sorted = QuenchDetect.sort_input_quench_front_vector(input_quench_front_vector)
+        critical_temperature = QuenchDetect.calculate_critical_temperature(magnetic_field=magnetic_field)
+        temperature_profile_sliced = QuenchDetect.slice_temperature_profile(input_quench_front_vector=input_quench_front_vector_sorted, temperature_profile=temperature_profile)
         temp_profile_sliced_quench_detection = QuenchDetect.find_quenched_nodes(sliced_temperature_profile=temperature_profile_sliced, critical_temperature=critical_temperature)
         new_quenched_fronts_before_rejection = QuenchDetect.find_new_quench_fronts(quenched_nodes=temp_profile_sliced_quench_detection)
         new_quench_fronts_list = QuenchDetect.create_new_quench_fronts_list(input_quench_front_vector=input_quench_front_vector_sorted, new_quench_fronts=new_quenched_fronts_before_rejection)
