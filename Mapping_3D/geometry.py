@@ -96,6 +96,10 @@ class Geometry:
         return coil_length_1d
 
     @staticmethod
+    def delete_repeated_rows_in_array(array):
+    #
+
+    @staticmethod
     def translate_3d_domain_into_1d_cable(coil_data, winding_set):
         node_mapping = None
         for i in range(len(coil_data)):
@@ -148,6 +152,31 @@ class Geometry:
                 exists = False
         return temp_distr
 
+    @staticmethod
+    def map_3d_temperature_into_1d_cable(node_mapping, temperature_profile, coil_1d):
+        imaginary_1d_temperature = np.zeros((len(coil_1d), 3))
+
+        for i in range(len(coil_1d)):
+            node_list_for_imaginary_node = node_mapping[np.where(node_mapping[:, 1] == i + 1)][:, 0]
+            node_temperature_array = np.zeros((len(node_list_for_imaginary_node), 2))
+            for j in range(len(node_list_for_imaginary_node)):
+                node_temperature_array[j, 0] = node_list_for_imaginary_node[j]
+                single_node_temperature = temperature_profile[np.where(temperature_profile[:, 0] == node_list_for_imaginary_node[j])][:, 1]
+                node_temperature_array[j, 1] = single_node_temperature
+            max_node_temperature = np.max(node_temperature_array[:, 1])
+            min_node_temperature = np.min(node_temperature_array[:, 1])
+            imaginary_1d_temperature[i, 0] = coil_1d[i, 0]
+            imaginary_1d_temperature[i, 1] = max_node_temperature
+            imaginary_1d_temperature[i, 2] = min_node_temperature
+
+            if i == 600:
+                print("hello")
+
+        print("hello")
+        return imaginary_1d_temperature
+
+
+
 
 directory = "C:\\1_MIT_modelling\\ANSYS\\8_mapping_algorithms\\APDL"
 files_in_directory = Geometry.search_files_names_in_directory(directory=directory)
@@ -160,3 +189,5 @@ coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=coil_data)
 
 node_map = Geometry.translate_3d_domain_into_1d_cable(coil_data=coil_data, winding_set=dict_winding_nodes)
 temperature_profile = Geometry.load_file(directory=directory, npoints=5736, filename="Temperature_Data.txt")
+coil_temperature_1d = Geometry.map_3d_temperature_into_1d_cable(node_mapping=node_map, temperature_profile=temperature_profile, coil_1d=coil_length_1d)
+print("hello")
