@@ -1,5 +1,5 @@
 import time
-from time_stepping import Time
+from model_input import ModelInput
 from ansys import Commands
 from plots import Plots
 from geometry import Geometry
@@ -46,7 +46,7 @@ coil_geometry = Geometry.create_1d_imaginary_coil_length(directory=analysis_dire
 q_det = QuenchDetect(coil_length=coil_geometry, directory=analysis_directory, npoints=npoints)
 min_coil_length = coil_geometry[0, 1]
 max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
-time = Time.linear_time_stepping(time_step=time_step, total_time=total_time)     # user's time stepping vector
+time = ModelInput.linear_time_stepping(time_step=time_step, total_time=total_time)     # user's time stepping vector
 
 quench_fronts = []
 quench_state_plots = []

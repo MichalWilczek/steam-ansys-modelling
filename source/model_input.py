@@ -1,5 +1,5 @@
 
-class Time:
+class ModelInput:
 
     @staticmethod
     def linear_time_stepping(time_step, total_time):

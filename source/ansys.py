@@ -1,6 +1,6 @@
 
 import os
-from ansys_table import table
+from ansys_table import Table
 from ansys_corba import CORBA
 
 
@@ -27,7 +27,7 @@ class Commands(object):
         filename = os.getcwd()
         filename += '/Variable_Input'
         extension = 'inp'
-        data = table(filename, ext=('.' + extension))
+        data = Table(filename, ext=('.' + extension))
         data.write_text('/clear')
         data.write_text('/title,quench_analysis')
         data.write_text('/prep7')

@@ -158,8 +158,7 @@ class QuenchDetect:
             x_up_node = 0
             x_down_node = 0
             while x_up_node < len(quenched_nodes_sliced_profiles):
-                while x_up_node < len(quenched_nodes_sliced_profiles)-1 and\
-                      quenched_nodes_sliced_profiles[x_up_node+1][0] - quenched_nodes_sliced_profiles[x_up_node][0] == 1:
+                while x_up_node < len(quenched_nodes_sliced_profiles)-1 and quenched_nodes_sliced_profiles[x_up_node+1][0] - quenched_nodes_sliced_profiles[x_up_node][0] == 1:
                         x_up_node += 1
                 new_quench_fronts.append([int(quenched_nodes_sliced_profiles[x_down_node][0]),
                                           int(quenched_nodes_sliced_profiles[x_up_node][0])])
