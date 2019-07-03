@@ -1,8 +1,6 @@
 /clear
 /prep7
 
-et,1,plane223 ! coil
-et,2,plane223 ! insulation
 number_windings = 3
 max_nodes_cross_section = 5
 

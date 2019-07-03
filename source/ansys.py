@@ -17,7 +17,7 @@ class Commands(object):
         self.mapdl = CORBA.ORB_init().string_to_object(aasMapdlKey)
 
     @staticmethod
-    def create_variable_file(division, npoints, coil_length):
+    def create_variable_file_1d(division, npoints, coil_length):
         """
         Creates an input file with parameters used by ANSYS
         :param division: number of elements as integer
@@ -36,6 +36,30 @@ class Commands(object):
         data.write_text('division =' + str(division))
         data.write_text('length =' + str(coil_length))
         data.write_text('*cfopen,Process_Finished,txt')     # for reading purposes between ansys and python
+        data.write_text('*vwrite,1')
+        data.write_text('(1(ES16.7))')
+        data.write_text('*cfclose')
+
+    @staticmethod
+    def create_variable_file_2d(number_windings, max_nodes_cross_section, winding_length, winding_width,
+                                length_division, insulation_division, insulation_width, winding_division):
+        filename = os.getcwd()
+        filename += '/Variable_Input'
+        extension = 'inp'
+        data = Table(filename, ext=('.' + extension))
+        data.write_text('/clear')
+        data.write_text('/title,quench_analysis')
+        data.write_text('/prep7')
+        data.write_text('/nerr,999999999999')
+        data.write_text('number_windings =' + str(number_windings))
+        data.write_text('max_nodes_cross_section =' + str(max_nodes_cross_section))
+        data.write_text('winding_length =' + str(winding_length))
+        data.write_text('winding_width =' + str(winding_width))
+        data.write_text('insulation_width = ' + str(insulation_width))
+        data.write_text('length_division =' + str(length_division))
+        data.write_text('insulation_division =' + str(insulation_division))
+        data.write_text('winding_division =' + str(winding_division))
+        data.write_text('*cfopen,Process_Finished,txt')  # for reading purposes between ansys and python
         data.write_text('*vwrite,1')
         data.write_text('(1(ES16.7))')
         data.write_text('*cfclose')
@@ -78,11 +102,22 @@ class Commands(object):
 
     def file_length(self, filename):
         """
-        Reads number of files in file
+        Reads number of rows in file
         :param filename: filename to read as string
         """
         myfile = open(filename)
         return int(len(myfile.readlines()))
+
+    def select_nodes_list(self, nodes_list):
+        """
+        Selects a set of nodes from given list of nodes
+        :param nodes_list: list of lists with lower and higher node to be selected in a set
+        """
+        for i in range(len(nodes_list)):
+            if i == 0:
+                print(self.mapdl.executeCommandToString("nsel,s,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
+            else:
+                print(self.mapdl.executeCommandToString("nsel,a,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
 
     # general commands
     def select_nodes(self, node_down, node_up):
@@ -104,6 +139,17 @@ class Commands(object):
 
     def save_analysis(self):
         print(self.mapdl.executeCommandToString("save"))
+
+    def set_dof(self, dof):
+        print(self.mapdl.executeCommandToString("dof,{}".format(dof)))
+
+    # coupling commands
+    def couple_nodes(self, dof):
+        """
+        Couples all nodes in previously defined set
+        :param dof: 'volt' for voltage or 'temp' for temperature dof
+        """
+        print(self.mapdl.executeCommandToString("cp,next,{},all".format(dof)))
 
     # restart commands
     def save_parameters(self, filename='parameter_file', extension='txt'):
@@ -143,11 +189,9 @@ class Commands(object):
         print(self.mapdl.executeCommandToString("ic,all,temp,{}".format(q_temperature)))
 
     def set_current(self, node_number, value):
-        self.allsel()
         print(self.mapdl.executeCommandToString("f,{},amps,{}".format(node_number, value)))
 
     def set_ground(self, node_number, value):
-        self.allsel()
         print(self.mapdl.executeCommandToString("d,{},volt,{}".format(node_number, value)))
 
     def start_solution(self):

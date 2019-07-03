@@ -129,8 +129,32 @@ class Plots:
         else:
             print("Error: {} file not found".format(full_filename))
 
+    # @staticmethod
+    # def plot_temperature(coil_length, directory, filename, time_step):
+    #     """
+    #     Plots temperature distribution
+    #     :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
+    #     :param directory: analysis directory as string
+    #     :param filename: filename as string
+    #     :param time_step: time step as float
+    #     """
+    #     time_step = round(time_step, 4)
+    #     max_coil_node = coil_length[len(coil_length) - 1, 0]
+    #     temp_distr = Plots.load_file(directory=directory, npoints=max_coil_node, filename=filename)
+    #     length_node_temp_array = np.column_stack((coil_length, temp_distr[:, 1]))
+    #     fig = plt.figure()
+    #     ax = fig.add_subplot(111)
+    #     ax.set_xlabel('Position [m]')
+    #     ax.set_ylabel('Temperature [K]')
+    #     plt.title("Time step: {} s".format(time_step))
+    #     ax.plot(length_node_temp_array[:, 1], length_node_temp_array[:, 2])
+    #     plt.grid(True)
+    #     plt.show()
+    #     Plots.delete_file(directory=directory, filename=filename)
+    #     return fig
+
     @staticmethod
-    def plot_temperature(coil_length, directory, filename, time_step):
+    def plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename):
         """
         Plots temperature distribution
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -139,9 +163,7 @@ class Plots:
         :param time_step: time step as float
         """
         time_step = round(time_step, 4)
-        max_coil_node = coil_length[len(coil_length) - 1, 0]
-        temp_distr = Plots.load_file(directory=directory, npoints=max_coil_node, filename=filename)
-        length_node_temp_array = np.column_stack((coil_length, temp_distr[:, 1]))
+        length_node_temp_array = np.column_stack((coil_length, temperature_profile_1d[:, 1]))
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.set_xlabel('Position [m]')
@@ -165,7 +187,7 @@ class Plots:
         return filename
 
     @staticmethod
-    def plot_and_save_temperature(coil_length, directory, filename, iteration, time_step):
+    def plot_and_save_temperature(coil_length, directory, temperature_profile_1d, iteration, time_step, filename="Temperature_Data.txt"):
         """
         Plots and saves temperature disitribution
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -175,7 +197,7 @@ class Plots:
         :param fig: temperature distribution as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        fig = Plots.plot_temperature(coil_length, directory, filename, time_step)
+        fig = Plots.plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
 

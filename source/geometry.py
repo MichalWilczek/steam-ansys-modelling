@@ -175,40 +175,26 @@ class Geometry:
             imaginary_1d_temperature[i, 1] = np.max(node_temperature_array[:, 1])
         return imaginary_1d_temperature
 
-    def create_1d_imaginary_temperature_profile(self, directory, npoints=5736, filename="Temperature_Data.txt"):
+    def create_1d_imaginary_temperature_profile(self, directory, npoints, filename="Temperature_Data.txt"):
         temperature_profile = Geometry.load_file(directory=directory, npoints=npoints, filename=filename)
         coil_temperature_1d = self.map_3d_max_temperature_into_1d_cable(temperature_profile=temperature_profile)
         return coil_temperature_1d
 
-    def convert_imaginary_quench_front_up_into_real_nodes(self, previous_x_up_node=150, x_up_node=200):
+    def convert_imaginary_node_set_into_real_nodes(self, x_down_node, x_up_node):
         imaginary_1d_node_set = self.coil_data[:, 2]
         imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
-        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= previous_x_up_node) & (imaginary_1d_node_set[:] <= x_up_node)]
+        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) & (imaginary_1d_node_set[:] <= x_up_node)]
         real_nodes_list = []
         for i in range(len(quenched_coil_set)):
             temporary_key = quenched_coil_set[i, 0]
-            temporary_column = int(quenched_coil_set[i, 2]) - 1
+            temporary_column = int(float(quenched_coil_set[i, 1])) - 1
             real_nodes_in_imaginary_node = self.dict_winding_nodes[temporary_key][:, temporary_column]
             for node in real_nodes_in_imaginary_node:
                 if node != 0.0 or node != 0:
                     node = int(node)
                     real_nodes_list.append(node)
-        real_nodes_list.sort()
-        return real_nodes_list
-
-    def convert_imaginary_quench_front_down_into_real_nodes(self, previous_x_down_node=50, x_down_node=20):
-        imaginary_1d_node_set = self.coil_data[:, 2]
-        imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
-        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) & (imaginary_1d_node_set[:] <= previous_x_down_node)]
-        real_nodes_list = []
-        for i in range(len(quenched_coil_set)):
-            temporary_key = quenched_coil_set[i, 0]
-            temporary_column = int(quenched_coil_set[i, 2]) - 1
-            real_nodes_in_imaginary_node = self.dict_winding_nodes[temporary_key][:, temporary_column]
-            for node in real_nodes_in_imaginary_node:
-                if node != 0.0 or node != 0:
-                    node = int(node)
-                    real_nodes_list.append(node)
+            if i == 4:
+                print("Hello")
         real_nodes_list.sort()
         return real_nodes_list
 
@@ -244,18 +230,30 @@ class Geometry:
         """
         full_filename = "{}".format(filename)
         full_path = "{}\\{}".format(directory, full_filename)
-        temp_distr = None
+        loaded_file = None
         exists = False
         while exists is False:
             exists = os.path.isfile(full_path)
             if exists and Geometry.file_length(full_filename) == npoints:
                 os.chdir(directory)
                 f = open(full_filename, 'r')
-                temp_distr = np.loadtxt(f)
+                loaded_file = np.loadtxt(full_path)
                 f.close()
             else:
                 exists = False
-        return temp_distr
+        return loaded_file
+
+    @staticmethod
+    def load_parameter(directory, filename):
+        full_filename = "{}".format(filename)
+        full_path = "{}\\{}".format(directory, full_filename)
+        text_file = open(full_path, "r")
+        list1 = text_file.readlines()
+        final_list = []
+        for item in list1:
+            item = float(item)
+            final_list.append(item)
+        return final_list[0]
 
     def create_node_list_for_bf(self):
         node_list_for_bf = {}
@@ -300,26 +298,31 @@ class Geometry:
         return nodes_list_for_ground
 
 
-directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D_Mapping_Input_Files"
-geo_ansys = Geometry(file_directory=directory)
-
-temperature_profile = geo_ansys.create_1d_imaginary_temperature_profile(directory=directory)
-print(temperature_profile)
-
-quenched_nodes_up = geo_ansys.convert_imaginary_quench_front_up_into_real_nodes()
-print(quenched_nodes_up)
-
-quenched_nodes_down = geo_ansys.convert_imaginary_quench_front_down_into_real_nodes()
-print(quenched_nodes_down)
-
-nodes_up_ansys_list = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=quenched_nodes_up)
-nodes_down_ansys_list = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=quenched_nodes_down)
-
-print(nodes_up_ansys_list)
-print("_______________")
-print(nodes_down_ansys_list)
-
-list_nodes = geo_ansys.create_node_list_to_couple()
-list_nodes_current = geo_ansys.create_node_list_for_current()
-list_nodes_ground = geo_ansys.create_node_list_for_ground()
-print("_______________")
+# directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D_Mapping_Input_Files"
+# geo_ansys = Geometry(file_directory=directory)
+#
+# temperature_profile = geo_ansys.create_1d_imaginary_temperature_profile(directory=directory)
+# print(temperature_profile)
+#
+# quenched_nodes_up = geo_ansys.convert_imaginary_quench_front_up_into_real_nodes()
+# print(quenched_nodes_up)
+#
+# quenched_nodes_down = geo_ansys.convert_imaginary_quench_front_down_into_real_nodes()
+# print(quenched_nodes_down)
+#
+# nodes_up_ansys_list = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=quenched_nodes_up)
+# nodes_down_ansys_list = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=quenched_nodes_down)
+#
+# print(nodes_up_ansys_list)
+# print("_______________")
+# print(nodes_down_ansys_list)
+#
+# # nodes_coupling_list = geo_ansys.create_node_list_to_couple()
+# # nodes_coupling_list_ansys = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_coupling_list)
+#
+# nodes_current_list = geo_ansys.create_node_list_for_current()
+# nodes_current_list_ansys = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_current_list)
+#
+#
+# # nodes_ground_list = geo_ansys.create_node_list_for_ground()
+# print("_______________")

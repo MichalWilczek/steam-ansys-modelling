@@ -37,7 +37,7 @@ class QuenchDetect:
         quench_fronts_position = QuenchDetect.search_quench_length(coil_length=self.coil_length, new_quench_fronts_nodes=new_quench_fronts_sorted)
         return quench_fronts_position
 
-    def detect_quench_3d(self, input_quench_front_vector, temperature_profile, magnetic_field=MAGNETIC_FIELD_STRENGTH):
+    def detect_quench_2d_3d(self, input_quench_front_vector, temperature_profile, magnetic_field=MAGNETIC_FIELD_STRENGTH):
         """
         :param input_quench_front_vector: list of QuenchFront objects
         :param temperature_profile_file: file with nodal temperature as string
