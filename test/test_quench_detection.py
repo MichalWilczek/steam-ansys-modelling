@@ -20,7 +20,7 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.coil_geometry)
             quench_fronts.front_up_to_node(coil_length=self.coil_geometry)
-        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="1_find_one_quench_zone.txt")
+        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="find_one_quench_zone.txt")
         expected_result = [[1.85, 3.05]]
         self.assertEqual(first=result, second=expected_result)
 
