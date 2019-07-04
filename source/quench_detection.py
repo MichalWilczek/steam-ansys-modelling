@@ -70,8 +70,10 @@ class QuenchDetect:
         :param analysis_directory: string
         :return: number of rows in a file as integer
         """
-        full_path = "{}\\{}".format(analysis_directory, filename)
-        with open(full_path) as myfile:
+        os.chdir(analysis_directory)
+        # full_path = "{}\\{}".format(analysis_directory, filename)
+        # with open(full_path) as myfile:
+        with open(filename) as myfile:
             return int(len(myfile.readlines()))
 
     @staticmethod
@@ -103,9 +105,7 @@ class QuenchDetect:
         while exists is False:
             exists = os.path.isfile(filename)
             if exists and file_lines_length == npoints:
-                f = open(filename, 'r')
-                temp_distr = np.loadtxt(f)
-                f.close()
+                temp_distr = np.loadtxt(filename)
             else:
                 exists = False
         return temp_distr
