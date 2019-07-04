@@ -84,13 +84,26 @@ class QuenchDetect:
         :param npoints: number of nodes in geometry as integer
         :return: temperature profile as numpy array
         """
+        # temp_distr = None
+        # full_path = "{}\\{}".format(analysis_directory, filename)
+        # exists = False
+        # while exists is False:
+        #     exists = os.path.isfile(full_path)
+        #     if exists and file_lines_length == npoints:
+        #         f = open(full_path, 'r')
+        #         temp_distr = np.loadtxt(f)
+        #         f.close()
+        #     else:
+        #         exists = False
+        # return temp_distr
+
         temp_distr = None
-        full_path = "{}\\{}".format(analysis_directory, filename)
+        os.chdir(analysis_directory)
         exists = False
         while exists is False:
-            exists = os.path.isfile(full_path)
+            exists = os.path.isfile(filename)
             if exists and file_lines_length == npoints:
-                f = open(full_path, 'r')
+                f = open(filename, 'r')
                 temp_distr = np.loadtxt(f)
                 f.close()
             else:
