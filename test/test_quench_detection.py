@@ -12,8 +12,7 @@ class TestQuenchDetection(unittest.TestCase):
     DIRECTORY = os.path.join(CWD, 'quench_detection')
 
     def setUp(self):
-        self.coil_geometry = Geometry.length_coil(division=100, filename="File_Position.txt",
-                                             directory=TestQuenchDetection.DIRECTORY)
+        self.coil_geometry = Geometry.length_coil(division=100, filename="File_Position.txt", directory=TestQuenchDetection.DIRECTORY)
         self.quench_detect = QuenchDetect(coil_length=self.coil_geometry, directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
 
     def test_1_find_one_quench_zone(self):
