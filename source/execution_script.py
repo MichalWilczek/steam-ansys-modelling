@@ -19,21 +19,21 @@ max_nodes_cross_section = 5     # maximum number of nodes that can be in the win
 winding_length = 0.5            # [m]
 winding_width = 0.840*0.001     # [m]
 
-length_division = 100          # number of element divisions along one winding
+length_division = 500          # number of element divisions along one winding
 insulation_division = 3         # number of element divisions across the insulation layer
 insulation_width = 0.101*0.001
 winding_division = 2            # number of element divisions across the coil cross-section
 
-quench_init_pos = 0.25          # [m]
+quench_init_pos = 1.75          # [m]
 quench_init_length = 0.01       # [m]
-total_time = 1.0                # [s]
-time_division = 100.0           # number of time steps
+total_time = 0.5                # [s]
+time_division = 200.0           # number of time steps
 time_step = total_time / time_division
 init_x_up = quench_init_pos + quench_init_length
 init_x_down = quench_init_pos - quench_init_length
 
 # variables for ansys boundary/initial conditions
-current = 1000                  # [A]
+current = 10000                 # [A]
 initial_temperature = 1.9       # [K]
 
 if dimensionality == "1D":
@@ -180,8 +180,8 @@ elif dimensionality == "2D":
     quench_temperature_plots.append(temporary_temperature_plot)
 
 # start calculation after initial time step
-# for i in range(1, len(time)):
-for i in range(1, 11):
+for i in range(1, len(time)):
+# for i in range(1, 11):
     ans.save_analysis()
     t = time[i]
     print("iteration number: {} \n time step: {} \n ______________".format(i, t))
@@ -205,6 +205,7 @@ for i in range(1, 11):
         ans.modify_material_type(element_number=1)
         ans.modify_material_constant(constant_number=1)
         ans.modify_material_number(material_number=1)
+
     ans.enter_solver()
     ans.restart_analysis()
     ans.set_time_step(time_step=t)

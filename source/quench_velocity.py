@@ -10,7 +10,7 @@ class QuenchFront:
         :param label: assigned number to QuenchFront as string
         """
 
-        self.q_v = 2.0            # [m/s]
+        self.q_v = 0.5            # [m/s]
         self.x_down = x_down
         self.x_up = x_up
         self.x_centre = (x_up+x_down)/2.0
