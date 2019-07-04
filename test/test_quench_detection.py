@@ -1,5 +1,6 @@
 
 import unittest
+import os
 from source.quench_detection import QuenchDetect
 from source.quench_velocity import QuenchFront
 from source.geometry import Geometry
@@ -7,7 +8,7 @@ from source.geometry import Geometry
 
 class TestQuenchDetection(unittest.TestCase):
     NPOINTS = 101
-    DIRECTORY="..\\quench_detection"
+    DIRECTORY = os.path.join("..", "nodes_search")
 
     def setUp(self):
         self.coil_geometry = Geometry.length_coil(division=100, filename="File_Position.txt",

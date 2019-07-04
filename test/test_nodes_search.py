@@ -1,4 +1,5 @@
 
+import os
 import unittest
 from source.nodes_search import SearchNodes
 from source.geometry import Geometry
@@ -6,7 +7,7 @@ from source.geometry import Geometry
 
 class TestSearchNodes(unittest.TestCase):
 
-    DIRECTORY = "..\\nodes_search"
+    DIRECTORY = os.path.join("..", "nodes_search")
     LARGE_STEP_CONTROL = 100
     SMALL_STEP_CONTROL = 1
     LARGE_EPSILON = 0.001
