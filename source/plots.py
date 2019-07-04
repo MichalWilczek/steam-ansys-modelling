@@ -31,6 +31,7 @@ class Plots:
         ax = fig.add_subplot(111)
         ax.set_xlabel('Position [m]')
         ax.set_ylabel('Quench state')
+        ax.set_ylim(0, 1.1)
         plt.title("Time step: {} s".format(time_step))
         plt.xlim(min_coil_length, max_coil_length)
         plt.ylim(0, 2)
@@ -80,7 +81,7 @@ class Plots:
         return filename
 
     @staticmethod
-    def create_video(plot_array, filename, duration=0.02):
+    def create_video(plot_array, filename, duration=0.05):
         """
         Creates gif from series of plots
         :param plot_array: list of plots as plt.figure()
@@ -168,6 +169,7 @@ class Plots:
         ax = fig.add_subplot(111)
         ax.set_xlabel('Position [m]')
         ax.set_ylabel('Temperature [K]')
+        ax.set_ylim(0, 10)
         plt.title("Time step: {} s".format(time_step))
         ax.plot(length_node_temp_array[:, 1], length_node_temp_array[:, 2])
         plt.grid(True)

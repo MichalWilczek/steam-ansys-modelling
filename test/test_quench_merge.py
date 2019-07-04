@@ -1,7 +1,7 @@
 
 import unittest
-from quench_velocity import QuenchFront
-from quench_merge import QuenchMerge
+from source.quench_velocity import QuenchFront
+from source.quench_merge import QuenchMerge
 
 
 def sort_quench_fronts(quench_fronts):

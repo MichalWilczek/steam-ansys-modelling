@@ -1,5 +1,5 @@
 
-from nodes_search import SearchNodes
+from source.nodes_search import SearchNodes
 
 
 class QuenchFront:
@@ -21,10 +21,20 @@ class QuenchFront:
         self.x_up_previous_node = None
         self.x_down_previous_node = None
 
-    def to_string(self):
+    def calculate_quench_front_position(self, t_step, min_length, max_length):
+        self.calculate_q_front_pos_down(t_step=t_step, min_length=min_length)
+        self.calculate_q_front_pos_up(t_step=t_step, max_length=max_length)
+        self.position_to_string()
+
+    def convert_quench_front_to_nodes(self, coil_length):
+        self.front_down_to_node(coil_length=coil_length)
+        self.front_up_to_node(coil_length=coil_length)
+        self.node_to_string()
+
+    def position_to_string(self):
         return "{}: x_down = {}, x_up = {}".format(self.label, self.x_down, self.x_up)
 
-    def to_string_node(self):
+    def node_to_string(self):
         return "{}: x_down_node = {}, x_up_node = {}".format(self.label, self.x_down_node, self.x_up_node)
 
     def calculate_q_front_pos_up(self, t_step, max_length):

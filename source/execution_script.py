@@ -14,17 +14,17 @@ coil_geometry = None
 dimensionality = "2D"
 
 # parameters for 2D analysis
-number_windings = 3             # number of windings analyzed
+number_windings = 5             # number of windings analyzed
 max_nodes_cross_section = 5     # maximum number of nodes that can be in the winding cross-section
 winding_length = 0.5            # [m]
-winding_width = 0.01            # [m]
+winding_width = 0.840*0.001     # [m]
 
-length_division = 100           # number of element divisions along one winding
+length_division = 100          # number of element divisions along one winding
 insulation_division = 3         # number of element divisions across the insulation layer
-insulation_width = 0.001
+insulation_width = 0.101*0.001
 winding_division = 2            # number of element divisions across the coil cross-section
 
-quench_init_pos = 0.5           # [m]
+quench_init_pos = 0.25          # [m]
 quench_init_length = 0.01       # [m]
 total_time = 1.0                # [s]
 time_division = 100.0           # number of time steps
@@ -33,7 +33,7 @@ init_x_up = quench_init_pos + quench_init_length
 init_x_down = quench_init_pos - quench_init_length
 
 # variables for ansys boundary/initial conditions
-current = 100                   # [A]
+current = 1000                  # [A]
 initial_temperature = 1.9       # [K]
 
 if dimensionality == "1D":
@@ -62,7 +62,6 @@ elif dimensionality == "2D":
     ans.input_file(filename='2D_Geometry', extension='inp', add_directory='Input_Files')
 
 npoints = Geometry.load_parameter(directory=analysis_directory, filename="Nnode.txt")
-
 if dimensionality == "1D":
     geo_1d = Geometry(file_directory=analysis_directory)
     coil_geometry = geo_1d.length_coil()
@@ -91,17 +90,10 @@ temporary_quench_state_plot = Plots().plot_and_save_quench(coil_length=coil_geom
 quench_state_plots.append(temporary_quench_state_plot)
 
 # position transformation into nodes
-quench_fronts[0].front_down_to_node(coil_length=coil_geometry)
-quench_fronts[0].front_up_to_node(coil_length=coil_geometry)
-print(quench_fronts[0].to_string_node())
+quench_fronts[0].convert_quench_front_to_nodes(coil_length=coil_geometry)
 
 # initial analysis definition
 ans.enter_preprocessor()
-ans.set_dof(dof="temp")
-ans.set_dof(dof="volt")
-print(quench_fronts[0].x_down_node)
-print(quench_fronts[0].x_up_node)
-
 if dimensionality == "1D":
     ans.select_nodes(node_down=quench_fronts[0].x_down_node, node_up=quench_fronts[0].x_up_node)
 elif dimensionality == "2D":
@@ -114,17 +106,23 @@ ans.modify_material_constant(constant_number=1)
 ans.modify_material_number(material_number=1)
 
 # couple neighbouring windings
-nodes_to_couple_list = geo_2d.create_node_list_to_couple()
-for nodes_list in nodes_to_couple_list:
+nodes_to_couple_windings_list = geo_2d.create_node_list_to_couple_windings()
+for nodes_list in nodes_to_couple_windings_list:
     nodes_to_select_ansys = geo_2d.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_list)
     ans.select_nodes_list(nodes_list=nodes_to_select_ansys)
     ans.couple_nodes(dof="volt")
     ans.couple_nodes(dof="temp")
 
+# couple neighbouring interfaces
+nodes_to_couple_interfaces_list = geo_2d.create_node_list_to_couple_interfaces()
+ans.allsel()
+nodes_to_unselect_ansys = geo_2d.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_to_couple_interfaces_list)
+ans.unselect_nodes_list(nodes_list=nodes_to_unselect_ansys)
+ans.couple_interface(dof="temp")
+
 ans.enter_solver()
 ans.set_analysis_setting()
 ans.set_time_step(time_step=t)
-
 ans.set_initial_temperature(temperature=initial_temperature)
 
 # set initial quench temperature
@@ -134,7 +132,8 @@ elif dimensionality == "2D":
     nodes_to_select = geo_2d.convert_imaginary_node_set_into_real_nodes(x_down_node=quench_fronts[0].x_down_node, x_up_node=quench_fronts[0].x_up_node)
     nodes_to_select_ansys = geo_2d.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_to_select)
     ans.select_nodes_list(nodes_list=nodes_to_select_ansys)
-ans.set_quench_temperature(q_temperature=q_det.calculate_critical_temperature())
+# ans.set_quench_temperature(q_temperature=q_det.calculate_critical_temperature())
+ans.set_quench_temperature(q_temperature=9.5)
 
 # set constant inflow current
 if dimensionality == "1D":
@@ -160,11 +159,7 @@ elif dimensionality == "2D":
     ans.input_file(filename='2D_Solve_Get_Temp', extension='inp', add_directory='input_files')
 
 # calculate new quench velocity
-quench_fronts[0].calculate_q_front_pos_down(t_step=t, min_length=min_coil_length)
-quench_fronts[0].calculate_q_front_pos_up(t_step=t, max_length=max_coil_length)
-quench_fronts[0].front_down_to_node(coil_length=coil_geometry)
-quench_fronts[0].front_up_to_node(coil_length=coil_geometry)
-print(quench_fronts[0].to_string_node())
+quench_fronts[0].calculate_quench_front_position(t_step=t, min_length=min_coil_length, max_length=max_coil_length)
 
 # detect new quench position
 if dimensionality == "1D":
@@ -185,7 +180,9 @@ elif dimensionality == "2D":
     quench_temperature_plots.append(temporary_temperature_plot)
 
 # start calculation after initial time step
-for i in range(1, len(time)):
+# for i in range(1, len(time)):
+for i in range(1, 11):
+    ans.save_analysis()
     t = time[i]
     print("iteration number: {} \n time step: {} \n ______________".format(i, t))
     # what if quench fronts meet
@@ -195,10 +192,7 @@ for i in range(1, len(time)):
 
     for qf in quench_fronts:
         # position transformation into nodes
-        qf.front_down_to_node(coil_length=coil_geometry)
-        qf.front_up_to_node(coil_length=coil_geometry)
-        print(qf.to_string_node())
-        # apdl commands for material reassignment
+        qf.convert_quench_front_to_nodes(coil_length=coil_geometry)
 
         if dimensionality == "1D":
             ans.select_nodes(node_down=qf.x_down_node, node_up=qf.x_up_node)
@@ -228,19 +222,18 @@ for i in range(1, len(time)):
         quench_front_new = q_det.detect_quench_2d_3d(input_quench_front_vector=quench_fronts, temperature_profile=temperature_profile_1d)
 
     for qf in quench_front_new:
-        print(qf[0])
-        print(qf[1])
         quench_fronts.append(QuenchFront(x_down=qf[0], x_up=qf[1], label=quench_label))
         quench_label += 1
 
     # calculate quench propagation
     for qf in quench_fronts:
-        qf.calculate_q_front_pos_down(time_step, min_coil_length)
-        qf.calculate_q_front_pos_up(time_step, max_coil_length)
-    # plot temperature and quench
-    # here needs an update
-    temporary_temperature_plot = Plots().plot_and_save_temperature(coil_length=coil_geometry, directory=analysis_directory, filename="Temperature_Data.txt", iteration=i, time_step=t)
-    quench_temperature_plots.append(temporary_temperature_plot)
+        qf.calculate_quench_front_position(t_step=t, min_length=min_coil_length, max_length=max_coil_length)
+
+    if dimensionality == "1D":
+        print("Update Required...")
+    elif dimensionality == "2D":
+        temporary_temperature_plot = Plots().plot_and_save_temperature(coil_length=coil_geometry, directory=analysis_directory, temperature_profile_1d=temperature_profile_1d, iteration=i, time_step=t)
+        quench_temperature_plots.append(temporary_temperature_plot)
 
 Plots().create_video(plot_array=quench_state_plots, filename='video_quench_state.gif')
 Plots().create_video(plot_array=quench_temperature_plots, filename='video_temperature_distribution.gif')

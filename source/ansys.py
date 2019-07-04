@@ -119,6 +119,14 @@ class Commands(object):
             else:
                 print(self.mapdl.executeCommandToString("nsel,a,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
 
+    def unselect_nodes_list(self, nodes_list):
+        """
+        Selects a set of nodes from given list of nodes
+        :param nodes_list: list of lists with lower and higher node to be selected in a set
+        """
+        for i in range(len(nodes_list)):
+             print(self.mapdl.executeCommandToString("nsel,u,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
+
     # general commands
     def select_nodes(self, node_down, node_up):
         print(self.mapdl.executeCommandToString("nsel,s,node,,{},{}".format(node_down, node_up)))
@@ -128,6 +136,9 @@ class Commands(object):
 
     def allsel(self):
         print(self.mapdl.executeCommandToString("allsel"))
+
+    def allsel_below(self, domain):
+        print(self.mapdl.executeCommandToString("allsel,below,{}".format(domain)))
 
     def input_file(self, filename, extension, add_directory=" "):
         print(self.mapdl.executeCommandToString("/input,{},{},{}\\{}".format(filename, extension, self.analysis_directory, add_directory)))
@@ -150,6 +161,11 @@ class Commands(object):
         :param dof: 'volt' for voltage or 'temp' for temperature dof
         """
         print(self.mapdl.executeCommandToString("cp,next,{},all".format(dof)))
+
+    def couple_interface(self, dof):
+        # self.allsel()
+        # self.allsel_below(domain="area")
+        print(self.mapdl.executeCommandToString("cpintf,{},".format(dof)))
 
     # restart commands
     def save_parameters(self, filename='parameter_file', extension='txt'):
@@ -209,6 +225,7 @@ class Commands(object):
         self.mapdl.executeCommand('solcontrol,on,on')
         self.mapdl.executeCommand('neqit,1000')
         self.mapdl.executeCommand('lnsrch,on')
+        self.mapdl.executeCommand('deltim,0.0005,0.00005,0.0005')
         self.mapdl.executeCommand('rescontrol,define,none,none,1')
 
     # postprocessor commands

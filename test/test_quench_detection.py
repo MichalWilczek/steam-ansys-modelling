@@ -1,8 +1,8 @@
 
 import unittest
-from quench_detection import QuenchDetect
-from quench_velocity import QuenchFront
-from geometry import Geometry
+from source.quench_detection import QuenchDetect
+from source.quench_velocity import QuenchFront
+from source.geometry import Geometry
 
 
 class TestQuenchDetection(unittest.TestCase):

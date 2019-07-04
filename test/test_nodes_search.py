@@ -1,7 +1,7 @@
 
 import unittest
-from nodes_search import SearchNodes
-from geometry import Geometry
+from source.nodes_search import SearchNodes
+from source.geometry import Geometry
 
 
 class TestSearchNodes(unittest.TestCase):

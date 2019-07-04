@@ -264,7 +264,7 @@ class Geometry:
             node_list_for_bf[key] = [first_plane_nodes, last_plane_nodes]
         return node_list_for_bf
 
-    def create_node_list_to_couple(self):
+    def create_node_list_to_couple_windings(self):
         node_list_for_bf = self.create_node_list_for_bf()
         coupling_node_list = []
         for i in range(len(node_list_for_bf)-1):
@@ -281,6 +281,19 @@ class Geometry:
             coupling_node_list.append(one_coupling_node_list)
         return coupling_node_list
 
+    def create_node_list_to_couple_interfaces(self):
+        node_list_for_bf = self.create_node_list_for_bf()
+        node_list_to_unselect = []
+        for i in range(len(node_list_for_bf)):
+            for node in node_list_for_bf["winding"+str(i+1)][0]:
+                if node != 0.0 and node != 0:
+                    node_list_to_unselect.append(int(node))
+            for node in node_list_for_bf["winding"+str(i+1)][1]:
+                if node != 0.0 and node != 0:
+                    node_list_to_unselect.append(int(node))
+        node_list_to_unselect.sort()
+        return node_list_to_unselect
+
     def create_node_list_for_current(self):
         node_list_for_bf = self.create_node_list_for_bf()
         nodes_list_for_current = []
@@ -292,7 +305,7 @@ class Geometry:
     def create_node_list_for_ground(self):
         node_list_for_bf = self.create_node_list_for_bf()
         nodes_list_for_ground = []
-        for node in node_list_for_bf["winding"+str(len(node_list_for_bf)-1)][0]:
+        for node in node_list_for_bf["winding"+str(len(node_list_for_bf))][1]:
             if node != 0.0 and node != 0:
                 nodes_list_for_ground.append(int(node))
         return nodes_list_for_ground
