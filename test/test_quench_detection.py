@@ -7,7 +7,7 @@ from source.geometry import Geometry
 
 class TestQuenchDetection(unittest.TestCase):
     NPOINTS = 101
-    DIRECTORY="C:\\gitlab\\steam-ansys-modelling\\test\\quench_detection"
+    DIRECTORY="..\\quench_detection"
 
     def setUp(self):
         self.coil_geometry = Geometry.length_coil(division=100, filename="File_Position.txt",

@@ -6,7 +6,7 @@ from source.geometry import Geometry
 
 class TestSearchNodes(unittest.TestCase):
 
-    DIRECTORY = "C:\\gitlab\\steam-ansys-modelling\\test\\nodes_search"
+    DIRECTORY = "..\\nodes_search"
     LARGE_STEP_CONTROL = 100
     SMALL_STEP_CONTROL = 1
     LARGE_EPSILON = 0.001
