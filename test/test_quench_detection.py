@@ -8,8 +8,8 @@ from source.geometry import Geometry
 
 class TestQuenchDetection(unittest.TestCase):
     NPOINTS = 101
-    DIRECTORY = os.path.join("..", "nodes_search")
-
+    CWD = os.path.dirname(__file__)
+    DIRECTORY = os.path.join(CWD, 'quench_detection')
 
     def setUp(self):
         self.coil_geometry = Geometry.length_coil(division=100, filename="File_Position.txt",
