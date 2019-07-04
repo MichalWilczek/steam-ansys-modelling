@@ -7,7 +7,7 @@ from source.geometry import Geometry
 
 class TestSearchNodes(unittest.TestCase):
 
-    DIRECTORY = os.path.join("..", "nodes_search")
+    DIRECTORY = "nodes_search"
     LARGE_STEP_CONTROL = 100
     SMALL_STEP_CONTROL = 1
     LARGE_EPSILON = 0.001
