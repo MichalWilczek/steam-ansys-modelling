@@ -20,7 +20,8 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.coil_geometry)
             quench_fronts.front_up_to_node(coil_length=self.coil_geometry)
-        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="1_find_one_quench_zone.txt")
+        temperature_profile = Geometry.load_file(filename="1_find_one_quench_zone.txt", file_lines_length=TestQuenchDetection.NPOINTS, analysis_directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile)
         expected_result = [[1.85, 3.05]]
         self.assertEqual(first=result, second=expected_result)
 
@@ -29,7 +30,8 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.coil_geometry)
             quench_fronts.front_up_to_node(coil_length=self.coil_geometry)
-        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="2_find_multiple_quench_zones.txt")
+        temperature_profile = Geometry.load_file(filename="2_find_multiple_quench_zones.txt", file_lines_length=TestQuenchDetection.NPOINTS, analysis_directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile)
         expected_result = [[0.0, 0.0], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [5.0, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -38,7 +40,8 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.coil_geometry)
             quench_fronts.front_up_to_node(coil_length=self.coil_geometry)
-        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="3_find_multiple_quench_zones.txt")
+        temperature_profile = Geometry.load_file(filename="3_find_multiple_quench_zones.txt", file_lines_length=TestQuenchDetection.NPOINTS, analysis_directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile)
         expected_result = [[0.0, 0.0], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [5.0, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -47,7 +50,8 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.coil_geometry)
             quench_fronts.front_up_to_node(coil_length=self.coil_geometry)
-        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="4_find_multiple_quench_zones.txt")
+        temperature_profile = Geometry.load_file(filename="4_find_multiple_quench_zones.txt", file_lines_length=TestQuenchDetection.NPOINTS, analysis_directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile)
         expected_result = [[0.0, 0.0], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [5.0, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -56,7 +60,8 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.coil_geometry)
             quench_fronts.front_up_to_node(coil_length=self.coil_geometry)
-        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="5_find_multiple_quench_zones.txt")
+        temperature_profile = Geometry.load_file(filename="5_find_multiple_quench_zones.txt", file_lines_length=TestQuenchDetection.NPOINTS, analysis_directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile)
         expected_result = [[0.0, 0.05], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [4.95, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -65,6 +70,7 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.coil_geometry)
             quench_fronts.front_up_to_node(coil_length=self.coil_geometry)
-        result = self.quench_detect.detect_quench_1d(input_quench_front_vector=q_pos_vector, temperature_profile_file="6_find_multiple_quench_zones.txt")
+        temperature_profile = Geometry.load_file(filename="6_find_multiple_quench_zones.txt", file_lines_length=TestQuenchDetection.NPOINTS, analysis_directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile)
         expected_result = [[0.0, 0.05], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [4.95, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)

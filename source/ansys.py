@@ -225,7 +225,7 @@ class Commands(object):
         self.mapdl.executeCommand('solcontrol,on,on')
         self.mapdl.executeCommand('neqit,1000')
         self.mapdl.executeCommand('lnsrch,on')
-        # self.mapdl.executeCommand('deltim,0.0005,0.00005,0.0005')
+        self.mapdl.executeCommand('deltim,0.0025,0.00025,0.0025')
         self.mapdl.executeCommand('rescontrol,define,none,none,1')
 
     # postprocessor commands

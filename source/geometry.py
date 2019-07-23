@@ -7,6 +7,7 @@ class Geometry:
 
     def __init__(self, file_directory):
         self.create_1d_imaginary_coil_length(file_position_directory=file_directory)
+        self.create_node_dict_for_each_winding()
 
     # methods for 1D analysis
     @staticmethod
@@ -32,6 +33,10 @@ class Geometry:
 
     # methods for 2D/3D analyses
     def create_1d_imaginary_coil_length(self, file_position_directory):
+        """
+        Creates imaginary 1D coil length based on files: "Winding[number)" and "Node_Position"
+        :param file_position_directory: full analysis directory as string
+        """
         self.files_in_directory = Geometry.search_files_names_in_directory(directory=file_position_directory)
         self.list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=self.files_in_directory)
         self.dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=self.list_windings_nodes, directory=file_position_directory)
@@ -41,14 +46,38 @@ class Geometry:
         self.coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
         self.node_map_sorted = Geometry.translate_3d_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
 
+    def create_node_dict_for_each_winding(self):
+        """
+        Creates dictionary with sorted list of node numbers belonging to each winding separately
+        """
+        self.winding_node_dict = {}
+        for key in self.dict_winding_nodes:
+            node_list = []
+            value = self.dict_winding_nodes[key]
+            for column in range(len(value[0, :])):
+                plane_node_list = value[:, column]
+                for node_number in plane_node_list:
+                    if node_number != 0.0 or node_number != 0:
+                        node_list.append(int(node_number))
+            node_list.sort()
+            self.winding_node_dict[key] = node_list
+
     # functions for objects creation inside of Class
     @staticmethod
     def search_files_names_in_directory(directory):
+        """
+        :param directory: full analysis directory as string
+        :return: list of file names as strings
+        """
         list_files = os.listdir(directory)
         return list_files
 
     @staticmethod
     def find_files_with_windings_nodes(list_files):
+        """
+        :param list_files: list of file names as strings
+        :return: list of files as strings with "Winding" in their names
+        """
         list_winding_files = []
         for files in list_files:
             if "Winding" in files:
@@ -57,27 +86,50 @@ class Geometry:
 
     @staticmethod
     def load_files_with_windings_nodes(winding_files, directory):
+        """
+        Assigns a node number matrix (n x m in which n-plane number and m-node numbers in each winding)to each winding
+        :param winding_files: list of files with windings' nodes numbers as integers
+        :param directory: full analysis directory as string
+        :return: dictionary which assigns nodes to each winding
+        """
         os.chdir(directory)
         winding_set = {}
         winding_number = 1
         for file in winding_files:
-            winding = np.loadtxt(file)
+            winding = np.loadtxt(file, dtype=int)
             winding_set["winding"+str(winding_number)] = winding
             winding_number += 1
         return winding_set
 
     @staticmethod
     def load_file_with_winding_nodes_position(directory, filename):
+        """
+        Loads the files with x,y,z position of each node in Cartesian coordinate system
+        :param directory: full analysis directory as string
+        :param filename: filename with nodes positions as string
+        :return: numpy array with 4 columns; 1-node number as float, 2-position x, 3-position y, 4- position z
+        """
         os.chdir(directory)
-        position_array = np.loadtxt(filename)
+        position_array = np.loadtxt(filename, dtype=float)
         return position_array
 
     @staticmethod
     def calculate_average(list):
+        """
+        Returns the average of values given in the list
+        :param list: list of float values
+        :return: average of input values
+        """
         return sum(list)/len(list)
 
     @staticmethod
     def calculate_windings_lengths(position_array, winding_set):
+        """
+        Calculates a centre of each node in Cartesian space
+        :param position_array: numpy array with positions x,y,z of each node
+        :param winding_set: dictionary which assigns nodes to each winding
+        :return: dictionary which assigns a numpy array with mean x, y, z positions to each winding
+        """
         winding_lengths = {}
         for key in winding_set:
             value = winding_set[key]
@@ -108,14 +160,19 @@ class Geometry:
 
     @staticmethod
     def calculate_coil_length_data(windings_lengths):
-
+        """
+        Transforms x, y, z mean values of each node into 1D length of the entire coil
+        :param windings_lengths: dictionary which assigns a numpy array with mean x, y, z positions to each winding
+        :return: numpy array with 4 columns; 1-winding number as string, 2-plane number as integer,
+                 3-ordered plane number along 1D coil length as integer, 4-imaginary 1D coil length as float
+        """
         length = 0.0
         imaginary_node = 1
         coil_data = None
         for key in windings_lengths:
             value = windings_lengths[key]
             for i in range(1, len(value)):
-                temporary_list = [key, value[i-1, 0], imaginary_node, length]
+                temporary_list = [key, int(value[i-1, 0]), imaginary_node, length]
                 imaginary_node += 1
                 if i == 1 and key == "winding1":
                     coil_data = np.array(temporary_list)
@@ -129,32 +186,62 @@ class Geometry:
         return coil_data
 
     @staticmethod
-    def unique_rows(a):
-        a = np.ascontiguousarray(a, dtype=float)
-        unique_a = np.unique(a.view([('', a.dtype)] * a.shape[1]))
-        return unique_a.view(a.dtype).reshape((unique_a.shape[0], a.shape[1]))
+    def unique_rows(array):
+        """
+        Deletes repetitive rows with respect to one column
+        :param array: numpy array
+        :return: numpy float array without repetitions
+        """
+        array = np.ascontiguousarray(array, dtype=float)
+        unique_a = np.unique(array.view([('', array.dtype)] * array.shape[1]))
+        return unique_a.view(array.dtype).reshape((unique_a.shape[0], array.shape[1]))
 
     @staticmethod
     def retrieve_1d_imaginary_coil(coil_data):
+        """
+        Retrieves two last columns from coil_data numpy array
+        :param coil_data: 4-column numpy array
+        :return: Two-column numpy array without repetitions of its rows;
+                 1-ordered plane number along 1D coil length as float, 2-imaginary 1D coil length as float
+        """
         coil_length_1d = coil_data[:, 2:4]
         coil_length_1d = Geometry.unique_rows(coil_length_1d)
         coil_length_1d_sorted = coil_length_1d[coil_length_1d[:, 0].argsort()]
         return coil_length_1d_sorted
 
+    def load_temperature_and_map_onto_1d_cable(self, directory, npoints, filename="Temperature_Data.txt"):
+        """
+        Loads temperature file with real nodes and maps it onto 1D cable length
+        :param directory: full analysis directory as string
+        :param npoints: number of nodes as integer in meshed ANSYS geometry
+        :param filename: filename as string with temperature profile
+        :returns: 2-column numpy array; 1-imaginary node number as float, 2-node temperature as float
+        """
+        temperature_profile = Geometry.load_file(analysis_directory=directory, npoints=npoints, filename=filename, file_lines_length=npoints)
+        coil_temperature_1d = self.map_3d_max_temperature_into_1d_cable(temperature_profile=temperature_profile)
+        return coil_temperature_1d
+
     @staticmethod
     def translate_3d_domain_into_1d_cable(coil_data, winding_set):
+        """
+        Creates numpy array which assigns each real node number to imaginary node number
+        :param coil_data: 4-column numpy array; 1-winding number as string, 2-plane number as integer,
+                          3-ordered plane number along 1D coil length as integer, 4-imaginary 1D coil length as float
+        :param winding_set: dictionary which assigns nodes to each winding
+        :return: 2-column numpy array sorted with respect to imaginary node numbers; 1-imaginary node numbers,
+                 2-real node numbers
+        """
         node_mapping = None
         for i in range(len(coil_data)):
             winding_number = coil_data[i, 0]
-            winding_plane = coil_data[i, 1]
-            winding_plane = np.asfarray(winding_plane, int)
-            imaginary_node = coil_data[i, 2]
+            winding_plane = int(float(coil_data[i, 1]))
+            imaginary_node = int(float(coil_data[i, 2]))
             winding_nodes = winding_set[winding_number]
-            winding_plane_nodes = winding_nodes[:, int(winding_plane-1)]
+            winding_plane_nodes = winding_nodes[:, winding_plane-1]
             for j in range(len(winding_plane_nodes)):
-                node_number = int(winding_plane_nodes[j])
+                node_number = winding_plane_nodes[j]
                 if node_number != 0:
-                    temporary_list = [int(winding_plane_nodes[j]), int(imaginary_node)]
+                    temporary_list = [imaginary_node, winding_plane_nodes[j]]
                     if i == 0 and j == 0:
                         node_mapping = np.array(temporary_list)
                     else:
@@ -164,9 +251,14 @@ class Geometry:
 
     # functions for step-by-step analysis
     def map_3d_max_temperature_into_1d_cable(self, temperature_profile):
+        """
+        Finds maximum temperature at each plane of each winding and maps it onto 1D coil length
+        :param temperature_profile: 2-column numpy array; 1-real node number as float, 2-real node temperature as float
+        :return: 2-column numpy array; 1-imaginary node number as float, 2-node temperature as float
+        """
         imaginary_1d_temperature = np.zeros((len(self.coil_length_1d), 2))
         for i in range(len(self.coil_length_1d)):
-            node_list_for_imaginary_node = self.node_map_sorted[np.where(self.node_map_sorted[:, 1] == i+1)][:, 0]
+            node_list_for_imaginary_node = self.node_map_sorted[np.where(self.node_map_sorted[:, 0] == i+1)][:, 1]
             node_temperature_array = np.zeros((len(node_list_for_imaginary_node), 2))
             for j in range(len(node_list_for_imaginary_node)):
                 node_temperature_array[j, 0] = node_list_for_imaginary_node[j]
@@ -175,12 +267,13 @@ class Geometry:
             imaginary_1d_temperature[i, 1] = np.max(node_temperature_array[:, 1])
         return imaginary_1d_temperature
 
-    def create_1d_imaginary_temperature_profile(self, directory, npoints, filename="Temperature_Data.txt"):
-        temperature_profile = Geometry.load_file(directory=directory, npoints=npoints, filename=filename)
-        coil_temperature_1d = self.map_3d_max_temperature_into_1d_cable(temperature_profile=temperature_profile)
-        return coil_temperature_1d
-
-    def convert_imaginary_node_set_into_real_nodes(self, x_down_node, x_up_node):
+    def convert_imaginary_nodes_set_into_real_nodes(self, x_down_node, x_up_node):
+        """
+        Returns list with real quenched nodes
+        :param x_down_node: quench down front node from imaginary set as integer
+        :param x_up_node: quench up front node from imaginary set as integer
+        :return: list of quenched real nodes
+        """
         imaginary_1d_node_set = self.coil_data[:, 2]
         imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
         quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) & (imaginary_1d_node_set[:] <= x_up_node)]
@@ -193,13 +286,16 @@ class Geometry:
                 if node != 0.0 or node != 0:
                     node = int(node)
                     real_nodes_list.append(node)
-            if i == 4:
-                print("Hello")
         real_nodes_list.sort()
         return real_nodes_list
 
     @staticmethod
     def prepare_ansys_nodes_selection_list(real_nodes_list):
+        """
+        Transforms list of quenched nodes into sublists defining lower and upper boundaries of number sequences
+        :param real_nodes_list: list of quenched real nodes
+        :returns: list of lists
+        """
         nodes_selection_list = []
         node_index_down = 0
         node_index_up = 0
@@ -212,39 +308,45 @@ class Geometry:
         return nodes_selection_list
 
     @staticmethod
-    def file_length(filename):
+    def file_length(filename, analysis_directory):
         """
-        Reads number of files in file
-        :param filename: filename to read as string
+        :param filename: filename with extension as string
+        :param analysis_directory: string
+        :return: number of rows in a file as integer
         """
-        myfile = open(filename)
-        return int(len(myfile.readlines()))
+        os.chdir(analysis_directory)
+        with open(filename) as myfile:
+            return int(len(myfile.readlines()))
 
     @staticmethod
-    def load_file(directory, npoints, filename):
+    def load_file(filename, file_lines_length, analysis_directory, npoints):
         """
-        Loads file as numpy array if its number of rows corresponds to number of nodes in geometry
-        :param directory: analysis directory as string
-        :param npoints: number of nodes in defined geometry
-        :param filename: filename as string, 'Temperature_Data.txt' set as default
+        Works if number of rows in the file corresponds to number of nodes in geometry
+        :param filename: filename with extension as string
+        :param file_lines_length: number of rows in the file as integer
+        :param analysis_directory: string
+        :param npoints: number of nodes in geometry as integer
+        :return: temperature profile as numpy array
         """
-        full_filename = "{}".format(filename)
-        full_path = "{}\\{}".format(directory, full_filename)
         loaded_file = None
+        os.chdir(analysis_directory)
         exists = False
         while exists is False:
-            exists = os.path.isfile(full_path)
-            if exists and Geometry.file_length(full_filename) == npoints:
-                os.chdir(directory)
-                f = open(full_filename, 'r')
-                loaded_file = np.loadtxt(full_path)
-                f.close()
+            exists = os.path.isfile(filename)
+            if exists and file_lines_length == npoints:
+                loaded_file = np.loadtxt(filename)
             else:
                 exists = False
         return loaded_file
 
     @staticmethod
     def load_parameter(directory, filename):
+        """
+        Returns the 1st row of txt file
+        :param directory: full analysis directory as string
+        :param filename: filename as string
+        :return: parameter as float
+        """
         full_filename = "{}".format(filename)
         full_path = "{}\\{}".format(directory, full_filename)
         text_file = open(full_path, "r")
@@ -295,12 +397,14 @@ class Geometry:
         return node_list_to_unselect
 
     def create_node_list_for_current(self):
-        node_list_for_bf = self.create_node_list_for_bf()
-        nodes_list_for_current = []
-        for node in node_list_for_bf["winding1"][0]:
-            if node != 0.0 and node != 0:
-                nodes_list_for_current.append(int(node))
-        return nodes_list_for_current
+        node_list_current = []
+        for key in self.winding_node_dict:
+            value = self.winding_node_dict[key]
+            for index in range(len(value)):
+                node_number = value[index]
+                node_list_current.append(node_number)
+        node_list_current.sort()
+        return node_list_current
 
     def create_node_list_for_ground(self):
         node_list_for_bf = self.create_node_list_for_bf()
@@ -314,28 +418,8 @@ class Geometry:
 # directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D_Mapping_Input_Files"
 # geo_ansys = Geometry(file_directory=directory)
 #
-# temperature_profile = geo_ansys.create_1d_imaginary_temperature_profile(directory=directory)
+# temperature_profile = geo_ansys.load_temperature_and_map_onto_1d_cable(npoints=5736, directory=directory)
 # print(temperature_profile)
 #
-# quenched_nodes_up = geo_ansys.convert_imaginary_quench_front_up_into_real_nodes()
-# print(quenched_nodes_up)
-#
-# quenched_nodes_down = geo_ansys.convert_imaginary_quench_front_down_into_real_nodes()
-# print(quenched_nodes_down)
-#
-# nodes_up_ansys_list = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=quenched_nodes_up)
-# nodes_down_ansys_list = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=quenched_nodes_down)
-#
-# print(nodes_up_ansys_list)
-# print("_______________")
-# print(nodes_down_ansys_list)
-#
-# # nodes_coupling_list = geo_ansys.create_node_list_to_couple()
-# # nodes_coupling_list_ansys = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_coupling_list)
-#
-# nodes_current_list = geo_ansys.create_node_list_for_current()
-# nodes_current_list_ansys = geo_ansys.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_current_list)
-#
-#
-# # nodes_ground_list = geo_ansys.create_node_list_for_ground()
-# print("_______________")
+# list_real_nodes = geo_ansys.convert_imaginary_node_set_into_real_nodes(x_down_node=99, x_up_node=105)
+# print(list_real_nodes)

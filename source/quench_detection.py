@@ -1,6 +1,5 @@
 
 import numpy as np
-import os
 
 
 class QuenchDetect:
@@ -17,27 +16,7 @@ class QuenchDetect:
         self.analysis_directory = directory
         self.npoints = npoints
 
-    def detect_quench_1d(self, input_quench_front_vector, temperature_profile_file, magnetic_field=MAGNETIC_FIELD_STRENGTH):
-        """
-        :param input_quench_front_vector: list of QuenchFront objects
-        :param temperature_profile_file: file with nodal temperature as string
-        :param magnetic_field: magnetic fields strength value as float
-        :return: list of new quench fronts positions in meters
-        """
-        input_quench_front_vector_sorted = QuenchDetect.sort_input_quench_front_vector(input_quench_front_vector)
-        temperature_profile_file_length = QuenchDetect.check_file_length(filename=temperature_profile_file, analysis_directory=self.analysis_directory)
-        read_temperature_profile = QuenchDetect.load_file(filename=temperature_profile_file, file_lines_length=temperature_profile_file_length, analysis_directory=self.analysis_directory, npoints=self.npoints)
-        critical_temperature = QuenchDetect.calculate_critical_temperature(magnetic_field=magnetic_field)
-        temperature_profile_sliced = QuenchDetect.slice_temperature_profile(input_quench_front_vector=input_quench_front_vector_sorted, temperature_profile=read_temperature_profile)
-        temp_profile_sliced_quench_detection = QuenchDetect.find_quenched_nodes(sliced_temperature_profile=temperature_profile_sliced, critical_temperature=critical_temperature)
-        new_quenched_fronts_before_rejection = QuenchDetect.find_new_quench_fronts(quenched_nodes=temp_profile_sliced_quench_detection)
-        new_quench_fronts_list = QuenchDetect.create_new_quench_fronts_list(input_quench_front_vector=input_quench_front_vector_sorted, new_quench_fronts=new_quenched_fronts_before_rejection)
-        new_quench_fronts_list_without_repetitions = QuenchDetect.find_repetitive_fronts(new_quench_fronts_list)
-        new_quench_fronts_sorted = QuenchDetect.define_final_new_quench_fronts(fronts_list=new_quench_fronts_list_without_repetitions, new_quench_fronts_nodes=new_quenched_fronts_before_rejection)
-        quench_fronts_position = QuenchDetect.search_quench_length(coil_length=self.coil_length, new_quench_fronts_nodes=new_quench_fronts_sorted)
-        return quench_fronts_position
-
-    def detect_quench_2d_3d(self, input_quench_front_vector, temperature_profile, magnetic_field=MAGNETIC_FIELD_STRENGTH):
+    def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field=MAGNETIC_FIELD_STRENGTH):
         """
         :param input_quench_front_vector: list of QuenchFront objects
         :param temperature_profile_file: file with nodal temperature as string
@@ -62,38 +41,6 @@ class QuenchDetect:
         :return: list of QuenchFront objects sorted from lowest x_down to highest x_down
         """
         return sorted(input_quench_front_vector, key=lambda QuenchFront: QuenchFront.x_down)
-
-    @staticmethod
-    def check_file_length(filename, analysis_directory):
-        """
-        :param filename: filename with extension as string
-        :param analysis_directory: string
-        :return: number of rows in a file as integer
-        """
-        os.chdir(analysis_directory)
-        with open(filename) as myfile:
-            return int(len(myfile.readlines()))
-
-    @staticmethod
-    def load_file(filename, file_lines_length, analysis_directory, npoints):
-        """
-        Works if number of rows in the file corresponds to number of nodes in geometry
-        :param filename: filename with extension as string
-        :param file_lines_length: number of rows in the file as integer
-        :param analysis_directory: string
-        :param npoints: number of nodes in geometry as integer
-        :return: temperature profile as numpy array
-        """
-        temp_distr = None
-        os.chdir(analysis_directory)
-        exists = False
-        while exists is False:
-            exists = os.path.isfile(filename)
-            if exists and file_lines_length == npoints:
-                temp_distr = np.loadtxt(filename)
-            else:
-                exists = False
-        return temp_distr
 
     @staticmethod
     def calculate_critical_temperature(magnetic_field=MAGNETIC_FIELD_STRENGTH):
@@ -174,13 +121,11 @@ class QuenchDetect:
         initial_quench_fronts = []
         for items in input_quench_front_vector:
             initial_quench_fronts.append([items.x_down_node, items.x_up_node])
-
         fronts_to_delete = []
         for i in range(len(initial_quench_fronts)):
             for j in range(len(new_quench_fronts)):
                 if abs(initial_quench_fronts[i][0] - new_quench_fronts[j][1]) == 1:
                     fronts_to_delete.append(j)
-
         for i in range(len(initial_quench_fronts)):
             for j in range(len(new_quench_fronts)):
                 if abs(initial_quench_fronts[i][1] - new_quench_fronts[j][0]) == 1:

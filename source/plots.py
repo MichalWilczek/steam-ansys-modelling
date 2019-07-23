@@ -169,7 +169,7 @@ class Plots:
         ax = fig.add_subplot(111)
         ax.set_xlabel('Position [m]')
         ax.set_ylabel('Temperature [K]')
-        ax.set_ylim(0, 10)
+        # ax.set_ylim(0, 10)
         plt.title("Time step: {} s".format(time_step))
         ax.plot(length_node_temp_array[:, 1], length_node_temp_array[:, 2])
         plt.grid(True)
