@@ -1,6 +1,6 @@
 import time
 from source.model_input import ModelInput
-from source.ansys import Commands
+from source.ansys import AnsysCommands
 from source.plots import Plots
 from source.geometry import Geometry
 from source.quench_velocity import QuenchFront
@@ -40,7 +40,7 @@ if dimensionality == "1D":
     analysis_directory = "C:\\gitlab\\steam-ansys-modelling\\source\APDL\\1D"
 elif dimensionality == "2D" or dimensionality == "3D":
     analysis_directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\2D"
-ans = Commands(directory=analysis_directory)
+ans = AnsysCommands()
 
 # analysis initialization
 ans.delete_file(filename='Variable_Input.inp')
@@ -56,7 +56,7 @@ time.sleep(1)
 ans.input_file(filename='Variable_Input', extension='inp')
 if dimensionality == "1D":
     ans.input_file(filename='1D_Material_Properties_Superconducting', extension='inp', add_directory='Input_Files')
-    ans.input_file(filename='1D_Geometry', extension='inp', add_directory='1D\\Input_Files')
+    ans.input_file(filename='1D_Geometry', extension='inp', add_directory='Input_Files')
 elif dimensionality == "2D":
     ans.input_file(filename='2D_Material_Properties_Superconducting', extension='inp', add_directory='Input_Files')
     ans.input_file(filename='2D_Geometry', extension='inp', add_directory='Input_Files')
@@ -162,8 +162,8 @@ quench_fronts[0].calculate_quench_front_position(t_step=t, min_length=min_coil_l
 
 # detect new quench position
 if dimensionality == "1D":
-    a = 1
-    # quench_front_new = q_det.detect_quench(input_quench_front_vector=quench_fronts, temperature_profile_file="Temperature_Data.txt")
+    # a = 1
+    quench_front_new = q_det.detect_quench(input_quench_front_vector=quench_fronts, temperature_profile_file="Temperature_Data.txt")
 elif dimensionality == "2D":
     temperature_profile_1d = geo_2d.load_temperature_and_map_onto_1d_cable(directory=analysis_directory, npoints=npoints)
     quench_front_new = q_det.detect_quench(input_quench_front_vector=quench_fronts, temperature_profile=temperature_profile_1d)

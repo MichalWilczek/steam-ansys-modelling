@@ -1,12 +1,13 @@
 
 import numpy as np
+from source.factory import AnalysisDirectory
 
 
 class QuenchDetect:
 
     MAGNETIC_FIELD_STRENGTH = 2.88
 
-    def __init__(self, coil_length, directory, npoints):
+    def __init__(self, coil_length, npoints, directory=AnalysisDirectory.get_directory()):
         """
         :param coil_length:
         :param directory: analysis_directory as string

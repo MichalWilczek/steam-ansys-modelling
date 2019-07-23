@@ -1,75 +1,99 @@
 
-
-config = {
-    # variables for all cases
-    'dimensionality': '2D',
-    'number_of_windings': 2,
-    'length_per_winding': 0.5,        # winding_length, [m]
-    'division_per_winding': 500,      # winding_division, number of element divisions across the coil cross-section
-
-    # analysis parameters
-    'quench_init_pos': 0.25,          # [m], with respect to the 1st winding defined in ansys
-    'quench_init_length': 0.01,       # [m]
-    'total_time': 0.5,                # [s]
-    'time_division': 200.0,           # number of time steps
-
-    # variables for ansys boundary/initial conditions
-    'current': 1000,                  # [A]
-    'initial_temperature': 1.9,       # [K]
-
-    # variables for 2D analysis
-    'winding_plane_max_number_nodes': 5,             # max_nodes_cross_section, verify ansys element type to be used
-    'transverse_dimension_winding': 0.840*0.001,     # winding_width, [m]
-    'transverse_dimension_insulation': 0.101*0.001,  # insulation_width, [m]
-    'transverse_division_winding': 2,    # winding_division, number of element divisions across the coil cross-section
-    'transverse_division_insulation': 3  # insulation_division, number of element divisions across the insulation layer
-}
+import json
 
 
 class AnalysisBuilder:
 
-    def __call__(self, *args):
-        print(*args)
-
-
-test_code = AnalysisBuilder()
-test_code.__call__(config)
-
-
-class QuenchFactory:
-
     def __init__(self):
-        self.dimensionality = {}
+        self.input_parameters = AnalysisBuilder.load_parameters()
 
-    def register_dimensionality(self, dimension, creator):
-        self.dimensionality[dimension] = creator
+    @staticmethod
+    def load_parameters(filename='config.json'):
+        with open(filename) as json_data_file:
+            return json.load(json_data_file)
 
-    def get_dimensionality(self, dimension):
-        creator = self.dimensionality.get(dimension)
-        if not creator:
-            raise ValueError(dimension)
-        return creator
+    def get_dimensionality(self):
+        return self.input_parameters['dimensionality']
 
+    def filename_nodal_position(self):
+        return self.input_parameters['filename_nodal_position']
 
+    def filename_nodal_temperature(self):
+        return self.input_parameters['filename_nodal_temperature']
 
+    def get_number_of_windings(self):
+        return self.input_parameters['number_of_windings']
 
+    def get_length_per_winding(self):
+        return self.input_parameters['length_per_winding']
+
+    def get_division_per_winding(self):
+        return self.input_parameters['division_per_winding']
+
+    def get_division_in_full_coil(self):
+        return self.input_parameters['division_per_winding']*self.input_parameters['number_of_windings']
+
+    def get_quench_init_pos(self):
+        return self.input_parameters['quench_init_pos']
+
+    def get_quench_init_length(self):
+        return self.input_parameters['quench_init_length']
+
+    def get_quench_init_x_down(self):
+        return self.input_parameters['quench_init_pos']-self.input_parameters['quench_init_length']/2.0
+
+    def get_quench_init_x_up(self):
+        return self.input_parameters['quench_init_pos'] + self.input_parameters['quench_init_length'] / 2.0
+
+    def get_total_time(self):
+        return self.input_parameters['total_time']
+
+    def get_time_division(self):
+        return self.input_parameters['time_division']
+
+    def get_current(self):
+        return self.input_parameters['current']
+
+    def get_initial_temperature(self):
+        return self.input_parameters['initial_temperature']
+
+    def get_winding_plane_max_number_nodes(self):
+        return self.input_parameters['winding_plane_max_number_nodes']
+
+    def get_transverse_dimension_winding(self):
+        return self.input_parameters['transverse_dimension_winding']
+
+    def get_transverse_dimension_insulation(self):
+        return self.input_parameters['transverse_dimension_insulation']
+
+    def get_transverse_division_winding(self):
+        return self.input_parameters['transverse_division_winding']
+
+    def get_transverse_division_insulation(self):
+        return self.input_parameters['transverse_division_insulation']
 
 
 class AnalysisDirectory:
 
-    def get_directory(self, dimension):
+    @staticmethod
+    def get_directory():
+        dimension = AnalysisBuilder().get_dimensionality()
         if dimension == "1D":
-            return self.directory_1d()
+            return AnalysisDirectory().directory_1d()
         elif dimension == "2D":
-            return self.directory_2d()
+            return AnalysisDirectory().directory_2d()
         elif dimension == "3D":
-            return self.directory_3d()
+            return AnalysisDirectory().directory_3d()
         else:
             raise ValueError(dimension)
 
     @staticmethod
+    def define_main_path():
+        return "C:\\gitlab\\steam-ansys-modelling\\source"
+
+    @staticmethod
     def directory_1d():
-        return "C:\\gitlab\\steam-ansys-modelling\\source\APDL\\1D"
+        return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
 
     @staticmethod
     def directory_2d():
@@ -78,35 +102,3 @@ class AnalysisDirectory:
     @staticmethod
     def directory_3d():
         return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D"
-
-
- # class VariableFile:
- #
- #    @staticmethod
- #    def create_variable_file_2d():
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

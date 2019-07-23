@@ -3,6 +3,7 @@ from source.nodes_search import SearchNodes
 
 
 class QuenchFront:
+
     def __init__(self, x_down, x_up, label):
         """
         :param x_down: bottom position of quench front in [m]

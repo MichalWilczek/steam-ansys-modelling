@@ -1,4 +1,5 @@
 
+from source.factory import AnalysisDirectory
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio
@@ -189,7 +190,7 @@ class Plots:
         return filename
 
     @staticmethod
-    def plot_and_save_temperature(coil_length, directory, temperature_profile_1d, iteration, time_step, filename="Temperature_Data.txt"):
+    def plot_and_save_temperature(coil_length, temperature_profile_1d, iteration, time_step, filename="Temperature_Data.txt", directory=AnalysisDirectory.get_directory()):
         """
         Plots and saves temperature disitribution
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]

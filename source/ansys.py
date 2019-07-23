@@ -1,82 +1,36 @@
 
 import os
-from ansys_table import Table
 from ansys_corba import CORBA
+from source.factory import AnalysisDirectory
+from source.ansys_input import AnsysInput
 
 
-class Commands(object):
+class AnsysCommands:
 
-    def __init__(self, directory):
+    def __init__(self):
         """
         :param directory: analysis_directory as string
         """
-        self.analysis_directory = directory
+        self.analysis_directory = AnalysisDirectory().get_directory()
         os.chdir(self.analysis_directory)
         with open('aaS_MapdlID.txt', 'r') as f:
             aasMapdlKey = f.read()
         self.mapdl = CORBA.ORB_init().string_to_object(aasMapdlKey)
 
     @staticmethod
-    def create_variable_file_1d(division, npoints, coil_length):
-        """
-        Creates an input file with parameters used by ANSYS
-        :param division: number of elements as integer
-        :param npoints: number of nodes as integer
-        :param coil_length: length of the 1D domain as float
-        """
-        filename = os.getcwd()
-        filename += '/Variable_Input'
-        extension = 'inp'
-        data = Table(filename, ext=('.' + extension))
-        data.write_text('/clear')
-        data.write_text('/title,quench_analysis')
-        data.write_text('/prep7')
-        data.write_text('/nerr,999999999999')
-        data.write_text('npoints =' + str(npoints))
-        data.write_text('division =' + str(division))
-        data.write_text('length =' + str(coil_length))
-        data.write_text('*cfopen,Process_Finished,txt')     # for reading purposes between ansys and python
-        data.write_text('*vwrite,1')
-        data.write_text('(1(ES16.7))')
-        data.write_text('*cfclose')
-
-    @staticmethod
-    def create_variable_file_2d(number_windings, max_nodes_cross_section, winding_length, winding_width,
-                                length_division, insulation_division, insulation_width, winding_division):
-        filename = os.getcwd()
-        filename += '/Variable_Input'
-        extension = 'inp'
-        data = Table(filename, ext=('.' + extension))
-        data.write_text('/clear')
-        data.write_text('/title,quench_analysis')
-        data.write_text('/prep7')
-        data.write_text('/nerr,999999999999')
-        data.write_text('number_windings =' + str(number_windings))
-        data.write_text('max_nodes_cross_section =' + str(max_nodes_cross_section))
-        data.write_text('winding_length =' + str(winding_length))
-        data.write_text('winding_width =' + str(winding_width))
-        data.write_text('insulation_width = ' + str(insulation_width))
-        data.write_text('length_division =' + str(length_division))
-        data.write_text('insulation_division =' + str(insulation_division))
-        data.write_text('winding_division =' + str(winding_division))
-        data.write_text('*cfopen,Process_Finished,txt')  # for reading purposes between ansys and python
-        data.write_text('*vwrite,1')
-        data.write_text('(1(ES16.7))')
-        data.write_text('*cfclose')
-
-    def wait_python(self, filename, file_length=1):
+    def wait_python(filename, file_length=1, directory=AnalysisDirectory().get_directory()):
         """
         Makes Python wait until process in ANSYS is finished
         :param filename: filename as string given by ANSYS when it finishes processing
         :param file_length: number of rows in filename as integer
         """
         full_filename = "{}.".format(filename)
-        full_path = "{}\\{}".format(self.analysis_directory, full_filename)
+        full_path = "{}\\{}".format(directory, full_filename)
         exists = False
         while exists is False:
             exists = os.path.isfile(full_path)
-            if exists and self.file_length(full_filename) == file_length:
-                os.chdir(self.analysis_directory)
+            if exists and AnsysInput.file_length(full_filename) == file_length:
+                os.chdir(directory)
                 f = open('Process_Finished.txt', 'r')
                 # print("file_input = {}".format(f.read()))
                 file_input = int(float(f.read()))
@@ -88,25 +42,18 @@ class Commands(object):
             else:
                 exists = False
 
-    def delete_file(self, filename):
+    @staticmethod
+    def delete_file(filename, directory=AnalysisDirectory().get_directory()):
         """
         Deletes file in directory
         :param filename: filename to delete as string
         """
         full_filename = "{}.".format(filename)
-        full_path = "{}\\{}".format(self.analysis_directory, full_filename)
+        full_path = "{}\\{}".format(directory, full_filename)
         if os.path.isfile(full_path):
             os.remove(full_path)
         else:
             print("Error: {} file not found".format(full_filename))
-
-    def file_length(self, filename):
-        """
-        Reads number of rows in file
-        :param filename: filename to read as string
-        """
-        myfile = open(filename)
-        return int(len(myfile.readlines()))
 
     def select_nodes_list(self, nodes_list):
         """
@@ -163,8 +110,6 @@ class Commands(object):
         print(self.mapdl.executeCommandToString("cp,next,{},all".format(dof)))
 
     def couple_interface(self, dof):
-        # self.allsel()
-        # self.allsel_below(domain="area")
         print(self.mapdl.executeCommandToString("cpintf,{},".format(dof)))
 
     # restart commands
