@@ -103,16 +103,33 @@ class AnalysisDirectory:
 
     @staticmethod
     def define_main_path():
-        return "C:\\gitlab\\steam-ansys-modelling\\source"
+        CWD = os.path.dirname(__file__)
+        # DIRECTORY = os.path.join(CWD, 'nodes_search')
+        # return "C:\\gitlab\\steam-ansys-modelling\\source"
+        return CWD
 
     @staticmethod
     def directory_1d():
-        return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
+        source = AnalysisDirectory.define_main_path()
+        path = os.path.join(source, 'APDL', '1D')
+        # directory = os.path.join(apdl_dir, '1D')
+        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
+        return path
 
     @staticmethod
     def directory_2d():
-        return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\2D"
+        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\2D"
+        source = AnalysisDirectory.define_main_path()
+        path = os.path.join(source, 'APDL', '2D')
+        # directory = os.path.join(apdl_dir, '1D')
+        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
+        return path
 
     @staticmethod
     def directory_3d():
-        return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D"
+        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D"
+        source = AnalysisDirectory.define_main_path()
+        path = os.path.join(source, 'APDL', '3D')
+        # directory = os.path.join(apdl_dir, '1D')
+        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
+        return path
