@@ -55,8 +55,8 @@ ans.modify_material_number(material_number=1)
 # couple nodes, not for 1D analysis
 if AnalysisBuilder().get_dimensionality() != "1D":
     # couple interfaces between insulation and windings
-    ans.allsel()
-    ans.couple_interface(dof="temp")
+    # ans.allsel()
+    # ans.couple_interface(dof="temp")
 
     nodes_to_couple_windings_list = coil_geo.create_node_list_to_couple_windings()
     for nodes_list in nodes_to_couple_windings_list:
@@ -73,7 +73,7 @@ ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperatur
 # set initial quench temperature
 ans.select_nodes_for_multiple_dimensions(x_down_node=quench_fronts[0].x_down_node,
                                          x_up_node=quench_fronts[0].x_up_node, class_geometry=coil_geo)
-ans.set_quench_temperature(q_temperature=9.5)   # tutaj mamy blad !!!
+ans.set_quench_temperature(q_temperature=9.5)
 
 # set constant inflow current
 ans.select_nodes_for_current_for_multiple_dimensions(class_geometry=coil_geo)

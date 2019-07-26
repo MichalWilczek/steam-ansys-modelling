@@ -224,7 +224,7 @@ class AnsysCommands:
         self.mapdl.executeCommand("nsel,s,node,,{},{}".format(node_down, node_up))
 
     def select_elem_from_nodes(self):
-        self.mapdl.executeCommand("esln,s,0,all")
+        self.mapdl.executeCommand("esln,s,1,all")
 
     def allsel(self):
         print(self.mapdl.executeCommandToString("allsel"))
@@ -320,7 +320,7 @@ class AnsysCommands:
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
-        # print(self.mapdl.executeCommandToString('deltim,0.0005,0.0005,0.01'))
+        print(self.mapdl.executeCommandToString('deltim,0.00005,0.00005,0.0001'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
 
     # postprocessor commands

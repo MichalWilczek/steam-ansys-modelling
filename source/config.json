@@ -1,6 +1,6 @@
 
 {
-    "dimensionality": "1D",
+    "dimensionality": "2D",
     "filename_nodal_position": "Node_Position.txt",
     "filename_nodal_temperature": "Temperature_Data.txt",
 
@@ -13,12 +13,12 @@
     "total_time": 0.1,
     "time_division": 50.0,
 
-    "current": 10,
+    "current": 100,
     "initial_temperature": 1.9,
 
     "winding_plane_max_number_nodes": 5,
     "transverse_dimension_winding": 0.00840,
     "transverse_dimension_insulation": 0.00101,
-    "transverse_division_winding": 2,
-    "transverse_division_insulation": 2
+    "transverse_division_winding": 4,
+    "transverse_division_insulation": 1
 }
