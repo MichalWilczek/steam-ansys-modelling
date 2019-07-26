@@ -55,7 +55,7 @@ class QuenchFront:
     def calculate_q_front_pos_down(self, t_step, min_length):
         """
         :param t_step: time step as float
-        :param max_length: max length of the coil as float
+        :param min_length: max length of the coil as float
         :return: quench front position in meters in lower direction as float
         """
         if self.x_down == min_length:
@@ -105,22 +105,23 @@ class QuenchFront:
         :return: lower quench front boundary as node number
         """
         if self.x_down_node is None:
-            self.x_down_node = SearchNodes(coil_length=coil_length).search_init_node(position=self.x_down)
+            self.x_down_node = SearchNodes.search_init_node(position=self.x_down, coil_length=coil_length)
         else:
-            self.x_down_node = SearchNodes(coil_length=coil_length).search_node_down(right=self.x_down_previous_node, quench_length=self.x_down)
+            self.x_down_node = SearchNodes.search_node_down(right=self.x_down_previous_node, quench_length=self.x_down, coil_length=coil_length)
         self.x_down_previous_node = self.x_down_node
         return self.x_down_node
 
     def front_up_to_node(self, coil_length):
         """
+        :param coil_length:
         :return: upper quench front boundary as node number
         """
         if self.x_up_node is None:
             # requires less computing power but x_down_node needs to be calculated first
-            self.x_up_node = SearchNodes(coil_length=coil_length).search_node_up(left=self.x_down_node, quench_length=self.x_up)
+            self.x_up_node = SearchNodes.search_node_up(left=self.x_down_node, quench_length=self.x_up, coil_length=coil_length)
             # optional method independent of x_down node:
             # self.x_up_node = SearchNodes().search_init_node(position=self.x_up)
         else:
-            self.x_up_node = SearchNodes(coil_length=coil_length).search_node_up(left=self.x_up_previous_node, quench_length=self.x_up)
+            self.x_up_node = SearchNodes.search_node_up(left=self.x_up_previous_node, quench_length=self.x_up, coil_length=coil_length)
         self.x_up_previous_node = self.x_up_node
         return self.x_up_node

@@ -5,20 +5,30 @@ from source.factory import AnalysisDirectory
 from source.factory import AnalysisBuilder
 
 
+def file_length(filename, analysis_directory):
+    """
+    :param filename: filename with extension as string
+    :param analysis_directory: string
+    :return: number of rows in a file as integer
+    """
+    os.chdir(analysis_directory)
+    with open(filename) as myfile:
+        return int(len(myfile.readlines()))
+
 class Geometry:
 
     def __init__(self):
-        self.coil_geometry = self.create_geometry()
-
-    def create_geometry(self):
         dimension = AnalysisBuilder().get_dimensionality()
+        print("________________ \nGeometry is being uploaded...")
         if dimension == "1D":
-            return self.length_coil()
+            self.coil_geometry = self.length_coil()
         elif dimension == "2D":
-            self.create_node_dict_for_each_winding()
-            return self.create_1d_imaginary_coil_length()
+            self.create_1d_imaginary_coil_length()
+            self.winding_node_dict = self.create_node_dict_for_each_winding()
+            self.coil_geometry = self.coil_length_1d
         else:
             raise ValueError(dimension)
+        print("Geometry uploaded... \n________________")
 
     # methods for 1D analysis
     @staticmethod
@@ -48,9 +58,9 @@ class Geometry:
         """
         Creates imaginary 1D coil length based on files: "Winding[number)" and "Node_Position"
         """
-        self.files_in_directory = Geometry.search_files_names_in_directory(directory=AnalysisDirectory.get_directory())
-        self.list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=self.files_in_directory)
-        self.dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=self.list_windings_nodes, directory=AnalysisDirectory.get_directory())
+        files_in_directory = Geometry.search_files_names_in_directory(directory=AnalysisDirectory.get_directory())
+        list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
+        self.dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=AnalysisDirectory.get_directory())
         self.file_node_position = Geometry.load_file_with_winding_nodes_position(directory=AnalysisDirectory.get_directory(), filename="Node_Position.txt")
         self.center_plane_position = Geometry.calculate_windings_lengths(position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
         self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position)
@@ -61,7 +71,7 @@ class Geometry:
         """
         Creates dictionary with sorted list of node numbers belonging to each winding separately
         """
-        self.winding_node_dict = {}
+        winding_node_dict = {}
         for key in self.dict_winding_nodes:
             node_list = []
             value = self.dict_winding_nodes[key]
@@ -71,7 +81,8 @@ class Geometry:
                     if node_number != 0.0 or node_number != 0:
                         node_list.append(int(node_number))
             node_list.sort()
-            self.winding_node_dict[key] = node_list
+            winding_node_dict[key] = node_list
+        return winding_node_dict
 
     # functions for objects creation inside of Class
     @staticmethod
@@ -233,6 +244,10 @@ class Geometry:
         coil_temperature_1d = self.map_3d_max_temperature_into_1d_cable(temperature_profile=temperature_profile)
         return coil_temperature_1d
 
+    def load_1d_temperature(self, directory, npoints, filename="Temperature_Data.txt"):
+        return Geometry.load_file(analysis_directory=directory, npoints=npoints, filename=filename,
+                                  file_lines_length=npoints)
+
     @staticmethod
     def translate_3d_domain_into_1d_cable(coil_data, winding_set):
         """
@@ -274,7 +289,8 @@ class Geometry:
             node_temperature_array = np.zeros((len(node_list_for_imaginary_node), 2))
             for j in range(len(node_list_for_imaginary_node)):
                 node_temperature_array[j, 0] = node_list_for_imaginary_node[j]
-                node_temperature_array[j, 1] = temperature_profile[np.where(temperature_profile[:, 0] == node_list_for_imaginary_node[j])][:, 1]
+                node_temperature_array[j, 1] = temperature_profile[np.where(temperature_profile[:, 0] ==
+                                                                            node_list_for_imaginary_node[j])][:, 1]
             imaginary_1d_temperature[i, 0] = self.node_map_sorted[i, 0]
             imaginary_1d_temperature[i, 1] = np.max(node_temperature_array[:, 1])
         return imaginary_1d_temperature
@@ -288,7 +304,8 @@ class Geometry:
         """
         imaginary_1d_node_set = self.coil_data[:, 2]
         imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
-        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) & (imaginary_1d_node_set[:] <= x_up_node)]
+        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) &
+                                           (imaginary_1d_node_set[:] <= x_up_node)]
         real_nodes_list = []
         for i in range(len(quenched_coil_set)):
             temporary_key = quenched_coil_set[i, 0]
@@ -312,23 +329,13 @@ class Geometry:
         node_index_down = 0
         node_index_up = 0
         while node_index_up < len(real_nodes_list):
-            while node_index_up < len(real_nodes_list)-1 and real_nodes_list[node_index_up+1]-real_nodes_list[node_index_up] == 1:
+            while node_index_up < len(real_nodes_list)-1 \
+                    and real_nodes_list[node_index_up+1]-real_nodes_list[node_index_up] == 1:
                 node_index_up += 1
             nodes_selection_list.append([real_nodes_list[node_index_down], real_nodes_list[node_index_up]])
             node_index_down = node_index_up + 1
             node_index_up += 1
         return nodes_selection_list
-
-    @staticmethod
-    def file_length(filename, analysis_directory):
-        """
-        :param filename: filename with extension as string
-        :param analysis_directory: string
-        :return: number of rows in a file as integer
-        """
-        os.chdir(analysis_directory)
-        with open(filename) as myfile:
-            return int(len(myfile.readlines()))
 
     @staticmethod
     def load_file(filename, file_lines_length, analysis_directory, npoints):
@@ -369,19 +376,17 @@ class Geometry:
             final_list.append(item)
         return final_list[0]
 
-    @staticmethod
-    def create_node_list_for_bf():
+    def create_node_list_for_bf(self):
         node_list_for_bf = {}
-        for key in Geometry().dict_winding_nodes:
-            value = Geometry().dict_winding_nodes[key]
+        for key in self.dict_winding_nodes:
+            value = self.dict_winding_nodes[key]
             first_plane_nodes = value[:, 0]
             last_plane_nodes = value[:, np.ma.size(value, axis=1)-1]
             node_list_for_bf[key] = [first_plane_nodes, last_plane_nodes]
         return node_list_for_bf
 
-    @staticmethod
-    def create_node_list_to_couple_windings():
-        node_list_for_bf = Geometry.create_node_list_for_bf()
+    def create_node_list_to_couple_windings(self):
+        node_list_for_bf = self.create_node_list_for_bf()
         coupling_node_list = []
         for i in range(len(node_list_for_bf)-1):
             one_coupling_node_list = []
@@ -397,9 +402,8 @@ class Geometry:
             coupling_node_list.append(one_coupling_node_list)
         return coupling_node_list
 
-    @staticmethod
-    def create_node_list_to_couple_interfaces():
-        node_list_for_bf = Geometry.create_node_list_for_bf()
+    def create_node_list_to_couple_interfaces(self):
+        node_list_for_bf = self.create_node_list_for_bf()
         node_list_to_unselect = []
         for i in range(len(node_list_for_bf)):
             for node in node_list_for_bf["winding"+str(i+1)][0]:
@@ -411,20 +415,18 @@ class Geometry:
         node_list_to_unselect.sort()
         return node_list_to_unselect
 
-    @staticmethod
-    def create_node_list_for_current():
+    def create_node_list_for_current(self):
         node_list_current = []
-        for key in Geometry().winding_node_dict:
-            value = Geometry().winding_node_dict[key]
+        for key in self.winding_node_dict:
+            value = self.winding_node_dict[key]
             for index in range(len(value)):
                 node_number = value[index]
                 node_list_current.append(node_number)
         node_list_current.sort()
         return node_list_current
 
-    @staticmethod
-    def create_node_list_for_ground():
-        node_list_for_bf = Geometry.create_node_list_for_bf()
+    def create_node_list_for_ground(self):
+        node_list_for_bf = self.create_node_list_for_bf()
         nodes_list_for_ground = []
         for node in node_list_for_bf["winding"+str(len(node_list_for_bf))][1]:
             if node != 0.0 and node != 0:

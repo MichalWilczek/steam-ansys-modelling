@@ -1,76 +1,90 @@
 
 import json
+import os
 
 
 class AnalysisBuilder:
 
-    def __init__(self):
-        self.input_parameters = AnalysisBuilder.load_parameters()
-
     @staticmethod
     def load_parameters(filename='config.json'):
+        os.chdir(AnalysisDirectory.define_main_path())
         with open(filename) as json_data_file:
             return json.load(json_data_file)
+    @staticmethod
+    def get_dimensionality():
+        return AnalysisBuilder.load_parameters()['dimensionality']
+    @staticmethod
+    def filename_nodal_position():
+        return AnalysisBuilder.load_parameters()['filename_nodal_position']
+    @staticmethod
+    def filename_nodal_temperature():
+        return AnalysisBuilder.load_parameters()['filename_nodal_temperature']
+    @staticmethod
+    def get_number_of_windings():
+        return AnalysisBuilder.load_parameters()['number_of_windings']
+    @staticmethod
+    def get_length_per_winding():
+        return AnalysisBuilder.load_parameters()['length_per_winding']
+    @staticmethod
+    def get_division_per_winding():
+        return AnalysisBuilder.load_parameters()['division_per_winding']
+    @staticmethod
+    def get_division_in_full_coil():
+        return AnalysisBuilder.load_parameters()['division_per_winding'] * \
+               AnalysisBuilder.load_parameters()['number_of_windings']
+    @staticmethod
+    def get_quench_init_pos():
+        return AnalysisBuilder.load_parameters()['quench_init_pos']
 
-    def get_dimensionality(self):
-        return self.input_parameters['dimensionality']
+    @staticmethod
+    def get_quench_init_length():
+        return AnalysisBuilder.load_parameters()['quench_init_length']
 
-    def filename_nodal_position(self):
-        return self.input_parameters['filename_nodal_position']
+    @staticmethod
+    def get_quench_init_x_down():
+        return AnalysisBuilder.load_parameters()['quench_init_pos'] - \
+               AnalysisBuilder.load_parameters()['quench_init_length']/2.0
 
-    def filename_nodal_temperature(self):
-        return self.input_parameters['filename_nodal_temperature']
+    @staticmethod
+    def get_quench_init_x_up():
+        return AnalysisBuilder.load_parameters()['quench_init_pos'] + \
+               AnalysisBuilder.load_parameters()['quench_init_length'] / 2.0
 
-    def get_number_of_windings(self):
-        return self.input_parameters['number_of_windings']
+    @staticmethod
+    def get_total_time():
+        return AnalysisBuilder.load_parameters()['total_time']
 
-    def get_length_per_winding(self):
-        return self.input_parameters['length_per_winding']
+    @staticmethod
+    def get_time_division():
+        return AnalysisBuilder.load_parameters()['time_division']
 
-    def get_division_per_winding(self):
-        return self.input_parameters['division_per_winding']
+    @staticmethod
+    def get_current():
+        return AnalysisBuilder.load_parameters()['current']
 
-    def get_division_in_full_coil(self):
-        return self.input_parameters['division_per_winding']*self.input_parameters['number_of_windings']
+    @staticmethod
+    def get_initial_temperature():
+        return AnalysisBuilder.load_parameters()['initial_temperature']
 
-    def get_quench_init_pos(self):
-        return self.input_parameters['quench_init_pos']
+    @staticmethod
+    def get_winding_plane_max_number_nodes():
+        return AnalysisBuilder.load_parameters()['winding_plane_max_number_nodes']
 
-    def get_quench_init_length(self):
-        return self.input_parameters['quench_init_length']
+    @staticmethod
+    def get_transverse_dimension_winding():
+        return AnalysisBuilder.load_parameters()['transverse_dimension_winding']
 
-    def get_quench_init_x_down(self):
-        return self.input_parameters['quench_init_pos']-self.input_parameters['quench_init_length']/2.0
+    @staticmethod
+    def get_transverse_dimension_insulation():
+        return AnalysisBuilder.load_parameters()['transverse_dimension_insulation']
 
-    def get_quench_init_x_up(self):
-        return self.input_parameters['quench_init_pos'] + self.input_parameters['quench_init_length'] / 2.0
+    @staticmethod
+    def get_transverse_division_winding():
+        return AnalysisBuilder.load_parameters()['transverse_division_winding']
 
-    def get_total_time(self):
-        return self.input_parameters['total_time']
-
-    def get_time_division(self):
-        return self.input_parameters['time_division']
-
-    def get_current(self):
-        return self.input_parameters['current']
-
-    def get_initial_temperature(self):
-        return self.input_parameters['initial_temperature']
-
-    def get_winding_plane_max_number_nodes(self):
-        return self.input_parameters['winding_plane_max_number_nodes']
-
-    def get_transverse_dimension_winding(self):
-        return self.input_parameters['transverse_dimension_winding']
-
-    def get_transverse_dimension_insulation(self):
-        return self.input_parameters['transverse_dimension_insulation']
-
-    def get_transverse_division_winding(self):
-        return self.input_parameters['transverse_division_winding']
-
-    def get_transverse_division_insulation(self):
-        return self.input_parameters['transverse_division_insulation']
+    @staticmethod
+    def get_transverse_division_insulation():
+        return AnalysisBuilder.load_parameters()['transverse_division_insulation']
 
 
 class AnalysisDirectory:

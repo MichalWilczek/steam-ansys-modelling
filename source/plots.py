@@ -1,5 +1,6 @@
 
 from source.factory import AnalysisDirectory
+import source.geometry as geometry
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio
@@ -7,15 +8,6 @@ import os
 
 
 class Plots:
-
-    @staticmethod
-    def file_length(filename):
-        """
-        Reads number of files in file
-        :param filename: filename to read as string
-        """
-        myfile = open(filename)
-        return int(len(myfile.readlines()))
 
     @staticmethod
     def plot_quench(coil_length, quench_fronts, time_step):
@@ -68,7 +60,8 @@ class Plots:
         return filename
 
     @staticmethod
-    def plot_and_save_quench(coil_length, quench_fronts, iteration, time_step):
+    def plot_and_save_quench(coil_length, quench_fronts, iteration, time_step,
+                             directory= AnalysisDirectory.get_directory()):
         """
         Plots and saves quench state plot
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -77,6 +70,7 @@ class Plots:
         :param fig: quench plot as plt.figure()
         :param iteration: simulation iteration as integer
         """
+        os.chdir(directory)
         fig = Plots.plot_quench(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
         filename = Plots.save_quench_plot(fig=fig, iteration=iteration)
         return filename
@@ -102,17 +96,13 @@ class Plots:
         :param npoints: number of nodes in defined geometry
         :param filename: filename as string, 'Temperature_Data.txt' set as default
         """
-        full_filename = "{}".format(filename)
-        full_path = "{}\\{}".format(directory, full_filename)
         temp_distr = None
         exists = False
         while exists is False:
-            exists = os.path.isfile(full_path)
-            if exists and Plots.file_length(full_filename) == npoints:
+            exists = os.path.isfile(directory+"\\."+filename)
+            if exists and geometry.file_length(filename, analysis_directory=directory) == npoints:
                 os.chdir(directory)
-                f = open(full_filename, 'r')
-                temp_distr = np.loadtxt(f)
-                f.close()
+                temp_distr = np.loadtxt(directory+"\\."+filename)
             else:
                 exists = False
         return temp_distr
@@ -130,30 +120,6 @@ class Plots:
             os.remove(full_path)
         else:
             print("Error: {} file not found".format(full_filename))
-
-    # @staticmethod
-    # def plot_temperature(coil_length, directory, filename, time_step):
-    #     """
-    #     Plots temperature distribution
-    #     :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
-    #     :param directory: analysis directory as string
-    #     :param filename: filename as string
-    #     :param time_step: time step as float
-    #     """
-    #     time_step = round(time_step, 4)
-    #     max_coil_node = coil_length[len(coil_length) - 1, 0]
-    #     temp_distr = Plots.load_file(directory=directory, npoints=max_coil_node, filename=filename)
-    #     length_node_temp_array = np.column_stack((coil_length, temp_distr[:, 1]))
-    #     fig = plt.figure()
-    #     ax = fig.add_subplot(111)
-    #     ax.set_xlabel('Position [m]')
-    #     ax.set_ylabel('Temperature [K]')
-    #     plt.title("Time step: {} s".format(time_step))
-    #     ax.plot(length_node_temp_array[:, 1], length_node_temp_array[:, 2])
-    #     plt.grid(True)
-    #     plt.show()
-    #     Plots.delete_file(directory=directory, filename=filename)
-    #     return fig
 
     @staticmethod
     def plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename):
