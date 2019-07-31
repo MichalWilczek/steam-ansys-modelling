@@ -121,3 +121,5 @@ class AnalysisDirectory(object):
         source = AnalysisDirectory.define_main_path()
         path = os.path.join(source, 'APDL', '3D')
         return path
+
+
