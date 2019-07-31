@@ -1,21 +1,26 @@
 
 import numpy as np
-from source.factory import AnalysisDirectory
+from source.factory import AnalysisDirectory, AnalysisBuilder
 
 
 class QuenchDetect:
 
     MAGNETIC_FIELD_STRENGTH = 2.88
 
-    def __init__(self, coil_length, npoints, directory=AnalysisDirectory.get_directory()):
+    def __init__(self, coil_length, npoints, directory=None):
         """
         :param coil_length:
         :param directory: analysis_directory as string
         :param npoints: number of nodes in geometry as integer
         """
         self.coil_length = coil_length
-        self.analysis_directory = directory
+        self.factory = AnalysisBuilder()
         self.npoints = npoints
+
+        if directory is None:
+            self.analysis_directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
+        else:
+            self.analysis_directory = directory
 
     def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field=MAGNETIC_FIELD_STRENGTH):
         """

@@ -3,133 +3,121 @@ import json
 import os
 
 
-class AnalysisBuilder:
+class AnalysisBuilder(object):
+
+    def __init__(self):
+        self.parameters = self.load_parameters()
 
     @staticmethod
     def load_parameters(filename='config.json'):
         os.chdir(AnalysisDirectory.define_main_path())
         with open(filename) as json_data_file:
             return json.load(json_data_file)
-    @staticmethod
-    def get_dimensionality():
-        return AnalysisBuilder.load_parameters()['dimensionality']
-    @staticmethod
-    def filename_nodal_position():
-        return AnalysisBuilder.load_parameters()['filename_nodal_position']
-    @staticmethod
-    def filename_nodal_temperature():
-        return AnalysisBuilder.load_parameters()['filename_nodal_temperature']
-    @staticmethod
-    def get_number_of_windings():
-        return AnalysisBuilder.load_parameters()['number_of_windings']
-    @staticmethod
-    def get_length_per_winding():
-        return AnalysisBuilder.load_parameters()['length_per_winding']
-    @staticmethod
-    def get_division_per_winding():
-        return AnalysisBuilder.load_parameters()['division_per_winding']
-    @staticmethod
-    def get_division_in_full_coil():
-        return AnalysisBuilder.load_parameters()['division_per_winding'] * \
-               AnalysisBuilder.load_parameters()['number_of_windings']
-    @staticmethod
-    def get_quench_init_pos():
-        return AnalysisBuilder.load_parameters()['quench_init_pos']
 
-    @staticmethod
-    def get_quench_init_length():
-        return AnalysisBuilder.load_parameters()['quench_init_length']
+    def get_dimensionality(self):
+        return self.parameters['dimensionality']
 
-    @staticmethod
-    def get_quench_init_x_down():
-        return AnalysisBuilder.load_parameters()['quench_init_pos'] - \
-               AnalysisBuilder.load_parameters()['quench_init_length']/2.0
+    def get_material_properties_type(self):
+        return self.parameters['nonlinear_material_properties']
 
-    @staticmethod
-    def get_quench_init_x_up():
-        return AnalysisBuilder.load_parameters()['quench_init_pos'] + \
-               AnalysisBuilder.load_parameters()['quench_init_length'] / 2.0
+    def filename_nodal_position(self):
+        return self.parameters['filename_nodal_position']
 
-    @staticmethod
-    def get_total_time():
-        return AnalysisBuilder.load_parameters()['total_time']
+    def filename_nodal_temperature(self):
+        return self.parameters['filename_nodal_temperature']
 
-    @staticmethod
-    def get_time_division():
-        return AnalysisBuilder.load_parameters()['time_division']
+    def get_number_of_windings(self):
+        return self.parameters['number_of_windings']
 
-    @staticmethod
-    def get_current():
-        return AnalysisBuilder.load_parameters()['current']
+    def get_length_per_winding(self):
+        return self.parameters['length_per_winding']
 
-    @staticmethod
-    def get_initial_temperature():
-        return AnalysisBuilder.load_parameters()['initial_temperature']
+    def get_division_per_winding(self):
+        return self.parameters['division_per_winding']
 
-    @staticmethod
-    def get_winding_plane_max_number_nodes():
-        return AnalysisBuilder.load_parameters()['winding_plane_max_number_nodes']
+    def get_division_in_full_coil(self):
+        return self.parameters['division_per_winding'] * self.parameters['number_of_windings']
 
-    @staticmethod
-    def get_transverse_dimension_winding():
-        return AnalysisBuilder.load_parameters()['transverse_dimension_winding']
+    def get_quench_init_pos(self):
+        return self.parameters['quench_init_pos']
 
-    @staticmethod
-    def get_transverse_dimension_insulation():
-        return AnalysisBuilder.load_parameters()['transverse_dimension_insulation']
+    def get_quench_init_length(self):
+        return self.parameters['quench_init_length']
 
-    @staticmethod
-    def get_transverse_division_winding():
-        return AnalysisBuilder.load_parameters()['transverse_division_winding']
+    def get_quench_init_x_down(self):
+        return self.parameters['quench_init_pos'] - self.parameters['quench_init_length']/2.0
 
-    @staticmethod
-    def get_transverse_division_insulation():
-        return AnalysisBuilder.load_parameters()['transverse_division_insulation']
+    def get_quench_init_x_up(self):
+        return self.parameters['quench_init_pos'] + self.parameters['quench_init_length'] / 2.0
+
+    def get_total_time(self):
+        return self.parameters['total_time']
+
+    def get_time_division(self):
+        return self.parameters['time_division']
+
+    def get_current(self):
+        return self.parameters['current']
+
+    def get_initial_temperature(self):
+        return self.parameters['initial_temperature']
+
+    def get_winding_plane_max_number_nodes(self):
+        return self.parameters['winding_plane_max_number_nodes']
+
+    def get_transverse_dimension_winding(self):
+        return self.parameters['transverse_dimension_winding']
+
+    def get_transverse_dimension_insulation(self):
+        return self.parameters['transverse_dimension_insulation']
+
+    def get_transverse_division_winding(self):
+        return self.parameters['transverse_division_winding']
+
+    def get_transverse_division_insulation(self):
+        return self.parameters['transverse_division_insulation']
 
 
-class AnalysisDirectory:
+class AnalysisDirectory(object):
 
     @staticmethod
-    def get_directory():
-        dimension = AnalysisBuilder().get_dimensionality()
+    def get_directory(dimension):
         if dimension == "1D":
-            return AnalysisDirectory().directory_1d()
+            return AnalysisDirectory.directory_1d()
+        elif dimension == "1D_1D":
+            return AnalysisDirectory.directory_1d_1d()
         elif dimension == "2D":
-            return AnalysisDirectory().directory_2d()
+            return AnalysisDirectory.directory_2d()
         elif dimension == "3D":
-            return AnalysisDirectory().directory_3d()
+            return AnalysisDirectory.directory_3d()
         else:
             raise ValueError(dimension)
 
     @staticmethod
     def define_main_path():
         CWD = os.path.dirname(__file__)
-        # DIRECTORY = os.path.join(CWD, 'nodes_search')
-        # return "C:\\gitlab\\steam-ansys-modelling\\source"
         return CWD
 
     @staticmethod
     def directory_1d():
         source = AnalysisDirectory.define_main_path()
         path = os.path.join(source, 'APDL', '1D')
-        # directory = os.path.join(apdl_dir, '1D')
-        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
+        return path
+
+    @staticmethod
+    def directory_1d_1d():
+        source = AnalysisDirectory.define_main_path()
+        path = os.path.join(source, 'APDL', '1D_1D')
         return path
 
     @staticmethod
     def directory_2d():
-        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\2D"
         source = AnalysisDirectory.define_main_path()
         path = os.path.join(source, 'APDL', '2D')
-        # directory = os.path.join(apdl_dir, '1D')
-        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
         return path
 
     @staticmethod
     def directory_3d():
-        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D"
         source = AnalysisDirectory.define_main_path()
         path = os.path.join(source, 'APDL', '3D')
-        # directory = os.path.join(apdl_dir, '1D')
-        # return "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D"
         return path

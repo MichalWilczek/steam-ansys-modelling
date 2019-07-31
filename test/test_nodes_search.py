@@ -1,9 +1,30 @@
 
 import os
 import unittest
+import numpy as np
 from source.nodes_search import SearchNodes
-from source.geometry import Geometry
 
+
+# methods for 1D analysis
+def create_1d_coil_geometry(division, filename, directory):
+    """
+    Returns array with length of coil at each node starting from the 1st node
+    :param division: number of elements as integer
+    :param filename: filename as string
+    :param directory: analysis directory as string
+    """
+    os.chdir(directory)
+    npoints = division + 1
+    length_array = np.zeros((npoints, 2))
+    current_length = 0
+    array = np.loadtxt(filename)
+    for i in range(1, npoints):
+        current_length += ((array[i, 1] - array[i - 1, 1]) ** 2 + (array[i, 2] - array[i - 1, 2]) ** 2 +
+                           (array[i, 3] - array[i - 1, 3]) ** 2) ** 0.5
+        length_array[i - 1, 0] = i
+        length_array[i, 1] = current_length
+    length_array[npoints - 1, 0] = npoints
+    return length_array
 
 class TestSearchNodes(unittest.TestCase):
 
@@ -15,7 +36,7 @@ class TestSearchNodes(unittest.TestCase):
     SMALL_EPSILON = 0.0000001
 
     def setUp(self):
-        self.coil_geometry = Geometry.length_coil(division=100, filename="File_Position_101nodes_1m.txt", directory=TestSearchNodes.DIRECTORY)
+        self.coil_geometry = create_1d_coil_geometry(division=100, filename="File_Position_101nodes_1m.txt", directory=TestSearchNodes.DIRECTORY)
 
     # tests for function search_init_node
     def test_search_init_node_large_epsilon(self):

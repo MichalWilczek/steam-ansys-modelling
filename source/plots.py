@@ -1,5 +1,5 @@
 
-from source.factory import AnalysisDirectory
+from source.factory import AnalysisDirectory, AnalysisBuilder
 import source.geometry as geometry
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +7,11 @@ import imageio
 import os
 
 
-class Plots:
+class Plots(object):
+
+    def __init__(self):
+        self.factory = AnalysisBuilder()
+        self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
 
     @staticmethod
     def plot_quench(coil_length, quench_fronts, time_step):
@@ -59,9 +63,7 @@ class Plots:
         fig.savefig(filename)
         return filename
 
-    @staticmethod
-    def plot_and_save_quench(coil_length, quench_fronts, iteration, time_step,
-                             directory= AnalysisDirectory.get_directory()):
+    def plot_and_save_quench(self, coil_length, quench_fronts, iteration, time_step):
         """
         Plots and saves quench state plot
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -70,13 +72,13 @@ class Plots:
         :param fig: quench plot as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        os.chdir(directory)
+        os.chdir(self.directory)
         fig = Plots.plot_quench(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
         filename = Plots.save_quench_plot(fig=fig, iteration=iteration)
         return filename
 
     @staticmethod
-    def create_video(plot_array, filename, duration=0.05):
+    def create_video(plot_array, filename, duration=0.2):
         """
         Creates gif from series of plots
         :param plot_array: list of plots as plt.figure()
@@ -155,8 +157,7 @@ class Plots:
         fig.savefig(filename)
         return filename
 
-    @staticmethod
-    def plot_and_save_temperature(coil_length, temperature_profile_1d, iteration, time_step, filename="Temperature_Data.txt", directory=AnalysisDirectory.get_directory()):
+    def plot_and_save_temperature(self, coil_length, temperature_profile_1d, iteration, time_step, filename="Temperature_Data.txt"):
         """
         Plots and saves temperature disitribution
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -166,7 +167,7 @@ class Plots:
         :param fig: temperature distribution as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        fig = Plots.plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename)
+        fig = Plots.plot_temperature(coil_length, self.directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
 

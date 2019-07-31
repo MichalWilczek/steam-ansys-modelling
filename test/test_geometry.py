@@ -8,3 +8,11 @@
 # class TestGeometry(unittest.TestCase):
 
 
+# directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D_Mapping_Input_Files"
+# geo_ansys = Geometry(file_directory=directory)
+#
+# temperature_profile = geo_ansys.load_temperature_and_map_onto_1d_cable(npoints=5736, directory=directory)
+# print(temperature_profile)
+#
+# list_real_nodes = geo_ansys.convert_imaginary_node_set_into_real_nodes(x_down_node=99, x_up_node=105)
+# print(list_real_nodes)

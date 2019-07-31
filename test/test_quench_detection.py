@@ -1,9 +1,32 @@
 
 import unittest
+import numpy as np
 import os
 from source.quench_detection import QuenchDetect
 from source.quench_velocity import QuenchFront
 from source.geometry import Geometry
+
+
+# methods for 1D analysis
+def create_1d_coil_geometry(division, filename, directory):
+    """
+    Returns array with length of coil at each node starting from the 1st node
+    :param division: number of elements as integer
+    :param filename: filename as string
+    :param directory: analysis directory as string
+    """
+    os.chdir(directory)
+    npoints = division + 1
+    length_array = np.zeros((npoints, 2))
+    current_length = 0
+    array = np.loadtxt(filename)
+    for i in range(1, npoints):
+        current_length += ((array[i, 1] - array[i - 1, 1]) ** 2 + (array[i, 2] - array[i - 1, 2]) ** 2 +
+                           (array[i, 3] - array[i - 1, 3]) ** 2) ** 0.5
+        length_array[i - 1, 0] = i
+        length_array[i, 1] = current_length
+    length_array[npoints - 1, 0] = npoints
+    return length_array
 
 
 class TestQuenchDetection(unittest.TestCase):
@@ -12,7 +35,7 @@ class TestQuenchDetection(unittest.TestCase):
     DIRECTORY = os.path.join(CWD, 'quench_detection')
 
     def setUp(self):
-        self.coil_geometry = Geometry.length_coil(division=100, filename="File_Position.txt", directory=TestQuenchDetection.DIRECTORY)
+        self.coil_geometry = create_1d_coil_geometry(division=100, filename="File_Position.txt", directory=TestQuenchDetection.DIRECTORY)
         self.quench_detect = QuenchDetect(coil_length=self.coil_geometry, directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
 
     def test_1_find_one_quench_zone(self):
