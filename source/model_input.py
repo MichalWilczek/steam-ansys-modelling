@@ -13,8 +13,7 @@ class ModelInput:
         :return: list of time steps
         """
         vector = []
-        i = total_time/time_division
-        while i <= total_time:
-            vector.append(i)
-            i += total_time/time_division
+        time_step = total_time/time_division
+        for i in range(1, int(time_division)+1):
+            vector.append(i*time_step)
         return vector

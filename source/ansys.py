@@ -49,7 +49,7 @@ class AnsysCommands(object):
         # added 30.07.2019
         data.write_text('/graphics,power')
         data.write_text('/show,png')
-        data.write_text('/units,si')
+        # data.write_text('/units,si')
 
     @staticmethod
     def wait_python(filename, directory, file_length=1):
@@ -106,6 +106,14 @@ class AnsysCommands(object):
         """
         for i in range(len(nodes_list)):
             self.mapdl.executeCommand("nsel,u,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1]))
+
+    def set_gaussian_initial_temperature_distribution(self, gaussian_temperature_distr):
+
+        self.allsel()
+        for i in range(len(gaussian_temperature_distr[:, 0])):
+            node_number = gaussian_temperature_distr[i, 0]
+            temperature = gaussian_temperature_distr[i, 1]
+            self.mapdl.executeCommandToString("ic,{},temp,{}".format(node_number, temperature))
 
     # general commands
     def select_nodes(self, node_down, node_up):
@@ -210,8 +218,9 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
-        print(self.mapdl.executeCommandToString('deltim,0.0025,0.0025,0.025'))
+        # print(self.mapdl.executeCommandToString('deltim,0.0025,0.0025,0.025'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
+        print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal integration (default) into backward Euler formulation
 
     # postprocessor commands
     def create_file(self, filename, extension):

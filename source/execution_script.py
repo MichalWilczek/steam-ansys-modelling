@@ -23,6 +23,9 @@ coil_geometry = coil_geo.coil_geometry
 min_coil_length = coil_geometry[0, 1]
 max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
 
+# ans.save_analysis()
+# ans.terminate_analysis()
+
 # user's time stepping vector
 time = ModelInput.linear_time_stepping()
 
@@ -61,8 +64,10 @@ for nodes_list in nodes_to_couple_windings_list:
 ans.enter_solver()
 ans.set_analysis_setting()
 ans.set_time_step(time_step=t, iteration=0)
-ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperature())
+# gaussian_temp_distribution = coil_geo.define_gaussian_temperature_distribution_array(coil_geometry)
+# ans.set_gaussian_initial_temperature_distribution(gaussian_temp_distribution)
 
+ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperature())
 # set initial quench temperature
 ans.select_nodes_in_analysis(x_down_node=quench_fronts[0].x_down_node, x_up_node=quench_fronts[0].x_up_node, class_geometry=coil_geo)
 ans.set_quench_temperature(q_temperature=20.0)
@@ -73,6 +78,9 @@ ans.set_current(node_number="all", value=AnalysisBuilder().get_current())
 
 # set ground
 ans.set_ground_in_analysis(class_geometry=coil_geo)
+
+ans.save_analysis()
+ans.terminate_analysis()
 
 # input solver ANSYS APDL file
 ans.input_solver()
@@ -96,7 +104,6 @@ quench_temperature_plots.append(temperature_plot)
 
 # start calculation after initial time step
 for i in range(1, len(time)):
-# for i in range(1, 3):
     ans.save_analysis()
     t = time[i]
 
@@ -136,7 +143,7 @@ for i in range(1, len(time)):
 
     # calculate quench propagation
     for qf in quench_fronts:
-        qf.calculate_quench_front_position(t_step=t, min_length=min_coil_length, max_length=max_coil_length)
+        qf.calculate_quench_front_position(t_step=time[i]-time[i-1], min_length=min_coil_length, max_length=max_coil_length)
 
     # plot temperature and quench
     temperature_plot = Plots.plot_and_save_temperature(coil_geometry, temperature_profile, iteration=i, time_step=t)

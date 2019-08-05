@@ -1,25 +1,36 @@
 
+
 {
-    "dimensionality": "1D_1D",
+    "dimensionality": "1D_1D_1D",
     "filename_nodal_position": "Node_Position.txt",
     "filename_nodal_temperature": "Temperature_Data.txt",
     "nonlinear_material_properties": "linear",
 
-    "number_of_windings": 5,
+    "division_long_side": 100,
+    "division_short_side": 30,
+    "division_radius": 25,
+
+    "number_of_windings": 9,
+    "number_of_windings_in_reel": 3,
+
+    "transverse_division_insulation": 4,
+    "transverse_dimension_winding": 0.000941,
+    "transverse_division_winding": 4,
+
     "length_per_winding": 1.0,
     "division_per_winding": 100,
 
-    "quench_init_pos": 0.9,
-    "quench_init_length": 0.1,
+    "quench_init_pos": 0.5,
+    "quench_init_length": 0.2,
     "total_time": 0.5,
-    "time_division": 20.0,
+    "time_division": 10.0,
 
-    "current": 100,
+    "current": 100.0,
     "initial_temperature": 1.9,
+    "initial_peak_temperature": 20.0,
 
     "winding_plane_max_number_nodes": 5,
-    "transverse_dimension_winding": 0.0941,
-    "transverse_dimension_insulation": 0.000101,
-    "transverse_division_winding": 4,
-    "transverse_division_insulation": 10
+    "transverse_dimension_insulation": 0.0
 }
+
+

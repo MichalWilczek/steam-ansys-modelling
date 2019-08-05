@@ -4,6 +4,7 @@ from source.geometry_2D import Geometry2D
 
 from source.ansys_1D import AnsysCommands1D
 from source.ansys_1D_1D import AnsysCommands1D1D
+from source.ansys_1D_1D_1D import AnsysCommands1D1D1D
 from source.ansys_2D import AnsysCommands2D
 from source.factory import AnalysisBuilder
 
@@ -14,7 +15,7 @@ class CaseFactory(AnalysisBuilder):
         dimensionality = self.get_dimensionality()
         if dimensionality == "1D":
             return Geometry1D()
-        elif dimensionality == "1D_1D":
+        elif dimensionality == "1D_1D" or dimensionality == "1D_1D_1D":
             return Geometry1D1D()
         elif dimensionality == "2D":
             return Geometry2D()
@@ -27,6 +28,8 @@ class CaseFactory(AnalysisBuilder):
             return AnsysCommands1D()
         elif dimensionality == "1D_1D":
             return AnsysCommands1D1D()
+        elif dimensionality == "1D_1D_1D":
+            return AnsysCommands1D1D1D()
         elif dimensionality == "2D":
             return AnsysCommands2D()
         else:

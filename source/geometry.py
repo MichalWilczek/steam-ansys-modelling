@@ -3,7 +3,31 @@ import os
 import numpy as np
 from source.factory import AnalysisDirectory
 from source.factory import AnalysisBuilder
+from source.quench_detection import QuenchDetect
+import math
+from source.plots import Plots
 
+
+# methods for 1D analysis
+def create_1d_coil_geometry(division, filename, directory):
+    """
+    Returns array with length of coil at each node starting from the 1st node
+    :param division: number of elements as integer
+    :param filename: filename as string
+    :param directory: analysis directory as string
+    """
+    os.chdir(directory)
+    npoints = division + 1
+    length_array = np.zeros((npoints, 2))
+    current_length = 0
+    array = np.loadtxt(filename)
+    for i in range(1, npoints):
+        current_length += ((array[i, 1] - array[i - 1, 1]) ** 2 + (array[i, 2] - array[i - 1, 2]) ** 2 +
+                           (array[i, 3] - array[i - 1, 3]) ** 2) ** 0.5
+        length_array[i - 1, 0] = i
+        length_array[i, 1] = current_length
+    length_array[npoints - 1, 0] = npoints
+    return length_array
 
 def file_length(filename, analysis_directory):
     """
@@ -195,3 +219,47 @@ class Geometry(object):
             final_list.append(item)
         return final_list[0]
 
+    def calculate_alpha(self):
+
+        temp_quench = QuenchDetect.calculate_critical_temperature()
+        temp_peak = self.factory.get_peak_initial_temperature()
+        temp_operating = self.factory.get_initial_temperature()
+        directional_quench_init_length = self.factory.get_quench_init_length()/2.0
+
+        log_n = math.log((temp_quench-temp_operating)/(temp_peak-temp_operating), math.e)
+        denominator = math.sqrt(-log_n)**(0.5)
+        alpha = directional_quench_init_length/denominator
+        return alpha
+
+    def calculate_node_gaussian_temperature(self, position):
+
+        alpha = self.calculate_alpha()
+        temp_peak = self.factory.get_peak_initial_temperature()
+        temp_operating = self.factory.get_initial_temperature()
+        quench_init_pos = self.factory.get_quench_init_pos()
+        node_temp = temp_operating + (temp_peak-temp_operating)*math.e**(-((position-quench_init_pos)/alpha)**2.0)
+        return node_temp
+
+    def define_gaussian_temperature_distribution_array(self, imaginary_1d_geometry):
+        """
+        Defines imaginary IC gaussian distribution temeperature for imaginary 1D coil geometry
+        :param imaginary_1d_geometry: 2-column numpy array; 1-imaginary node number, 2-node position in meters
+        """
+        gaussian_distribution_array = np.zeros((len(imaginary_1d_geometry[:, 0]), 2))
+
+        for i in range(len(imaginary_1d_geometry[:, 0])):
+            position = imaginary_1d_geometry[i, 1]
+            temp = self.calculate_node_gaussian_temperature(position=position)
+            gaussian_distribution_array[i, 0] = imaginary_1d_geometry[i, 0]
+            gaussian_distribution_array[i, 1] = temp
+        Plots.plot_gaussian_temperature_distribution(gaussian_distribution_array, imaginary_1d_geometry)
+        return gaussian_distribution_array
+
+
+# CWD = os.path.dirname(__file__)
+# DIRECTORY = os.path.join(CWD, 'nodes_search')
+# coil_geometry = create_1d_coil_geometry(division=100, filename="File_Position_101nodes_1m.txt", directory=DIRECTORY)
+# Geometry().define_gaussian_temperature_distribution_array(coil_geometry)
+#
+#
+# print(coil_geometry)

@@ -84,10 +84,6 @@ class Geometry1D1D(Geometry):
         """
         node_mapping = None
         for i in range(len(coil_data)):
-
-            # if i == 101:
-            #     print("Hello")
-
             winding_number = coil_data[i, 0]
             winding_plane = int(float(coil_data[i, 1]))
             imaginary_node = int(float(coil_data[i, 2]))
@@ -195,3 +191,20 @@ class Geometry1D1D(Geometry):
                 real_nodes_list.append(real_node_in_imaginary_node)
         real_nodes_list.sort()
         return real_nodes_list
+
+    # def set_initial_gaussian_temperature(self, imaginary_1d_coil_geometry):
+    #     """
+    #     :return:
+    #     """
+    #     gaussian_imaginary_temperature_profile = self.define_gaussian_temperature_distribution_array(imaginary_1d_coil_geometry)
+    #     for i in range(len(gaussian_imaginary_temperature_profile[0, :])):
+    #         dsf
+
+
+
+
+
+
+
+
+

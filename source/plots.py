@@ -1,10 +1,19 @@
 
 from source.factory import AnalysisDirectory, AnalysisBuilder
-import source.geometry as geometry
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 import os
+
+def file_length(filename, analysis_directory):
+    """
+    :param filename: filename with extension as string
+    :param analysis_directory: string
+    :return: number of rows in a file as integer
+    """
+    os.chdir(analysis_directory)
+    with open(filename) as myfile:
+        return int(len(myfile.readlines()))
 
 
 class Plots(object):
@@ -102,7 +111,7 @@ class Plots(object):
         exists = False
         while exists is False:
             exists = os.path.isfile(directory+"\\."+filename)
-            if exists and geometry.file_length(filename, analysis_directory=directory) == npoints:
+            if exists and file_length(filename, analysis_directory=directory) == npoints:
                 os.chdir(directory)
                 temp_distr = np.loadtxt(directory+"\\."+filename)
             else:
@@ -171,19 +180,29 @@ class Plots(object):
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
 
+    def save_list_to_file(self, my_list, filename):
+        os.chdir(self.directory)
+        with open(filename, 'w') as f:
+            for item in my_list:
+                f.write("%s\n" % item)
 
+    @staticmethod
+    def plot_gaussian_temperature_distribution(gaussian_distribution, coil_geometry):
+        # os.chdir(self.directory)
+        gaussian_plot_array = np.column_stack((coil_geometry[:, 1], gaussian_distribution[:, 1]))
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_xlabel('Position [m]')
+        ax.set_ylabel('Initial Temperature [K]')
+        plt.title("Initial temperature distribution")
+        ax.plot(gaussian_plot_array[:, 0], gaussian_plot_array[:, 1])
+        plt.grid(True)
+        plt.show()
 
+        filename = "initial_temperature_distribution.png"
+        fig.savefig(filename)
 
-
-
-
-
-
-
-
-
-
-
+        return fig
 
 
 

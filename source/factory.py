@@ -17,6 +17,24 @@ class AnalysisBuilder(object):
     def get_dimensionality(self):
         return self.parameters['dimensionality']
 
+    def get_peak_initial_temperature(self):
+        return self.parameters['initial_peak_temperature']
+
+    def get_initial_temperature(self):
+        return self.parameters['initial_temperature']
+
+    def get_division_long_side(self):
+        return self.parameters['division_long_side']
+
+    def get_division_short_side(self):
+        return self.parameters['division_short_side']
+
+    def get_division_radius(self):
+        return self.parameters['division_radius']
+
+    def get_number_of_windings_in_reel(self):
+        return self.parameters['number_of_windings_in_reel']
+
     def get_material_properties_type(self):
         return self.parameters['nonlinear_material_properties']
 
@@ -56,11 +74,11 @@ class AnalysisBuilder(object):
     def get_time_division(self):
         return self.parameters['time_division']
 
+    def get_time_step(self):
+        return self.parameters['total_time'] / self.parameters['time_division']
+
     def get_current(self):
         return self.parameters['current']
-
-    def get_initial_temperature(self):
-        return self.parameters['initial_temperature']
 
     def get_winding_plane_max_number_nodes(self):
         return self.parameters['winding_plane_max_number_nodes']
@@ -86,6 +104,8 @@ class AnalysisDirectory(object):
             return AnalysisDirectory.directory_1d()
         elif dimension == "1D_1D":
             return AnalysisDirectory.directory_1d_1d()
+        elif dimension == "1D_1D_1D":
+            return AnalysisDirectory.directory_1d_1d_1d()
         elif dimension == "2D":
             return AnalysisDirectory.directory_2d()
         elif dimension == "3D":
@@ -108,6 +128,12 @@ class AnalysisDirectory(object):
     def directory_1d_1d():
         source = AnalysisDirectory.define_main_path()
         path = os.path.join(source, 'APDL', '1D_1D')
+        return path
+
+    @staticmethod
+    def directory_1d_1d_1d():
+        source = AnalysisDirectory.define_main_path()
+        path = os.path.join(source, 'APDL', '1D_1D_1D')
         return path
 
     @staticmethod
