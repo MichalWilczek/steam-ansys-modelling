@@ -56,7 +56,7 @@ class QuenchDetect:
         """
         critical_temperature_0 = 9.2              # [K]
         critical_magnetic_field_0 = 14.5          # [T]
-        critical_temperature = critical_temperature_0*(1-magnetic_field/critical_magnetic_field_0)*0.59
+        critical_temperature = critical_temperature_0*(1.0-magnetic_field/critical_magnetic_field_0)**0.59
         return critical_temperature
 
     @staticmethod

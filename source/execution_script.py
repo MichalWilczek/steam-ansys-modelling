@@ -23,9 +23,6 @@ coil_geometry = coil_geo.coil_geometry
 min_coil_length = coil_geometry[0, 1]
 max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
 
-# ans.save_analysis()
-# ans.terminate_analysis()
-
 # user's time stepping vector
 time = ModelInput.linear_time_stepping()
 
@@ -64,8 +61,6 @@ for nodes_list in nodes_to_couple_windings_list:
 ans.enter_solver()
 ans.set_analysis_setting()
 ans.set_time_step(time_step=t, iteration=0)
-# gaussian_temp_distribution = coil_geo.define_gaussian_temperature_distribution_array(coil_geometry)
-# ans.set_gaussian_initial_temperature_distribution(gaussian_temp_distribution)
 
 ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperature())
 # set initial quench temperature
@@ -79,8 +74,8 @@ ans.set_current(node_number="all", value=AnalysisBuilder().get_current())
 # set ground
 ans.set_ground_in_analysis(class_geometry=coil_geo)
 
-ans.save_analysis()
-ans.terminate_analysis()
+# ans.save_analysis()
+# ans.terminate_analysis()
 
 # input solver ANSYS APDL file
 ans.input_solver()

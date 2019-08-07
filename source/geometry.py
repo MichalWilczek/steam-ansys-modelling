@@ -219,6 +219,11 @@ class Geometry(object):
             final_list.append(item)
         return final_list[0]
 
+
+
+
+
+    # gaussian temperature distribution - not needed anymore
     def calculate_alpha(self):
 
         temp_quench = QuenchDetect.calculate_critical_temperature()
@@ -254,7 +259,6 @@ class Geometry(object):
             gaussian_distribution_array[i, 1] = temp
         Plots.plot_gaussian_temperature_distribution(gaussian_distribution_array, imaginary_1d_geometry)
         return gaussian_distribution_array
-
 
 # CWD = os.path.dirname(__file__)
 # DIRECTORY = os.path.join(CWD, 'nodes_search')
