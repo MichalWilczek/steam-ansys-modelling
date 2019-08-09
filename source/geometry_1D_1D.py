@@ -23,6 +23,7 @@ class Geometry1D1D(Geometry):
         self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position, number_of_windings=self.factory.get_number_of_windings())
         self.coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
         self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
+        print("Hello")
 
     def retrieve_quenched_winding_numbers_from_quench_fronts(self, x_down_node, x_up_node):
 
@@ -44,6 +45,9 @@ class Geometry1D1D(Geometry):
         else:
             quenched_winding_numbers.append(winding_numbers[0])
         return quenched_winding_numbers
+
+    def test_function(self, x_down_node, x_up_node):
+
 
 
 

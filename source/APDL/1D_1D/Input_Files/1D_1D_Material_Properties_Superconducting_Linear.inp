@@ -1,0 +1,111 @@
+
+Strand_diameter = 0.0007            ! m
+
+Cu_density = 8960                   ! kg/m3
+G10_density = 1420                  ! kg/m3
+
+Cu_conductivity_value = 2000.0      !W/m*K
+Cu_heat_capacity_value = 50.0		    !J/kg*K
+
+Cu_resistivity_value = 2.5e-10      !Ohm*m
+non_quenched_resistivity = 1.0e-16  !Ohm*m
+
+! the values which should be applied
+G10_thermal_conductivity = 0.05		  !W/m*K
+G10_heat_capacity_value = 60.0		  !J/kg*K
+
+! the values which which initiate turn-2-turn propagation
+! G10_thermal_conductivity = 100.0		  !W/m*K
+! G10_heat_capacity_value = 50.0		  !J/kg*K
+
+! input parameters for material properties
+max_size = 500
+*dim,Cu_resistivity,table,max_size,1,1,temp
+*dim,Cu_conductivity,table,max_size,1,1,temp
+*dim,Cu_cp,table,max_size,1,1,temp
+*dim,Nb_Ti_cp,table,max_size,1,1,temp
+*dim,Wire_cp,table,max_size,1,1,temp
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!! Copper Resistivity !!!!!!!!!!!!!!!!!!!!!!!!!!!
+Cu_resistivity(0,1) = 0.0
+*do,i,1,max_size,1
+  Cu_resistivity(i,0) = i
+  Cu_resistivity(i,1) = Cu_resistivity_value
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!! Copper Thermal Conductivity !!!!!!!!!!!!!!!!!!!!
+Cu_conductivity(0,1) = 0.0
+*do,i,1,max_size,1
+  Cu_conductivity(i,0) = i
+  Cu_conductivity(i,1) = Cu_conductivity_value
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Copper Heat Capacity !!!!!!!!!!!!!!!!!!!!!!!!!!
+Cu_cp(0,1) = 0.0
+*do,i,1,max_size,1
+  Cu_cp(i,0) = i
+  Cu_cp(i,1) = Cu_heat_capacity_value
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!! Kapton Thermal Conductivity !!!!!!!!!!!!!!!!!!!!!!!!!!!
+*dim,kkap,table,max_size,1,1,temp
+kkap(0,1) = 0.0
+*do,i,1,max_size,1
+  kkap(i,0) = i
+  kkap(i,1) = G10_thermal_conductivity
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!! Kapton Heat Capacity !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+*dim,cpkap,table,max_size,1,1,temp
+cpkap(0,1) = 0.0
+*do,i,1,max_size,1
+  cpkap(i,0) = i
+  cpkap(i,1) = G10_heat_capacity_value
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!! Material Definition !!!!!!!!!!!!!!!!!!!!!!
+
+! element 1 - quenched zone
+! element 2 - superconducting zone, no heat generation
+! element 3 - insulation
+
+et,1,link68     ! thermo-electric element
+et,2,link68     ! thermo-electric element
+et,3,link33     ! thermal 1d conduction element
+
+pi = acos(-1)
+Strand_area = (pi/4)*Strand_diameter**2
+
+r,1,Strand_area
+r,2,Strand_area
+r,3,G10_element_area
+
+mp,dens,1,Cu_density ! to be changed
+mp,dens,2,Cu_density ! to be changed
+mp,dens,3,G10_density
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,kxx,1,,Cu_conductivity(i,1)
+  mpdata,kxx,2,,Cu_conductivity(i,1)
+  mpdata,kxx,3,,kkap(i,1)
+*enddo
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,c,1,,Cu_cp(i,1)
+  mpdata,c,2,,Cu_cp(i,1)
+  mpdata,c,3,,cpkap(i,1)  ! heat capacity of G10 (set constant by now)
+*enddo
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,rsvx,1,,Cu_resistivity(i,1)
+  mpdata,rsvx,2,,non_quenched_resistivity
+*enddo
+
+! if file input finished, create file - for communication with Python
+*cfopen,Process_Finished,txt
+*vwrite,1
+(1(ES16.7))
+*cfclose

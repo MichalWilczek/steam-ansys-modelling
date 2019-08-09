@@ -46,8 +46,8 @@ class Geometry(object):
         self.factory = AnalysisBuilder()
         self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
 
-    @staticmethod
-    def delete_repetitive_values_in_list():
+    # @staticmethod
+    # def delete_repetitive_values_in_list():
 
 
 

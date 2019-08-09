@@ -1,0 +1,72 @@
+
+allsel
+solve
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Post Analysis !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+allsel
+*get,maxnode,node,,num,max
+*get,numnode,node,,count
+
+*dim,node_Temp,array,numnode,2
+*vget,node_Temp(1,1),node,,nlist
+*vget,node_Temp(1,2),node,,temp,
+*mwrite,node_Temp,Temperature_Data,txt
+(2E20.10)
+
+*get,resistive_voltage,node,1,volt
+*cfopen,Resistive_Voltage,txt
+*vwrite,resistive_voltage
+(1(ES16.7))
+*cfclose
+
+! added 30.07.2019
+/post1
+
+/AUTO,1
+/DSCALE,1,OFF
+
+/PLOPTS,INFO,1
+/PLOPTS,LEG1,1
+/PLOPTS,LEG2,0
+/PLOPTS,LEG3,1
+/PLOPTS,FRAME,1
+/PLOPTS,TITLE,1
+/PLOPTS,MINM,1
+/PLOPTS,FILE,0
+/PLOPTS,WINS,1
+/PLOPTS,WP,0
+/PLOPTS,DATE,0
+/TRIAD,OFF
+
+/RGB,INDEX,100,100,100, 0
+/RGB,INDEX, 80, 80, 80,13
+/RGB,INDEX, 60, 60, 60,14
+/RGB,INDEX, 0, 0, 0,15
+
+allsel
+
+/SHOW,png,,0
+plnsol,temp
+/GFILE,1000,
+/REPLOT
+/SHOW,CLOSE
+/DEVICE,VECTOR,0
+/rename,Quench000,png,,STRCAT('Coil-Nodal-Temp',chrval(time_step)),png,
+/delete,Quench001,png
+
+/SHOW,png,,0
+plnsol,volt
+/GFILE,1000,
+/REPLOT
+/SHOW,CLOSE
+/DEVICE,VECTOR,0
+/rename,Quench000,png,,STRCAT('Coil-Nodal-Volt',chrval(time_step)),png,
+/delete,Quench001,png
+
+
+*cfopen,Process_Finished,txt
+*vwrite,1
+(1(ES16.7))
+*cfclose
+
+*del,node_Temp
