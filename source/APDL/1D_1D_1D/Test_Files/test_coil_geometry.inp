@@ -1,0 +1,221 @@
+/clear,all
+/prep7
+
+long_side = 0.41321       ! [m]
+short_side = 0.12681      ! [m]
+radius = (9+0.15)*0.001   ! [m]
+coupling_span = 0.005     ! [m]
+
+division_long_side = 100
+division_short_side = 30
+division_radius = 25
+
+kp_long_side = division_long_side + 1
+kp_short_side = division_short_side + 1
+kp_radius = division_radius + 1
+division_per_winding = 2*division_long_side+2*division_short_side+4*division_radius
+kp_per_winding = division_per_winding + 1
+
+! length_per_winding =1.0
+! division_per_winding =9
+elem_per_line =1
+transverse_dimension_winding =0.00941
+transverse_division_insulation =1
+transverse_dimension_insulation =0.000101
+G10_element_diameter =1.0
+
+number_of_windings = 9
+number_of_windings_in_reel = 3
+reel_number = 1
+is_reel_number_odd = mod(reel_number, 2)
+
+
+!!!!!!!!!!!!!!!!!!!!!! Material Definition !!!!!!!!!!!!!!!!!!!!!!
+! element 1 - quenched zone
+! element 2 - superconducting zone, no heat generation
+! element 3 - insulation
+
+et,1,link68     ! thermo-electric element
+et,2,link68     ! thermo-electric element
+et,3,link33     ! thermal 1d conduction element
+
+
+kp_per_winding = division_per_winding+1
+! feature which could be added
+elem_per_line = 1
+x=0
+y=0
+z=0
+r_incr = 0
+
+winding_counter = 1
+csys,0
+clocal,12,cylin,long_side,0,0
+csys,0
+clocal,14,cylin,long_side,short_side,0
+csys,0
+clocal,16,cylin,0,short_side,0
+csys,0
+clocal,18,cylin,0,0,0
+csys,0
+
+
+*do,a,1,number_of_windings/number_of_windings_in_reel
+
+  *do,i,1,number_of_windings_in_reel
+
+    allsel
+    *get,kp_first_winding_i,kp,,count
+    kp_first_winding_i = kp_first_winding_i + 1
+
+    csys,0
+    clocal,11,cart,coupling_span,-radius,0
+    csys,11
+    *do,j,1,kp_long_side-1,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,(j-1)*(long_side-coupling_span)/(division_long_side),0,z
+    *enddo
+
+    csys,12
+    *do,j,1,kp_radius-1,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,radius,(j-1)*(90)/(division_radius)-90,z
+    *enddo
+
+    csys,0
+    clocal,13,cart,long_side+radius,0,0,90,0,0
+    csys,13
+    *do,j,1,kp_short_side-1,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,(j-1)*(short_side)/(division_short_side),y,z
+    *enddo
+
+    csys,14
+    *do,j,1,kp_radius-1,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,radius,(j-1)*(90)/(division_radius),z
+    *enddo
+
+    csys,0
+    clocal,15,cart,long_side,radius+short_side,0,180,0,0
+    *do,j,1,kp_long_side-1,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,(j-1)*(long_side)/(division_long_side),y,z
+    *enddo
+
+    csys,16
+    *do,j,1,kp_radius-1,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,radius,(j-1)*(90)/(division_radius)+90,z
+    *enddo
+
+    csys,0
+    clocal,17,cart,-radius,short_side,0,270,0,0
+    csys,17
+    *do,j,1,kp_short_side-1,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,(j-1)*(short_side)/(division_short_side),y,z
+    *enddo
+
+    csys,18
+    *do,j,1,kp_radius,1
+      allsel
+      *get,knum,kp,,count
+      k,knum+1,radius,(j-1)*(90)/(division_radius)-180,z
+    *enddo
+
+    allsel
+    *get,kp_last_winding_i,kp,,count
+    allsel
+    *get,knum,kp,,count
+    line_counter = knum - division_per_winding
+    type,2
+    real,2
+    mat,2
+    *do,k,line_counter,line_counter+division_per_winding-1,1
+      l,k,k+1,elem_per_line
+      allsel
+      *get,lnum,line,,count
+      lmesh,lnum
+    *enddo
+    allsel
+    *get,lnum,line,,count
+    lsel,s,line,,lnum+1-division_per_winding,lnum
+    allsel,below,line
+    cm,winding%winding_counter%,line
+
+    x = x
+    *if,is_reel_number_odd,ne,0,then
+      z = z + transverse_dimension_winding + transverse_dimension_insulation
+    *else
+      z = z - (transverse_dimension_winding + transverse_dimension_insulation)
+    *endif
+    y = y
+    winding_counter = winding_counter + 1
+  *enddo
+
+  ! winding_counter = winding_counter + 1
+  reel_number = reel_number + 1
+  is_reel_number_odd = mod(reel_number, 2)
+
+  *if,is_reel_number_odd,ne,0,then
+    ! z = z
+    z = z + transverse_dimension_winding + transverse_dimension_insulation
+  *else
+    z = z - (transverse_dimension_winding + transverse_dimension_insulation)
+  *endif
+  radius = radius + transverse_dimension_winding + transverse_dimension_insulation
+  r_incr = radius
+*enddo
+
+
+allsel
+kp_no_in_reel = 0
+*do,b,1,number_of_windings/number_of_windings_in_reel
+  *do,i,1,number_of_windings_in_reel-1
+    kp_number = ((i-1)*kp_per_winding)+ 1 + kp_no_in_reel
+    type,3
+    real,3
+    mat,3
+    *do,j,kp_number,kp_per_winding+kp_number-1,1
+      l,j,j+(kp_per_winding),transverse_division_insulation
+      allsel
+      *get,lnum,line,,count
+      lmesh,lnum
+    *enddo
+  *enddo
+  kp_no_in_reel = kp_no_in_reel + kp_per_winding*number_of_windings_in_reel
+*enddo
+
+
+allsel
+low_kp_number = 1
+high_kp_number = kp_per_winding*(number_of_windings_in_reel*2-1)+1
+
+low_kp_counter = low_kp_number
+high_kp_counter = high_kp_number
+
+*do,i,1,number_of_windings/number_of_windings_in_reel-1
+  *do,j,1,number_of_windings_in_reel
+    type,3
+    real,3
+    mat,3
+    *do,k,1,kp_per_winding,1
+      l,low_kp_number+(k-1),high_kp_number+(k-1),transverse_division_insulation
+      allsel
+      *get,lnum,line,,count
+      lmesh,lnum
+    *enddo
+    low_kp_number = low_kp_number + kp_per_winding
+    high_kp_number = high_kp_number - kp_per_winding
+  *enddo
+  low_kp_number = low_kp_counter + i*(kp_per_winding*number_of_windings_in_reel)
+  high_kp_number = high_kp_counter + i*(kp_per_winding*number_of_windings_in_reel)
+*enddo

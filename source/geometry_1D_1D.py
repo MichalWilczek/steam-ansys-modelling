@@ -46,7 +46,7 @@ class Geometry1D1D(Geometry):
             quenched_winding_numbers.append(winding_numbers[0])
         return quenched_winding_numbers
 
-    def test_function(self, x_down_node, x_up_node):
+    # def test_function(self, x_down_node, x_up_node):
 
 
 
