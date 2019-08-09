@@ -263,6 +263,14 @@ class Geometry1D1D(Geometry):
 # list_test = []
 #
 # Geo = Geometry1D1D()
+# set1 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(Geo.coil_data, x_down_node=158, x_up_node=650)
+# set2 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(Geo.coil_data, x_down_node=24, x_up_node=810)
+# list_test.append(set1)
+# list_test.append(set2)
+# print(list_test)
+
+
+
 # quench_dict = Geo.retrieve_winding_numbers_and_quenched_nodes(x_down_node=361, x_up_node=361)
 # print(quench_dict)
 
@@ -282,8 +290,7 @@ class Geometry1D1D(Geometry):
 
 
 
-# set1 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(x_down_node=158, x_up_node=650)
-# set2 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(x_down_node=24, x_up_node=810)
+
 #
 # list_test.append(set1)
 # list_test.append(set2)

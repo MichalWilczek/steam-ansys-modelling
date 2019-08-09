@@ -168,7 +168,7 @@ class Plots(object):
             self.voltage_plot.set_xlabel('Time [s]')
             self.voltage_plot.set_ylabel('Electric Potential [V]')
             self.voltage_plot.set_xlim(0, self.factory.get_total_time())
-            self.voltage_plot.set_ylim(0, 2.0)
+            self.voltage_plot.set_ylim(0, 1.0)
             self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
             plt.grid(True)
         else:

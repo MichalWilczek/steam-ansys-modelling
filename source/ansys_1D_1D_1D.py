@@ -62,8 +62,9 @@ class AnsysCommands1D1D1D(AnsysCommands):
             self.define_element_heat_capacity(element_number=element_number, value=g10_cp[j, 1])
 
     def input_winding_quench_material_properties(self, magnetic_field_map, winding_number):
-        magnetic_field = magnetic_field_map["winding"+str(winding_number+self.factory.get_number_of_windings())]
-        element_number = self.factory.get_number_of_windings() + winding_number + self.factory.get_number_of_windings()
+        self.enter_preprocessor()
+        magnetic_field = magnetic_field_map["winding"+str(winding_number)]
+        element_number = self.factory.get_number_of_windings() + winding_number
         mat = self.choose_material_repository()
         self.define_element_type(element_number=element_number, element_name="link68")
         equivalent_winding_area = mat.eq_winding_cu_area(AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
