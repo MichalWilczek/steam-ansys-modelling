@@ -99,27 +99,30 @@ for i in range(1, len(time)):
 
     # update new magnetic field map
     magnetic_map = ans.create_artificial_magnetic_field_map(CaseFactory.get_number_of_windings())
+    # create new non-resistive materials for coil dependent on magnetic field strength
+    ans.input_winding_non_quenched_material_properties(magnetic_map)
 
+    # create new resistive materials for coil dependent on magnetic field strength
     quenched_winding_list = []
     for qf in quench_fronts:
         # position transformation into nodes
         qf.convert_quench_front_to_nodes(coil_geometry)
         quenched_winding_list.append(coil_geometry.retrieve_quenched_winding_numbers_from_quench_fronts(
             x_down_node=qf.x_down_node, x_up_node=qf.x_up_node))
+    quenched_winding_list = coil_geo.remove_repetitive_values_from_list(coil_geo.make_one_list_from_list_of_lists(quenched_winding_list))
+    for winding in quenched_winding_list:
+        ans.input_winding_quench_material_properties(magnetic_map, winding_number=winding)
 
-
-
-
-
-        # set new material properties repository
-
-        # initial analysis definition
-        ans.enter_preprocessor()
-        ans.select_nodes_in_analysis(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node, class_geometry=coil_geo)
-        ans.select_elem_from_nodes()
-        ans.modify_material_type(element_number=1)
-        ans.modify_material_constant(constant_number=1)
-        ans.modify_material_number(material_number=1)
+    # set new material properties repository
+    for qf in quench_fronts:
+        quench_dict = coil_geo.retrieve_winding_numbers_and_quenched_nodes(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node)
+        for key in quench_dict:
+            winding_number = int(float(key[7:]))
+            ans.select_nodes_in_analysis_mag(winding_number=key, x_down_node=qf.x_down_node, x_up_node=qf.x_up_node, class_geometry=coil_geo)
+            ans.select_elem_from_nodes()
+            ans.modify_material_type(element_number=winding_number + CaseFactory.get_number_of_windings())
+            ans.modify_material_constant(constant_number=winding_number + CaseFactory.get_number_of_windings())
+            ans.modify_material_number(material_number=winding_number + CaseFactory.get_number_of_windings())
 
     ans.enter_solver()
     ans.restart_analysis()

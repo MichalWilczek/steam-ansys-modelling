@@ -23,36 +23,39 @@ class Geometry1D1D(Geometry):
         self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position, number_of_windings=self.factory.get_number_of_windings())
         self.coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
         self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
+        self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes(windings_lengths=self.center_plane_position, number_of_windings=self.factory.get_number_of_windings())
+
         print("Hello")
 
-    def retrieve_quenched_winding_numbers_from_quench_fronts(self, x_down_node, x_up_node):
+    def retrieve_winding_numbers_and_quenched_nodes(self, x_down_node, x_up_node):
+        quenched_winding_numbers = self.retrieve_quenched_winding_numbers_from_quench_fronts(self.coil_data, x_down_node, x_up_node)
+        dict_quenched_fronts = {}
+        if len(quenched_winding_numbers) == 1:
+            dict_quenched_fronts["winding"+str(quenched_winding_numbers[0])] = [x_down_node, x_up_node]
+        elif len(quenched_winding_numbers) == 2:
+            value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[0])]
+            last_node_of_winding = value[-1]
+            dict_quenched_fronts["winding" + str(quenched_winding_numbers[0])] = [x_down_node, last_node_of_winding]
 
-        windings = []
-        imaginary_1d_node_set = self.coil_data[:, 2]
-        imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
-        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) &
-                                           (imaginary_1d_node_set[:] <= x_up_node)]
-        windings.append(quenched_coil_set[0, 0])
-        windings.append(quenched_coil_set[len(quenched_coil_set[:, 0])-1, 0])
-        winding_numbers = []
-        for name in windings:
-            number = int(float(name[7:]))
-            winding_numbers.append(number)
-        quenched_winding_numbers = []
-        if winding_numbers[1] - winding_numbers[0] >= 1:
-            for i in range(winding_numbers[0], winding_numbers[1]+1):
-                quenched_winding_numbers.append(i)
-        else:
-            quenched_winding_numbers.append(winding_numbers[0])
-        return quenched_winding_numbers
+            value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[1])]
+            first_node_of_winding = value[0]
+            dict_quenched_fronts["winding" + str(quenched_winding_numbers[1])] = [first_node_of_winding, x_up_node]
 
-    # def test_function(self, x_down_node, x_up_node):
+        elif len(quenched_winding_numbers) > 2:
+            value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[0])]
+            last_node_of_winding = value[-1]
+            dict_quenched_fronts["winding" + str(quenched_winding_numbers[0])] = [x_down_node, last_node_of_winding]
 
+            for i in range(1, len(quenched_winding_numbers)-1):
+                value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[i])]
+                last_node_of_winding = value[-1]
+                first_node_of_winding = value[0]
+                dict_quenched_fronts["winding" + str(quenched_winding_numbers[i])] = [first_node_of_winding, last_node_of_winding]
 
-
-
-
-
+            value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[len(quenched_winding_numbers)-1])]
+            first_node_of_winding = value[0]
+            dict_quenched_fronts["winding" + str(len(quenched_winding_numbers))] = [first_node_of_winding, x_up_node]
+        return dict_quenched_fronts
 
     def create_node_dict_for_each_winding(self):
         """
@@ -201,6 +204,30 @@ class Geometry1D1D(Geometry):
         coil_temperature_1d = self.map_temperature_into_1d_cable(temperature_profile=temperature_profile)
         return coil_temperature_1d
 
+    def convert_imaginary_nodes_set_into_real_nodes_1d_1d_winding_number(self, winding_number, x_down_node, x_up_node):
+        """
+        Returns list with real quenched nodes
+        :param x_down_node: quench down front node from imaginary set as integer
+        :param x_up_node: quench up front node from imaginary set as integer
+        :return: list of quenched real nodes
+        """
+        imaginary_1d_node_set = self.coil_data[:, 2]
+        imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
+        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) &
+                                           (imaginary_1d_node_set[:] <= x_up_node)]
+        real_nodes_list = []
+        for i in range(len(quenched_coil_set)):
+
+            key = quenched_coil_set[i, 0]
+            index = int(float(quenched_coil_set[i, 1])) - 1
+            if key == winding_number:
+                real_node_in_imaginary_node = self.dict_winding_nodes[key][index]
+                if real_node_in_imaginary_node != 0.0 or real_node_in_imaginary_node != 0:
+                    real_nodes_list.append(real_node_in_imaginary_node)
+        real_nodes_list.sort()
+        return real_nodes_list
+
+    # old method which doesn't take into consideration magnetic field variation
     def convert_imaginary_nodes_set_into_real_nodes_1d_1d(self, x_down_node, x_up_node):
         """
         Returns list with real quenched nodes
@@ -222,6 +249,8 @@ class Geometry1D1D(Geometry):
         real_nodes_list.sort()
         return real_nodes_list
 
+
+
     # def set_initial_gaussian_temperature(self, imaginary_1d_coil_geometry):
     #     """
     #     :return:
@@ -231,9 +260,43 @@ class Geometry1D1D(Geometry):
     #         dsf
 
 
+# list_test = []
+#
+# Geo = Geometry1D1D()
+# quench_dict = Geo.retrieve_winding_numbers_and_quenched_nodes(x_down_node=361, x_up_node=361)
+# print(quench_dict)
 
-Geo = Geometry1D1D()
-Geo.retrieve_quenched_winding_numbers_from_quench_fronts(x_down_node=158, x_up_node=650)
+
+# for keys in quench_dict:
+#     qf = quench_dict[keys]
+#     # ans.select_nodes_in_analysis(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node, class_geometry=coil_geo)
+#     real_nodes = Geo.convert_imaginary_nodes_set_into_real_nodes_1d_1d_winding_number(winding_number=keys, x_down_node=qf[0], x_up_node=qf[1])
+
+# # initial analysis definition
+# ans.enter_preprocessor()
+# ans.select_nodes_in_analysis(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node, class_geometry=coil_geo)
+# ans.select_elem_from_nodes()
+# ans.modify_material_type(element_number=1)
+# ans.modify_material_constant(constant_number=1)
+# ans.modify_material_number(material_number=1)
+
+
+
+# set1 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(x_down_node=158, x_up_node=650)
+# set2 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(x_down_node=24, x_up_node=810)
+#
+# list_test.append(set1)
+# list_test.append(set2)
+# print(list_test)
+#
+# flat_list = Geo.make_one_list_from_list_of_lists(list_test)
+# print(flat_list)
+#
+# flat_list_without_repetitions = Geo.remove_repetitive_values_from_list(flat_list)
+# print(flat_list_without_repetitions)
+
+
+
 
 
 

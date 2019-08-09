@@ -46,10 +46,44 @@ class Geometry(object):
         self.factory = AnalysisBuilder()
         self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
 
-    # @staticmethod
-    # def delete_repetitive_values_in_list():
+    @staticmethod
+    def make_one_list_from_list_of_lists(list_of_lists):
+        flat_list = []
+        for list in list_of_lists:
+            for item in list:
+                flat_list.append(item)
+        return flat_list
 
+    @staticmethod
+    def remove_repetitive_values_from_list(mylist):
+        return list(dict.fromkeys(mylist))
 
+    @staticmethod
+    def retrieve_quenched_winding_numbers_from_quench_fronts(coil_data, x_down_node, x_up_node):
+        """
+        Returns number of windings that containt the given quench front
+        :param x_down_node: imaginary lower front of quench front as integer
+        :param x_up_node: imaginary upper front of quench front as integer
+        :return: list of integers indicating winding numbers
+        """
+        windings = []
+        imaginary_1d_node_set = coil_data[:, 2]
+        imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
+        quenched_coil_set = coil_data[(imaginary_1d_node_set[:] >= x_down_node) &
+                                           (imaginary_1d_node_set[:] <= x_up_node)]
+        windings.append(quenched_coil_set[0, 0])
+        windings.append(quenched_coil_set[len(quenched_coil_set[:, 0])-1, 0])
+        winding_numbers = []
+        for name in windings:
+            number = int(float(name[7:]))
+            winding_numbers.append(number)
+        quenched_winding_numbers = []
+        if winding_numbers[1] - winding_numbers[0] >= 1:
+            for i in range(winding_numbers[0], winding_numbers[1]+1):
+                quenched_winding_numbers.append(i)
+        else:
+            quenched_winding_numbers.append(winding_numbers[0])
+        return quenched_winding_numbers
 
     # functions for objects creation inside of Class
     @staticmethod
@@ -137,6 +171,25 @@ class Geometry(object):
                 if i == len(value)-1:
                     temporary_list = [key, value[i, 0], imaginary_node, length]
                     coil_data = np.vstack((coil_data, temporary_list))
+        return coil_data
+
+    @staticmethod
+    def create_dict_with_imaginary_nodes(windings_lengths, number_of_windings):
+        """
+
+        """
+        imaginary_node = 1
+        coil_data = {}
+        for i in range(1, number_of_windings+1):
+            key = 'winding' + str(i)
+            value = windings_lengths[key]
+            imaginary_node_list = []
+            for i in range(1, len(value)):
+                imaginary_node_list.append(imaginary_node)
+                imaginary_node += 1
+                if i == len(value) - 1:
+                    imaginary_node_list.append(imaginary_node)
+            coil_data[key] = imaginary_node_list
         return coil_data
 
     @staticmethod

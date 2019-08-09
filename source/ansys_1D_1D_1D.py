@@ -28,16 +28,6 @@ class AnsysCommands1D1D1D(AnsysCommands):
         self.wait_for_process_to_finish(data)
         time.sleep(2)
 
-    # def input_material_properties(self):
-    #     print("________________ \nMaterial properties are being uploaded...")
-    #     analysis_type = self.factory.get_material_properties_type()
-    #     if analysis_type == "linear":
-    #         self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Linear', extension='inp',
-    #                         add_directory='Input_Files')
-    #     elif analysis_type == "nonlinear":
-    #         self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Nonlinear', extension='inp',
-    #                         add_directory='Input_Files')
-
     def input_winding_non_quenched_material_properties(self, magnetic_field_map):
         self.enter_preprocessor()
         for i in range(len(magnetic_field_map.keys())):
@@ -72,8 +62,8 @@ class AnsysCommands1D1D1D(AnsysCommands):
             self.define_element_heat_capacity(element_number=element_number, value=g10_cp[j, 1])
 
     def input_winding_quench_material_properties(self, magnetic_field_map, winding_number):
-        magnetic_field = magnetic_field_map["winding"+str(winding_number)]
-        element_number = self.factory.get_number_of_windings() + winding_number
+        magnetic_field = magnetic_field_map["winding"+str(winding_number+self.factory.get_number_of_windings())]
+        element_number = self.factory.get_number_of_windings() + winding_number + self.factory.get_number_of_windings()
         mat = self.choose_material_repository()
         self.define_element_type(element_number=element_number, element_name="link68")
         equivalent_winding_area = mat.eq_winding_cu_area(AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
@@ -107,6 +97,11 @@ class AnsysCommands1D1D1D(AnsysCommands):
         nodes_to_select_ansys = class_geometry.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_to_select)
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
+    def select_nodes_in_analysis_mag(self, class_geometry, winding_number, x_down_node, x_up_node):
+        nodes_to_select = class_geometry.convert_imaginary_nodes_set_into_real_nodes_1d_1d_winding_number(winding_number=winding_number, x_down_node=x_down_node, x_up_node=x_up_node)
+        nodes_to_select_ansys = class_geometry.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_to_select)
+        self.select_nodes_list(nodes_list=nodes_to_select_ansys)
+
     def select_nodes_for_current(self, class_geometry):
         nodes_to_select_ansys = [[1, 1]]
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
@@ -132,3 +127,17 @@ class AnsysCommands1D1D1D(AnsysCommands):
             return G10_element_area_meters2
         else:
             return 1.0
+
+
+
+
+
+    # def input_material_properties(self):
+    #     print("________________ \nMaterial properties are being uploaded...")
+    #     analysis_type = self.factory.get_material_properties_type()
+    #     if analysis_type == "linear":
+    #         self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Linear', extension='inp',
+    #                         add_directory='Input_Files')
+    #     elif analysis_type == "nonlinear":
+    #         self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Nonlinear', extension='inp',
+    #                         add_directory='Input_Files')
