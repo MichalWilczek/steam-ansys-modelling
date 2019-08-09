@@ -5,6 +5,8 @@ from source.factory import AnalysisBuilder
 from source.factory import AnalysisDirectory
 import source.geometry as geometry
 import time
+from source.material_properties_nonlinear import MaterialsNonLinear
+from source. material_properties_linear import MaterialsLinear
 
 
 class AnsysCommands(object):
@@ -22,6 +24,20 @@ class AnsysCommands(object):
         self.delete_file(directory=self.analysis_directory, filename='Variable_Input.inp')
         self.delete_file(directory=self.analysis_directory, filename='File_Position.txt')
         self.delete_file(directory=self.analysis_directory, filename='Process_Finished.txt')
+
+    def choose_material_repository(self):
+        material_option = self.factory.get_material_properties_type()
+        if material_option == "linear":
+            return MaterialsLinear()
+        else:
+            return MaterialsNonLinear()
+
+    @staticmethod
+    def create_artificial_magnetic_field_map(number_of_windings, magnetic_field=2.88):
+        magnetic_field_map = {}
+        for i in range(number_of_windings):
+            magnetic_field_map["winding"+str(i+1)] = magnetic_field
+        return magnetic_field_map
 
     @staticmethod
     def create_variable_table_method(directory):
@@ -42,6 +58,7 @@ class AnsysCommands(object):
         """
         Creates an input file with parameters used by ANSYS
         """
+        # changed 08.08.2019
         data.write_text('/clear')
         data.write_text('/title,Quench_Analysis_' + AnalysisBuilder().get_dimensionality())
         data.write_text('/prep7')
@@ -49,7 +66,6 @@ class AnsysCommands(object):
         # added 30.07.2019
         data.write_text('/graphics,power')
         data.write_text('/show,png')
-        # data.write_text('/units,si')
 
     @staticmethod
     def wait_python(filename, directory, file_length=1):
@@ -107,6 +123,7 @@ class AnsysCommands(object):
         for i in range(len(nodes_list)):
             self.mapdl.executeCommand("nsel,u,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1]))
 
+    # not needed anymore
     def set_gaussian_initial_temperature_distribution(self, gaussian_temperature_distr):
 
         self.allsel()
@@ -116,6 +133,9 @@ class AnsysCommands(object):
             self.mapdl.executeCommandToString("ic,{},temp,{}".format(node_number, temperature))
 
     # general commands
+    def clear_all(self):
+        self.mapdl.executeCommand("/clear,all,")
+
     def select_nodes(self, node_down, node_up):
         self.mapdl.executeCommand("nsel,s,node,,{},{}".format(node_down, node_up))
 
@@ -167,6 +187,27 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString("antype,,rest,,,continue"))
 
     # preprocessor commands`
+    def define_temperature_for_material_property(self, temperature):
+        self.mapdl.executeCommand('mptemp,{},{}'.format(temperature, temperature))
+
+    def define_element_type(self, element_number, element_name):
+        self.mapdl.executeCommand('et,{},{}'.format(element_number, element_name))
+
+    def define_element_constant(self, element_number, element_constant):
+        self.mapdl.executeCommand('r,{},{}'.format(element_number, element_constant))
+
+    def define_element_density(self, element_number, value):
+        self.mapdl.executeCommand('mp,dens,{},{}'.format(element_number, value))
+
+    def define_element_conductivity(self, element_number, value, direction="kxx"):
+        self.mapdl.executeCommand('mpdata,{},{},,{}'.format(direction, element_number, value))
+
+    def define_element_heat_capacity(self, element_number, value):
+        self.mapdl.executeCommand('mpdata,c,{},,{}'.format(element_number, value))
+
+    def define_element_resistivity(self, element_number, value, direction="rsvx"):
+        self.mapdl.executeCommand('mpdata,{},{},,{}'.format(direction, element_number, value))
+
     def enter_preprocessor(self):
         print(self.mapdl.executeCommandToString('/prep7'))
 
@@ -202,6 +243,12 @@ class AnsysCommands(object):
 
     def set_ground(self, node_number, value):
         self.mapdl.executeCommand("d,{},volt,{}".format(node_number, value))
+
+    def set_heat_generation_in_elements(self, element_number, value):
+        self.mapdl.executeCommand("bfe,{},hgen,,{}".format(element_number, value))
+
+    def set_heat_flow_into_nodes(self, value):
+        self.mapdl.executeCommand("f,all,heat,{}".format(value))
 
     def start_solution(self):
         self.allsel()

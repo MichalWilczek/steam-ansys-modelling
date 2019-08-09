@@ -74,14 +74,17 @@ class QuenchDetect:
             node_up_list.append(items.x_up_node)
 
         sliced_temperature_profile = []
-        for i in range(len(input_quench_front_vector) + 1):
-            if i == 0:
-                sliced_temperature_profile.append(temperature_profile[0:(node_down_list[i]-1), :])
-            elif i == len(input_quench_front_vector):
-                sliced_temperature_profile.append(temperature_profile[(node_up_list[i-1]):(len(temperature_profile)), :])
-            else:
-                sliced_temperature_profile.append(temperature_profile[(node_up_list[i-1]):(node_down_list[i]-1), :])
-        print("Number of zones to check for quench is: {}".format(len(sliced_temperature_profile)))
+        if len(input_quench_front_vector) != 0:
+            for i in range(len(input_quench_front_vector) + 1):
+                if i == 0:
+                    sliced_temperature_profile.append(temperature_profile[0:(node_down_list[i]-1), :])
+                elif i == len(input_quench_front_vector):
+                    sliced_temperature_profile.append(temperature_profile[(node_up_list[i-1]):(len(temperature_profile)), :])
+                else:
+                    sliced_temperature_profile.append(temperature_profile[(node_up_list[i-1]):(node_down_list[i]-1), :])
+            print("Number of zones to check for quench is: {}".format(len(sliced_temperature_profile)))
+        else:
+            sliced_temperature_profile.append(temperature_profile)
         return sliced_temperature_profile
 
     @staticmethod

@@ -21,6 +21,7 @@ class Plots(object):
     def __init__(self):
         self.factory = AnalysisBuilder()
         self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
+        self.voltage_plot = None
 
     @staticmethod
     def plot_quench(coil_length, quench_fronts, time_step):
@@ -41,23 +42,28 @@ class Plots(object):
         plt.title("Time step: {} s".format(time_step))
         plt.xlim(min_coil_length, max_coil_length)
         plt.ylim(0, 2)
-
-        for j in range(len(quench_fronts)):
-            x_down = quench_fronts[j].x_down
-            x_up = quench_fronts[j].x_up
-            if j == 0 and len(quench_fronts) != 1:
-                x_set = [min_coil_length, x_down, x_down, x_up, x_up]
-                y_set = [0, 0, 1, 1, 0]
-            elif j == 0 and len(quench_fronts) == 1:
-                x_set = [min_coil_length, x_down, x_down, x_up, x_up, max_coil_length]
-                y_set = [0, 0, 1, 1, 0, 0]
-            elif j != 0 and j == len(quench_fronts)-1:
-                x_set = [quench_fronts[j-1].x_up, x_down, x_down, x_up, x_up, max_coil_length]
-                y_set = [0, 0, 1, 1, 0, 0]
-            else:
-                x_set = [quench_fronts[j-1].x_up, x_down, x_down, x_up, x_up]
-                y_set = [0, 0, 1, 1, 0]
+        if len(quench_fronts) != 0:
+            for j in range(len(quench_fronts)):
+                x_down = quench_fronts[j].x_down
+                x_up = quench_fronts[j].x_up
+                if j == 0 and len(quench_fronts) != 1:
+                    x_set = [min_coil_length, x_down, x_down, x_up, x_up]
+                    y_set = [0, 0, 1, 1, 0]
+                elif j == 0 and len(quench_fronts) == 1:
+                    x_set = [min_coil_length, x_down, x_down, x_up, x_up, max_coil_length]
+                    y_set = [0, 0, 1, 1, 0, 0]
+                elif j != 0 and j == len(quench_fronts)-1:
+                    x_set = [quench_fronts[j-1].x_up, x_down, x_down, x_up, x_up, max_coil_length]
+                    y_set = [0, 0, 1, 1, 0, 0]
+                else:
+                    x_set = [quench_fronts[j-1].x_up, x_down, x_down, x_up, x_up]
+                    y_set = [0, 0, 1, 1, 0]
+                plt.plot(x_set, y_set, '-', marker='8', markersize=8, linewidth=5, color='b')
+        else:
+            x_set = [min_coil_length, max_coil_length]
+            y_set = [0, 0]
             plt.plot(x_set, y_set, '-', marker='8', markersize=8, linewidth=5, color='b')
+
         plt.grid(True)
         return fig
 
@@ -155,6 +161,22 @@ class Plots(object):
         Plots.delete_file(directory=directory, filename=filename)
         return fig
 
+    def plot_resistive_voltage(self, voltage, time_step, iteration):
+        if iteration == 0:
+            self.voltage_fig = plt.figure()
+            self.voltage_plot = self.voltage_fig.add_subplot(111)
+            self.voltage_plot.set_xlabel('Time [s]')
+            self.voltage_plot.set_ylabel('Electric Potential [V]')
+            self.voltage_plot.set_xlim(0, self.factory.get_total_time())
+            self.voltage_plot.set_ylim(0, 2.0)
+            self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
+            plt.grid(True)
+        else:
+            self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
+            plt.show()
+        filename = "resistive_voltage_{}.png".format(iteration)
+        self.voltage_fig.savefig(filename)
+
     @staticmethod
     def save_temperature_plot(fig, iteration):
         """
@@ -198,15 +220,13 @@ class Plots(object):
         ax.plot(gaussian_plot_array[:, 0], gaussian_plot_array[:, 1])
         plt.grid(True)
         plt.show()
-
         filename = "initial_temperature_distribution.png"
         fig.savefig(filename)
-
         return fig
 
-
-
-
+# Plots = Plots()
+# Plots.plot_resistive_voltage(voltage=1.0, time_step=0.015, iteration=0)
+# Plots.plot_resistive_voltage(voltage=1.0, time_step=0.045, iteration=1)
 
 
 

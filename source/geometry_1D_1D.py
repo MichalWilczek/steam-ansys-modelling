@@ -24,6 +24,32 @@ class Geometry1D1D(Geometry):
         self.coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
         self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
 
+    def retrieve_quenched_winding_numbers_from_quench_fronts(self, x_down_node, x_up_node):
+
+        windings = []
+        imaginary_1d_node_set = self.coil_data[:, 2]
+        imaginary_1d_node_set = np.asfarray(imaginary_1d_node_set, float)
+        quenched_coil_set = self.coil_data[(imaginary_1d_node_set[:] >= x_down_node) &
+                                           (imaginary_1d_node_set[:] <= x_up_node)]
+        windings.append(quenched_coil_set[0, 0])
+        windings.append(quenched_coil_set[len(quenched_coil_set[:, 0])-1, 0])
+        winding_numbers = []
+        for name in windings:
+            number = int(float(name[7:]))
+            winding_numbers.append(number)
+        quenched_winding_numbers = []
+        if winding_numbers[1] - winding_numbers[0] >= 1:
+            for i in range(winding_numbers[0], winding_numbers[1]+1):
+                quenched_winding_numbers.append(i)
+        else:
+            quenched_winding_numbers.append(winding_numbers[0])
+        return quenched_winding_numbers
+
+
+
+
+
+
     def create_node_dict_for_each_winding(self):
         """
         Creates dictionary with sorted list of node numbers belonging to each winding separately
@@ -202,8 +228,8 @@ class Geometry1D1D(Geometry):
 
 
 
-
-
+Geo = Geometry1D1D()
+Geo.retrieve_quenched_winding_numbers_from_quench_fronts(x_down_node=158, x_up_node=650)
 
 
 

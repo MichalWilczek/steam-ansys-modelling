@@ -10,15 +10,16 @@ from source.case_factory import CaseFactory
 CaseFactory = CaseFactory()
 Plots = Plots()
 ans = CaseFactory.get_ansys_class()
+ans.delete_old_files()
+ans.create_variable_file()
+ans.input_file(filename='Variable_Input', extension='inp')
 
 # input of magnetic map onto material properties
 magnetic_map = ans.create_artificial_magnetic_field_map(CaseFactory.get_number_of_windings())
 ans.input_winding_non_quenched_material_properties(magnetic_map)
 ans.input_insulation_material_properties()
 
-ans.delete_old_files()
-ans.create_variable_file()
-ans.input_file(filename='Variable_Input', extension='inp')
+# input geometry
 ans.input_geometry()
 
 coil_geo = CaseFactory.get_geometry_class()
@@ -40,23 +41,6 @@ quench_label = 1
 i = 0
 t = time[i]
 print("iteration number: {} \n time step: {} \n ______________".format(i, t))
-# quench_fronts.append(QuenchFront(x_down=CaseFactory.get_quench_init_x_down(), x_up=CaseFactory.get_quench_init_x_up(), label=quench_label))
-# quench_label += 1
-# quench_state_plot = Plots.plot_and_save_quench(coil_geometry, quench_fronts, iteration=i, time_step=t)
-# quench_state_plots.append(quench_state_plot)
-
-# position transformation into nodes
-# quench_fronts[0].convert_quench_front_to_nodes(coil_length=coil_geometry)
-
-# initial analysis definition
-# ans.select_nodes_in_analysis(x_down_node=quench_fronts[0].x_down_node, x_up_node=quench_fronts[0].x_up_node, class_geometry=coil_geo)
-
-
-ans.select_nodes_in_analysis()   # to be defined for power input
-ans.select_elem_from_nodes()
-ans.modify_material_type(element_number=1)
-ans.modify_material_constant(constant_number=1)
-ans.modify_material_number(material_number=1)
 
 nodes_to_couple_windings_list = coil_geo.create_node_list_to_couple_windings()
 for nodes_list in nodes_to_couple_windings_list:
@@ -68,11 +52,12 @@ for nodes_list in nodes_to_couple_windings_list:
 ans.enter_solver()
 ans.set_analysis_setting()
 ans.set_time_step(time_step=t, iteration=0)
-
 ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperature())
-# set initial quench temperature
-# ans.select_nodes_in_analysis(x_down_node=quench_fronts[0].x_down_node, x_up_node=quench_fronts[0].x_up_node, class_geometry=coil_geo)
-# ans.set_quench_temperature(q_temperature=20.0)
+
+# to be defined for power input
+ans.select_nodes_in_analysis(coil_geo, x_down_node=952, x_up_node=952)
+ans.select_elem_from_nodes()
+ans.set_heat_flow_into_nodes(value=0.5)
 
 # set constant inflow current
 ans.select_nodes_for_current(class_geometry=coil_geo)
@@ -88,11 +73,8 @@ ans.input_solver()
 temperature_profile = ans.get_temperature_profile(npoints=npoints, class_geometry=coil_geo)
 
 # get electric potential
-resistive_voltage_profile = None
-
-# calculate quench propagation
-# for qf in quench_fronts:
-#     qf.calculate_quench_front_position(t_step=t, min_length=min_coil_length, max_length=max_coil_length)
+resistive_voltage = coil_geo.load_parameter(filename="Resistive_Voltage.txt")
+Plots.plot_resistive_voltage(voltage=resistive_voltage, time_step=t, iteration=i)
 
 # detect new quench position
 quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile)
@@ -115,9 +97,21 @@ for i in range(1, len(time)):
     quench_state_plot = Plots.plot_and_save_quench(coil_geometry, quench_fronts, iteration=i, time_step=t)
     quench_state_plots.append(quench_state_plot)
 
+    # update new magnetic field map
+    magnetic_map = ans.create_artificial_magnetic_field_map(CaseFactory.get_number_of_windings())
+
+    quenched_winding_list = []
     for qf in quench_fronts:
         # position transformation into nodes
         qf.convert_quench_front_to_nodes(coil_geometry)
+        quenched_winding_list.append(coil_geometry.retrieve_quenched_winding_numbers_from_quench_fronts(
+            x_down_node=qf.x_down_node, x_up_node=qf.x_up_node))
+
+
+
+
+
+        # set new material properties repository
 
         # initial analysis definition
         ans.enter_preprocessor()
@@ -136,6 +130,10 @@ for i in range(1, len(time)):
 
     # get temperature profile
     temperature_profile = ans.get_temperature_profile(npoints=npoints, class_geometry=coil_geo)
+
+    # get electric potential
+    resistive_voltage = coil_geo.load_parameter(filename="Resistive_Voltage.txt")
+    Plots.plot_resistive_voltage(voltage=resistive_voltage, time_step=t, iteration=i)
 
     # detect new quench position
     quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile)

@@ -46,6 +46,11 @@ class Geometry(object):
         self.factory = AnalysisBuilder()
         self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
 
+    @staticmethod
+    def delete_repetitive_values_in_list():
+
+
+
     # functions for objects creation inside of Class
     @staticmethod
     def search_files_names_in_directory(directory):
@@ -218,7 +223,6 @@ class Geometry(object):
             item = float(item)
             final_list.append(item)
         return final_list[0]
-
 
 
 

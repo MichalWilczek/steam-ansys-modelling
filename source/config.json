@@ -10,8 +10,8 @@
     "division_short_side": 30,
     "division_radius": 25,
 
-    "number_of_windings": 9,
-    "number_of_windings_in_reel": 3,
+    "number_of_windings": 4,
+    "number_of_windings_in_reel": 2,
 
     "transverse_division_insulation": 4,
     "transverse_dimension_winding": 0.000941,
@@ -22,8 +22,8 @@
 
     "quench_init_pos": 0.5,
     "quench_init_length": 0.2,
-    "total_time": 0.5,
-    "time_division": 10.0,
+    "total_time": 0.15,
+    "time_division": 20.0,
 
     "current": 86.3,
     "initial_temperature": 1.9,
