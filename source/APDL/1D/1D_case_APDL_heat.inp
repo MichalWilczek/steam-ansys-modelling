@@ -1,0 +1,160 @@
+
+
+/clear
+/title,Quench_Analysis_1D_1D
+/prep7
+/units,si
+
+number_of_windings =1
+length_per_winding =0.1         ! m
+division_per_winding =100
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!Material Definition!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! Strand_diameter = 0.0007          ! m
+! pi = acos(-1)
+Strand_area = 1.00E-07
+
+! Strand_area = 1.00E-08            ! m
+Cu_density = 8960                 ! kg/m3
+Cu_conductivity_value = 2000.0    ! W/mK
+Cu_heat_capacity_value = 50.0     ! K/kgK
+Cu_resistivity_value = 2.5e-10    ! Ohm*m
+
+! input parameters for material properties
+max_size = 500
+*dim,Cu_resistivity,table,max_size,1,1,temp
+*dim,Cu_conductivity,table,max_size,1,1,temp
+*dim,Cu_cp,table,max_size,1,1,temp
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!! Copper Resistivity !!!!!!!!!!!!!!!!!!!!!!!!!!!
+Cu_resistivity(0,1) = 0.0
+*do,i,1,max_size,1
+  Cu_resistivity(i,0) = i
+  !Cu_resistivity(i,1) = Cu_resistivity_value / 3.415
+  Cu_resistivity(i,1) = Cu_resistivity_value
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!! Copper Thermal Conductivity !!!!!!!!!!!!!!!!!!!!
+Cu_conductivity(0,1) = 0.0
+*do,i,1,max_size,1
+  Cu_conductivity(i,0) = i
+  Cu_conductivity(i,1) = Cu_conductivity_value
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Copper Heat Capacity !!!!!!!!!!!!!!!!!!!!!!!!!!
+Cu_cp(0,1) = 0.0
+*do,i,1,max_size,1
+  Cu_cp(i,0) = i
+  Cu_cp(i,1) = Cu_heat_capacity_value
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!! Material Definition !!!!!!!!!!!!!!!!!!!!!!
+
+! element 1 - quenched zone
+et,1,link68     ! thermo-electric element
+r,1,Strand_area
+
+
+mp,dens,1,Cu_density ! to be changed
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,kxx,1,,Cu_conductivity(i,1)
+*enddo
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,c,1,,Cu_cp(i,1)
+*enddo
+
+*do,i,1,100,1
+  mptemp,i,i
+  mpdata,rsvx,1,,Cu_resistivity(i,1)
+*enddo
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!! GEOMETRY DEFINITION!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+kp_per_winding = division_per_winding+1
+
+! feature which could be added
+elem_per_line = 1
+
+x=0
+y=0
+z=0
+
+*do,i,1,number_of_windings
+
+  allsel
+  *get,kp_first_winding_i,kp,,count
+  kp_first_winding_i = kp_first_winding_i + 1
+
+  *do,j,1,kp_per_winding,1
+    allsel
+    *get,knum,kp,,count
+    k,knum+1,(j-1)*(length_per_winding)/(division_per_winding),y,z
+  *enddo
+  allsel
+  *get,kp_last_winding_i,kp,,count
+
+  allsel
+  *get,knum,kp,,count
+  line_counter = knum - division_per_winding
+  type,1
+  real,1
+  mat,1
+  *do,k,line_counter,line_counter+division_per_winding-1,1
+    l,k,k+1,elem_per_line
+    allsel
+    *get,lnum,line,,count
+    lmesh,lnum
+  *enddo
+
+  allsel
+  allsel
+  *get,lnum,line,,count
+  lsel,s,line,,lnum+1-division_per_winding,lnum
+  allsel,below,line
+  cm,winding%i%,line
+
+  x = x
+  *if,number_of_windings,ne,1,then
+    y = y + transverse_dimension_winding + transverse_dimension_insulation
+  *endif
+*enddo
+
+/solu
+antype,4
+trnopt,full
+kbc,1
+eqslv,sparse
+bcsoption,,default
+lumpm,0
+autots,on
+solcontrol,on,on
+neqit,1000
+lnsrch,on
+rescontrol,define,none,none,1
+tintp,,,,1
+
+ic,all,temp,20   ! K
+time,1.0         ! s
+
+allsel
+f,all,heat,0.001       ! W
+
+nsel,s,node,,1,
+f,all,amps,50
+
+nsel,s,node,,101,101
+d,all,volt,0
+allsel
+solve
+
+/post1
+plnsol,temp
