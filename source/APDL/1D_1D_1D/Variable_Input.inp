@@ -4,16 +4,16 @@
 /nerr,999999999999
 /graphics,power
 /show,png
-number_of_windings =4
-division_long_side =100
-division_short_side =30
-division_radius =25
-number_of_windings =4
-number_of_windings_in_reel =2
+number_of_windings =20
+division_long_side =200
+division_short_side =60
+division_radius =40
+number_of_windings =20
+number_of_windings_in_reel =5
 elem_per_line =1
 transverse_dimension_winding =0.000941
-transverse_division_insulation =4
-G10_element_area =7.023437603213354e-06
+transverse_division_insulation =5
+G10_element_area =7.227476530837368e-07
 *cfopen,Process_Finished,txt
 *vwrite,1
 (1(ES16.7))

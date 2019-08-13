@@ -265,7 +265,7 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
-        # print(self.mapdl.executeCommandToString('deltim,0.0025,0.0025,0.025'))
+        # print(self.mapdl.executeCommandToString('deltim,1e-4,1e-4,1e-3'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
         print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal integration (default) into backward Euler formulation
 

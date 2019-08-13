@@ -4,16 +4,16 @@
     "dimensionality": "1D_1D_1D",
     "filename_nodal_position": "Node_Position.txt",
     "filename_nodal_temperature": "Temperature_Data.txt",
-    "nonlinear_material_properties": "linear",
+    "nonlinear_material_properties": "nonlinear",
 
-    "division_long_side": 100,
-    "division_short_side": 30,
-    "division_radius": 25,
+    "division_long_side": 200,
+    "division_short_side": 60,
+    "division_radius": 40,
 
-    "number_of_windings": 4,
-    "number_of_windings_in_reel": 2,
+    "number_of_windings": 20,
+    "number_of_windings_in_reel": 5,
 
-    "transverse_division_insulation": 4,
+    "transverse_division_insulation": 5,
     "transverse_dimension_winding": 0.000941,
     "transverse_division_winding": 4,
 

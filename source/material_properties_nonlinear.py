@@ -5,14 +5,6 @@ from source.material_properties import Materials
 
 class MaterialsNonLinear(Materials):
 
-    def winding_eq_cp(self, magnetic_field, temperature):
-        cu_volume_fraction = self.cu_nbti_volume_ratio/(self.cu_nbti_volume_ratio+1.0)
-        # cu_volume_fraction = 0.62263
-        cu_cp = self.cu_cp(temperature)
-        nbti_cp = self.nb_ti_cp(magnetic_field, temperature)
-        winding_eq_cp = (cu_cp+(1.0/cu_volume_fraction-1.0)*nbti_cp)/self.cu_dens
-        return winding_eq_cp
-
     def calculate_cu_rho(self, magnetic_field):
         temperature_profile = self.create_temperature_step()
         cu_rho_array = np.zeros((len(temperature_profile), 2))
@@ -90,44 +82,49 @@ class MaterialsNonLinear(Materials):
         resistivity = (self.a0/self.rrr+1.0/(self.a1/i**5.0+self.a2/i**3.0+self.a3/i))*10.0**(-8.0)+(0.37+0.0005*self.rrr)*magnetic_field*10.0**(-10.0)
         return resistivity
 
+    def winding_eq_cp(self, magnetic_field, temperature):
+        cu_cp = self.cu_cp(temperature)
+        nbti_cp = self.nb_ti_cp(magnetic_field, temperature)
+        winding_eq_cp = self.f_cu*cu_cp + self.f_nbti*nbti_cp
+        return winding_eq_cp
+
     @staticmethod
     def cu_thermal_cond(cu_resistivity, temperature):
         i = temperature
         conductivity = 2.45*10.0**(-8.0)*i/cu_resistivity
         return conductivity
 
-    @staticmethod
-    def cu_cp(temperature):
+    def cu_cp(self, temperature):
         i = temperature
         if i < 10.0:
             a = (-3.080*10.0**(-2.0))*i**4.0
-            b = (7.230)*i**3.0
+            b = 7.230*i**3.0
             c = (-2.129)*i**2.0
             d = (1.019*10.0**(2.0))*i
             e = 2.563
 
-        elif i >= 10.0 and i < 40.0:
+        elif 10.0 <= i < 40.0:
             a = (-3.045*10.0**(-1.0))*i**4.0
             b = (2.987*10.0**(1.0))*i**3.0
             c = (-4.556*10.0**(2.0))*i**2.0
             d = (3.470*10.0**(3.0))*i
             e = -8.250*10.0**(3.0)
 
-        elif i >= 40.0 and i < 125.0:
+        elif 40.0 <= i < 125.0:
             a = (4.190*10.0**(-2.0))*i**4.0
             b = (-1.402*10.0**(1.0))*i**3.0
             c = (1.509*10.0**(3.0))*i**2.0
             d = (-3.160*10.0**(4.0))*i
             e = 1.784*10.0**(5.0)
 
-        elif i >= 125.0 and i < 300.0:
+        elif 125.0 <= i < 300.0:
             a = (-8.480*10.0**(-4.0))*i**4.0
             b = (8.419*10.0**(-1.0))*i**3.0
             c = (-3.255*10.0**(2.0))*i**2.0
             d = (6.059*10.0**(4.0))*i
             e = -1.290*10.0**(6.0)
 
-        elif i >= 300.0 and i < 500.0:
+        elif 300.0 <= i < 500.0:
             a = (-4.800*10.0**(-5.0))*i**4.0
             b = (9.173*10.0**(-2.0))*i**3.0
             c = (-6.412*10.0**(1.0))*i**2.0
@@ -141,7 +138,7 @@ class MaterialsNonLinear(Materials):
             d = (1.004*10.0**3.0)*i
             e = 3.180*10.0**6.0
 
-        cu_cp = a+b+c+d+e
+        cu_cp = (a+b+c+d+e)/self.cu_dens
         return cu_cp
 
     # NiTi material properties
@@ -154,29 +151,25 @@ class MaterialsNonLinear(Materials):
             c = 0.0
             d = (6.40000*10.0**(1.0)) * i
             e = 0.0
-
-        elif i >= tc and i < 20.0:
+        elif tc <= i < 20.0:
             a = 0.0
             b = (1.62400*10.0**(1.0)) * i ** 3.0
             c = 0.0
             d = (9.28000*10.0**(2.0)) * i
             e = 0.0
-
-        elif i >= 20.0 and i < 50.0:
+        elif 20.0 <= i < 50.0:
             a = (-2.17700*10.0**(-1.0)) * i ** 4.0
             b = (1.19838*10.0**(1.0)) * i ** 3.0
             c = (5.53710*10.0**(2.0)) * i ** 2.0
             d = (-7.84610*10.0**(3.0)) * i
             e = 4.13830*10.0**(4.0)
-
-        elif i >= 50.0 and i < 175.0:
+        elif 50.0 <= i < 175.0:
             a = (-4.82000*10.0**(-3.0)) * i ** 4.0
             b = (2.97600) * i ** 3.0
             c = (-7.16300*10.0**(2.0)) * i ** 2.0
             d = (8.30220*10.0**(4.0)) * i
             e = -1.53000*10.0**(6.0)
-
-        elif i >= 175.0 and i < 500.0:
+        elif 175.0 <= i < 500.0:
             a = (-6.29000*10.0**(-5.0)) * i ** 4.0
             b = (9.29600*10.0**(-2.0)) * i ** 3.0
             c = (-5.16600*10.0**(1.0)) * i ** 2.0
@@ -190,7 +183,7 @@ class MaterialsNonLinear(Materials):
             d = (9.55500*10.0**2.0) * i
             e = 2.45000*10.0**6.0
 
-        nb_ti_cp = a + b + c + d + e
+        nb_ti_cp = (a+b+c+d+e)/self.nb_ti_dens
         return nb_ti_cp
 
     # G10 material properties
@@ -223,10 +216,10 @@ class MaterialsNonLinear(Materials):
         g10_cp = 10.0**f_exp
         return g10_cp
 
-# Materials = Materials()
-# Materials.calculate_cu_rho(2.88)
-# Materials.calculate_cu_thermal_cond(magnetic_field=2.88)
-#
-# Materials.calculate_winding_eq_cp(magnetic_field=2.88)
-# Materials.calculate_g10_therm_cond()
-# Materials.calculate_g10_cp()
+Materials = MaterialsNonLinear(plotting="yes")
+Materials.calculate_cu_rho(3.0)
+Materials.calculate_cu_thermal_cond(magnetic_field=3.0)
+
+Materials.calculate_winding_eq_cp(magnetic_field=3.0)
+Materials.calculate_g10_therm_cond()
+Materials.calculate_g10_cp()

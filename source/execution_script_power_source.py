@@ -15,7 +15,7 @@ ans.create_variable_file()
 ans.input_file(filename='Variable_Input', extension='inp')
 
 # input of magnetic map onto material properties
-magnetic_map = ans.create_artificial_magnetic_field_map(CaseFactory.get_number_of_windings())
+magnetic_map = ans.create_artificial_magnetic_field_map(CaseFactory.get_number_of_windings(), magnetic_field=3.0)
 ans.input_winding_non_quenched_material_properties(magnetic_map)
 ans.input_insulation_material_properties()
 
@@ -55,9 +55,11 @@ ans.set_time_step(time_step=t, iteration=0)
 ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperature())
 
 # to be defined for power input
-ans.select_nodes_in_analysis(coil_geo, x_down_node=952, x_up_node=952)
-ans.select_elem_from_nodes()
-ans.set_heat_flow_into_nodes(value=3.0)
+# ans.select_nodes_in_analysis(coil_geo, x_down_node=1120, x_up_node=1121)
+# ans.select_nodes_in_analysis(coil_geo, x_down_node=1120, x_up_node=1120)      # for 6 coils
+
+ans.select_nodes_in_analysis(coil_geo, x_down_node=1800, x_up_node=1800)
+ans.set_heat_flow_into_nodes(value=0.018666667*3.0)         # power applied to one node/element
 
 # set constant inflow current
 ans.select_nodes_for_current(class_geometry=coil_geo)

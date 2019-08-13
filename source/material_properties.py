@@ -5,32 +5,41 @@ import math
 
 class Materials(object):
 
-    def __init__(self):
+    a0 = 1.7
+    a1 = 2.33 * 10.0 ** 9.0
+    a2 = 9.57 * 10 ** 5.0
+    a3 = 163.0
+    rrr = 150.0
 
-        self.a0 = 1.7
-        self.a1 = 2.33*10.0**9.0
-        self.a2 = 9.57*10**5.0
-        self.a3 = 163.0
-        self.rrr = 150.0
+    tc0 = 9.2
+    bc20 = 14.5
 
-        self.tc0 = 9.2
-        self.bc20 = 14.5
+    cu_dens = 8960      # kg/m3
+    nb_ti_dens = 6530   # kg/m3
+    g10_dens = 1420     # kg/m3
+    f_cu_f_nbti = 2.2
 
-        self.cu_dens = 8960     # kg/m3
-        self.g10_dens = 1420    # kg/m3
-        self.cu_nbti_volume_ratio = 2.2
+    temp_min = 1        # [K]
+    temp_max = 100      # [K}
+    temp_step = 1       # [K]
 
-        self.temp_min = 1       # [K]
-        self.temp_max = 100     # [K}
-        self.temp_step = 1      # [K]
+    def __init__(self, plotting="no"):
 
-        self.plot = "no"
+        self.plot = plotting
+        self.f_nbti = self.ratio_nbti()
+        self.f_cu = self.ratio_cu()
 
-    def eq_winding_cu_diameter(self, wire_diameter):
-        return (self.cu_nbti_volume_ratio/(1.0+self.cu_nbti_volume_ratio))**0.5 * wire_diameter
+    def ratio_nbti(self):
+        return 1.0/(1.0+self.f_cu_f_nbti)
 
-    def eq_winding_cu_area(self, wire_diameter):
-        return math.pi*(self.eq_winding_cu_diameter(wire_diameter)**2.0)/4.0
+    def ratio_cu(self):
+        return 1.0 - self.ratio_nbti()
+
+    def wire_area(self, wire_diameter):
+        return math.pi/4.0 * (wire_diameter**2.0)
+
+    def reduced_wire_area(self, wire_diameter):
+        return self.wire_area(wire_diameter) * self.f_cu
 
     def create_temperature_step(self):
         temperature_step_profile = []

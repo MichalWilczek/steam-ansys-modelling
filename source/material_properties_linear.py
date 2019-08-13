@@ -62,7 +62,7 @@ class MaterialsLinear(Materials):
 
     @staticmethod
     def cu_thermal_cond():
-        conductivity = 2000.0
+        conductivity = 0.0000001
         return conductivity
 
     @staticmethod
@@ -78,5 +78,5 @@ class MaterialsLinear(Materials):
 
     @staticmethod
     def g10_cp():
-        g10_cp = 60.0
+        g10_cp = 20.0
         return g10_cp

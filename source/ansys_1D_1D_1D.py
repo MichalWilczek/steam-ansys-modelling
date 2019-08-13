@@ -1,13 +1,15 @@
 
 import time
 from source.ansys import AnsysCommands
-
 import math
 
 class AnsysCommands1D1D1D(AnsysCommands):
 
-    STRAND_DIAMETER = 0.7   # [mm]
-    WINDING_SIDE = 0.941    # [mm]
+    STRAND_DIAMETER = 0.7       # [mm]
+    WINDING_SIDE = 0.941        # [mm]
+    COIL_LONG_SIDE = 413.21     # [mm]
+    COIL_SHORT_SIDE = 126.81    # [mm]
+    COIL_INITIAL_RADIUS = 9.15  # [mm]
 
     def create_variable_file(self):
         """
@@ -24,7 +26,7 @@ class AnsysCommands1D1D1D(AnsysCommands):
         data.write_text('elem_per_line =' + str(1))
         data.write_text('transverse_dimension_winding =' + str(self.factory.get_transverse_dimension_winding()))
         data.write_text('transverse_division_insulation =' + str(self.factory.get_transverse_division_insulation()))
-        data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d()))
+        data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d_quadrupole()))
         self.wait_for_process_to_finish(data)
         time.sleep(2)
 
@@ -51,7 +53,7 @@ class AnsysCommands1D1D1D(AnsysCommands):
         mat = self.choose_material_repository()
         element_number = 2*self.factory.get_number_of_windings() + 1
         self.define_element_type(element_number=element_number, element_name="link33")
-        insulation_area = self.calculate_insulation_area_1d_1d_1d()
+        insulation_area = self.calculate_insulation_area_1d_1d_1d_quadrupole()
         self.define_element_constant(element_number=element_number, element_constant=insulation_area)
         self.define_element_density(element_number=element_number, value=mat.g10_dens)
         g10_therm_cond = mat.calculate_g10_therm_cond()
@@ -129,9 +131,36 @@ class AnsysCommands1D1D1D(AnsysCommands):
         else:
             return 1.0
 
+    def calculate_insulation_area_1d_1d_1d_quadrupole(self):
+        if self.factory.get_number_of_windings() != 1:
+            strand_area = math.pi / 4.0 * AnsysCommands1D1D1D.STRAND_DIAMETER ** 2.0
+            winding_area = AnsysCommands1D1D1D.WINDING_SIDE ** 2.0
 
+            number_of_windings_in_layer = self.factory.get_number_of_windings_in_reel()
+            number_of_layers = self.factory.get_number_of_windings() / number_of_windings_in_layer
 
+            radius = self.COIL_INITIAL_RADIUS
 
+            coil_total_length = 0.0
+            for i in range(int(number_of_layers)):
+                coil_total_length += (2.0*(self.COIL_LONG_SIDE+self.COIL_SHORT_SIDE) + math.pi*radius**2.0)*number_of_windings_in_layer
+                radius += AnsysCommands1D1D1D.WINDING_SIDE
+
+            G10_total_volume = coil_total_length*(winding_area-strand_area)
+            number_divisions_in_winding = (2.0*self.factory.get_division_long_side()+2.0*self.factory.get_division_short_side()+self.factory.get_division_radius()*4.0)
+
+            number_of_transverse_insulation_elements_1 = (number_divisions_in_winding+1.0)*(number_of_windings_in_layer-1)*number_of_layers
+            number_of_transverse_insulation_elements_2 = (number_divisions_in_winding+1.0)*(number_of_layers-1)*number_of_windings_in_layer
+
+            total_number_of_G10_elements = number_of_transverse_insulation_elements_1+number_of_transverse_insulation_elements_2
+            volume_per_G10_element = G10_total_volume / total_number_of_G10_elements
+            G10_element_length = self.factory.get_transverse_dimension_winding() * 1000.0  # [mm]
+            G10_element_area = volume_per_G10_element / G10_element_length  # [mm2]
+            G10_element_area_meters2 = G10_element_area * 10.0 ** (-6.0)  # [m2]
+            print("G10_element_area = {} [m2]".format(G10_element_area_meters2))
+            return G10_element_area_meters2
+        else:
+            return 1.0
 
     # def input_material_properties(self):
     #     print("________________ \nMaterial properties are being uploaded...")
