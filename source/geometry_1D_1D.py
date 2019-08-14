@@ -25,9 +25,13 @@ class Geometry1D1D(Geometry):
         self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
         self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes(windings_lengths=self.center_plane_position, number_of_windings=self.factory.get_number_of_windings())
 
-        print("Hello")
-
     def retrieve_winding_numbers_and_quenched_nodes(self, x_down_node, x_up_node):
+        """
+        Checks which windings belong to the quenched front and divides it into the windings of imaginary 1D coil
+        :param x_down_node: lower quench front node of imaginary 1D coil as integer
+        :param x_up_node: upper quench front nod of imaginary 1D coil as integer
+        :return: dictionary; key: winding%number%, value: list of upper and lower quench front node of imaginary 1D coil
+        """
         quenched_winding_numbers = self.retrieve_quenched_winding_numbers_from_quench_fronts(self.coil_data, x_down_node, x_up_node)
         dict_quenched_fronts = {}
         if len(quenched_winding_numbers) == 1:

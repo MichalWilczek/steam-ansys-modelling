@@ -48,6 +48,11 @@ class Geometry(object):
 
     @staticmethod
     def make_one_list_from_list_of_lists(list_of_lists):
+        """
+        Creates one single list out of lists of lists
+        :param list_of_lists: list of lists
+        :return: one list
+        """
         flat_list = []
         for list in list_of_lists:
             for item in list:
@@ -56,6 +61,11 @@ class Geometry(object):
 
     @staticmethod
     def remove_repetitive_values_from_list(mylist):
+        """
+        Removes repetitve values from list
+        :param mylist: list
+        :return: list without repetitions
+        """
         return list(dict.fromkeys(mylist))
 
     @staticmethod
@@ -176,7 +186,7 @@ class Geometry(object):
     @staticmethod
     def create_dict_with_imaginary_nodes(windings_lengths, number_of_windings):
         """
-
+        Some comment needed to be added !!!
         """
         imaginary_node = 1
         coil_data = {}

@@ -223,18 +223,3 @@ class Plots(object):
         filename = "initial_temperature_distribution.png"
         fig.savefig(filename)
         return fig
-
-# Plots = Plots()
-# Plots.plot_resistive_voltage(voltage=1.0, time_step=0.015, iteration=0)
-# Plots.plot_resistive_voltage(voltage=1.0, time_step=0.045, iteration=1)
-
-
-
-
-
-
-
-
-
-
-
