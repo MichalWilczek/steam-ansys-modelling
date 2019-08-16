@@ -1,6 +1,7 @@
 
 import time
 from source.ansys import AnsysCommands
+from source.ansys_table import Table
 import math
 
 class AnsysCommands1D1D1D(AnsysCommands):
@@ -21,34 +22,51 @@ class AnsysCommands1D1D1D(AnsysCommands):
         data.write_text('division_long_side =' + str(self.factory.get_division_long_side()))
         data.write_text('division_short_side =' + str(self.factory.get_division_short_side()))
         data.write_text('division_radius =' + str(self.factory.get_division_radius()))
-        data.write_text('number_of_windings =' + str(self.factory.get_number_of_windings()))
         data.write_text('number_of_windings_in_reel =' + str(self.factory.get_number_of_windings_in_reel()))
         data.write_text('elem_per_line =' + str(1))
         data.write_text('transverse_dimension_winding =' + str(self.factory.get_transverse_dimension_winding()))
         data.write_text('transverse_division_insulation =' + str(self.factory.get_transverse_division_insulation()))
         data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d_quadrupole()))
+
+        data.write_text('division_per_winding = ' + str(self.factory.get_division_per_winding()))
+        data.write_text('length_per_winding = ' + str(self.factory.get_length_per_winding()))
         self.wait_for_process_to_finish(data)
         time.sleep(2)
 
-    def input_winding_non_quenched_material_properties(self, magnetic_field_map):
+    def input_winding_non_quenched_material_properties(self, magnetic_field_map, element_name="link68"):
+        """
+        Inputs material properties separately for each winding as a function of magnetic field strength, resistivity negliglible
+        :param magnetic_field_map: dictionary; key: winding+%number%, value: magnetic value as float
+        :param element_name: ansys 1D element name to be input
+        """
         self.enter_preprocessor()
         for i in range(len(magnetic_field_map.keys())):
             mat = self.choose_material_repository()
             magnetic_field = magnetic_field_map["winding"+str(i+1)]
-            self.define_element_type(element_number=i+1, element_name="link68")
-            equivalent_winding_area = mat.eq_winding_cu_area(AnsysCommands1D1D1D.STRAND_DIAMETER*0.001)
-            self.define_element_constant(element_number=i+1, element_constant=equivalent_winding_area)  # need to calculate the area
+            equivalent_winding_area = mat.reduced_wire_area(AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
+            if element_name == "fluid116":
+                self.define_element_type_with_keyopt(element_number=i + 1, element_name=element_name, keyopt=1)
+                equivalent_winding_diameter = mat.reduced_wire_diameter(wire_diameter=AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
+                self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_diameter)
+                self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
+            elif element_name == "link33":
+                self.define_element_type(element_number=i + 1, element_name=element_name)
+                self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
             self.define_element_density(element_number=i+1, value=mat.cu_dens)
             cu_rho = 1.0e-16
-            cu_therm_cond = mat.calculate_cu_thermal_cond(magnetic_field)
+            cu_therm_cond = mat.calculate_cu_thermal_cond(magnetic_field, rrr=mat.rrr)
             winding_cp = mat.calculate_winding_eq_cp(magnetic_field)
             for j in range(mat.temp_min, mat.temp_max, mat.temp_step):
                 self.define_temperature_for_material_property(temperature=j)
-                self.define_element_resistivity(element_number=i+1, value=cu_rho)
                 self.define_element_conductivity(element_number=i+1, value=cu_therm_cond[j, 1])
                 self.define_element_heat_capacity(element_number=i+1, value=winding_cp[j, 1])
+                if element_name == "link68":
+                    self.define_element_resistivity(element_number=i + 1, value=cu_rho)
 
     def input_insulation_material_properties(self):
+        """
+        Inputs material properties for the insulation, in this case G10
+        """
         self.enter_preprocessor()
         mat = self.choose_material_repository()
         element_number = 2*self.factory.get_number_of_windings() + 1
@@ -63,29 +81,67 @@ class AnsysCommands1D1D1D(AnsysCommands):
             self.define_element_conductivity(element_number=element_number, value=g10_therm_cond[j, 1])
             self.define_element_heat_capacity(element_number=element_number, value=g10_cp[j, 1])
 
-    def input_winding_quench_material_properties(self, magnetic_field_map, winding_number):
+    def input_winding_quench_material_properties(self, magnetic_field_map, winding_number, element_name="link68"):
+        """
+        Inputs material properties separately for each winding as a function of magnetic field strength,
+        coil with resistivity of copper
+        :param magnetic_field_map: dictionary; key: winding+%number%, value: magnetic value as float
+        :param element_name: ansys 1D element name to be input
+        """
         self.enter_preprocessor()
         magnetic_field = magnetic_field_map["winding"+str(winding_number)]
         element_number = self.factory.get_number_of_windings() + winding_number
         mat = self.choose_material_repository()
-        self.define_element_type(element_number=element_number, element_name="link68")
-        equivalent_winding_area = mat.eq_winding_cu_area(AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
+        self.define_element_type(element_number=element_number, element_name=element_name)
+        equivalent_winding_area = mat.reduced_wire_area(AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
         self.define_element_constant(element_number=element_number, element_constant=equivalent_winding_area)  # need to calculate the area
         self.define_element_density(element_number=element_number, value=mat.cu_dens)
         cu_rho = mat.calculate_cu_rho(magnetic_field)
-        cu_therm_cond = mat.calculate_cu_thermal_cond(magnetic_field)
+        cu_therm_cond = mat.calculate_cu_thermal_cond(magnetic_field, rrr=mat.rrr)
         winding_cp = mat.calculate_winding_eq_cp(magnetic_field)
         for j in range(mat.temp_min, mat.temp_max, mat.temp_step):
             self.define_temperature_for_material_property(temperature=j)
-            self.define_element_resistivity(element_number=element_number, value=cu_rho[j, 1])
             self.define_element_conductivity(element_number=element_number, value=cu_therm_cond[j, 1])
             self.define_element_heat_capacity(element_number=element_number, value=winding_cp[j, 1])
+            if element_name == "link68":
+                self.define_element_resistivity(element_number=element_number, value=cu_rho[j, 1])
 
-    def input_geometry(self):
+    def input_heat_generation_curve(self, magnetic_field):
+        self.enter_preprocessor()
+        mat = self.choose_material_repository()
+        heat_gen_array = mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER,
+                                                     current=self.factory.get_current())
+        filename = "HGEN_Table"
+        filename_path = self.analysis_directory + "\\" + filename
+        hgen = Table(filename_path, ext='.inp')
+        hgen.load('hgen_table', heat_gen_array[:, 1], [heat_gen_array[:, 0]])
+        hgen.write(['HGEN'])
+        self.wait_for_process_to_finish(hgen)
+        hgen.close()
+        self.input_file(filename=filename, extension="inp")
+
+    def input_heat_generation_table(self, magnetic_field):
+        self.enter_preprocessor()
+        mat = self.choose_material_repository()
+        heat_gen_array = mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER,
+                                                     current=self.factory.get_current())
+        self.create_dim_table(dim_name="heatgen", dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
+        self.fill_dim_table(dim_name="heatgen", row=0, column=1, value=0.0)
+        for i in range(len(heat_gen_array[:, 0])):
+            self.fill_dim_table(dim_name="heatgen", row=i+1, column=1, value=0.0)
+
+    def input_geometry(self, filename='1D_1D_1D_Geometry_quadrupole'):
+        """
+        Inputs prepared file with geometry to ANSYS environment
+        :param filename: geometry file name as string
+        """
         print("________________ \nAnsys geometry is being uploaded...")
-        return self.input_file(filename='1D_1D_1D_Geometry_quadrupole', extension='inp', add_directory='Input_Files')
+        self.input_file(filename=filename, extension='inp', add_directory='Input_Files')
 
     def input_solver(self):
+        """
+        Inputs prepared file with APDL solver
+        """
         self.input_file(filename='1D_1D_1D_Solve_Get_Temp', extension='inp', add_directory='input_files')
 
     def set_ground_in_analysis(self, class_geometry):
@@ -162,12 +218,12 @@ class AnsysCommands1D1D1D(AnsysCommands):
         else:
             return 1.0
 
-    # def input_material_properties(self):
-    #     print("________________ \nMaterial properties are being uploaded...")
-    #     analysis_type = self.factory.get_material_properties_type()
-    #     if analysis_type == "linear":
-    #         self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Linear', extension='inp',
-    #                         add_directory='Input_Files')
-    #     elif analysis_type == "nonlinear":
-    #         self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Nonlinear', extension='inp',
-    #                         add_directory='Input_Files')
+    def input_material_properties_file_old(self):
+        print("________________ \nMaterial properties are being uploaded...")
+        analysis_type = self.factory.get_material_properties_type()
+        if analysis_type == "linear":
+            self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Linear', extension='inp',
+                            add_directory='Input_Files')
+        elif analysis_type == "nonlinear":
+            self.input_file(filename='1D_1D_1D_Material_Properties_Superconducting_Nonlinear', extension='inp',
+                            add_directory='Input_Files')

@@ -10,19 +10,19 @@
     "division_short_side": 60,
     "division_radius": 40,
 
-    "number_of_windings": 20,
-    "number_of_windings_in_reel": 5,
+    "number_of_windings": 1,
+    "number_of_windings_in_reel": 1,
 
     "transverse_division_insulation": 5,
     "transverse_dimension_winding": 0.000941,
     "transverse_division_winding": 4,
 
-    "length_per_winding": 1.0,
-    "division_per_winding": 100,
+    "length_per_winding": 10.0,
+    "division_per_winding": 1000,
 
-    "quench_init_pos": 0.5,
+    "quench_init_pos": 5.0,
     "quench_init_length": 0.2,
-    "total_time": 0.15,
+    "total_time": 1.0,
     "time_division": 20.0,
 
     "current": 86.3,
@@ -30,7 +30,8 @@
     "initial_peak_temperature": 20.0,
 
     "winding_plane_max_number_nodes": 5,
-    "transverse_dimension_insulation": 0.0
+    "transverse_dimension_insulation": 0.0,
+    "electric_analysis": 0
 }
 
 

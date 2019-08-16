@@ -5,7 +5,7 @@ import numpy as np
 class MaterialsLinear(Materials):
 
     def calculate_cu_rho(self, *args):
-        temperature_profile = self.create_temperature_step()
+        temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         cu_rho_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             cu_rho_array[i, 0] = temperature_profile[i]
@@ -15,7 +15,7 @@ class MaterialsLinear(Materials):
         return cu_rho_array
 
     def calculate_cu_thermal_cond(self, *args):
-        temperature_profile = self.create_temperature_step()
+        temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         cu_thermal_cond_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             cu_thermal_cond_array[i, 0] = temperature_profile[i]
@@ -25,7 +25,7 @@ class MaterialsLinear(Materials):
         return cu_thermal_cond_array
 
     def calculate_winding_eq_cp(self, *args):
-        temperature_profile = self.create_temperature_step()
+        temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         winding_cp_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             winding_cp_array[i, 0] = temperature_profile[i]
@@ -35,7 +35,7 @@ class MaterialsLinear(Materials):
         return winding_cp_array
 
     def calculate_g10_therm_cond(self):
-        temperature_profile = self.create_temperature_step()
+        temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         g10_therm_cond_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             g10_therm_cond_array[i, 0] = temperature_profile[i]
@@ -45,7 +45,7 @@ class MaterialsLinear(Materials):
         return g10_therm_cond_array
 
     def calculate_g10_cp(self):
-        temperature_profile = self.create_temperature_step()
+        temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         g10_cp_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             g10_cp_array[i, 0] = temperature_profile[i]

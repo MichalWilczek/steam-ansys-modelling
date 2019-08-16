@@ -23,11 +23,21 @@ class QuenchFront:
         self.x_down_previous_node = None
 
     def calculate_quench_front_position(self, t_step, min_length, max_length):
+        """
+        Calculates position of quench at each time step and prints the data
+        :param t_step: time step as float
+        :param min_length: max length of the coil as float
+        :param max_length: max length of the coil as float
+        """
         self.calculate_q_front_pos_down(t_step=t_step, min_length=min_length)
         self.calculate_q_front_pos_up(t_step=t_step, max_length=max_length)
         self.position_to_string()
 
     def convert_quench_front_to_nodes(self, coil_length):
+        """
+        Converts quench front position to nodes
+        :param coil_length: imaginary 1D coil geometry
+        """
         self.front_down_to_node(coil_length=coil_length)
         self.front_up_to_node(coil_length=coil_length)
         self.node_to_string()

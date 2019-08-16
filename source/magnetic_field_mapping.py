@@ -26,6 +26,10 @@ class MagneticMap(object):
         self.interpol_error_plot = self.plot_error_between_meas_and_interpolation()
 
     def assign_magnetic_field_to_windings(self):
+        """
+        Calculates magnetic field strength in each winding based on interpolation function
+        :return: dictionary; key: winding%number%, value: magnetic field strength as float
+        """
         winding_main_dict = {}
         pos_x_win = self.pos_x_winding
         pos_y_wind = self.pos_y_winding
@@ -37,12 +41,21 @@ class MagneticMap(object):
             winding_main_dict["winding"+str(i+1)] = wind_data
         return winding_main_dict
 
-    def load_magnetic_field_map(self):
-        os.chdir(self.DIRECTORY)
-        magnetic_map = np.loadtxt(self.FILENAME, skiprows=8)
+    @staticmethod
+    def load_magnetic_field_map():
+        """
+        Loads file with magnetic field from file
+        :return: numpy array 2D
+        """
+        os.chdir(MagneticMap.DIRECTORY)
+        magnetic_map = np.loadtxt(MagneticMap.FILENAME, skiprows=8)
         return magnetic_map
 
     def create_interpolation_f_magnetic_field(self):
+        """
+        Creates interpolation function for rectangular mesh
+        :return: interpolation function
+        """
         x_meas = (self.mag_map[:, 0] - self.mag_map[:, 0].min())[:20]
         y_meas = (self.mag_map[:, 1] - self.mag_map[:, 1].min())[0::20]
         B_field_meas = self.mag_map[:, 5]
@@ -50,27 +63,20 @@ class MagneticMap(object):
         return interpolate.RectBivariateSpline(y_meas, x_meas, B_field_meas_grid, kx=2, ky=2)
 
     def create_interpolated_mag_field_matrix(self):
+        """
+        Creates numpy array where with interpolated magnetic field strength based on windings' position
+        :return: numpy array
+        """
         f = self.create_interpolation_f_magnetic_field()
         pos_x_winding = self.winding_x_pos_list()
         pos_y_winding = self.winding_y_pos_list()
         matrix_interpol = f(pos_y_winding, pos_x_winding)
         return matrix_interpol
 
-    def plot_real_data(self):
-        x_axis = self.mag_map[:, 0] - self.mag_map[:, 0].min()
-        y_axis = self.mag_map[:, 1] - self.mag_map[:, 1].min()
-        B_field = self.mag_map[:, 5]
-        x = x_axis.reshape(20, 20)
-        y = y_axis.reshape(20, 20)
-        z = B_field.reshape(20, 20)
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.plot_wireframe(x, y, z, rstride=2, cstride=3)
-        ax.view_init(elev=30, azim=40)
-        ax.dist = 10
-        plt.show()
-
     def plot_interpolated_function(self):
+        """
+        Plots a 3D plot with magnetic field interpolation function over an x, y - coordinates
+        """
         pos_x_winding = self.winding_x_pos_list()
         array_x = pos_x_winding
         for i in range(self.NUMBER_TURNS_IN_LAYER-1):
@@ -94,19 +100,34 @@ class MagneticMap(object):
         plt.savefig(filename, dpi=200)
         plt.show()
 
-    def winding_y_pos_list(self):
-        init_pos_x = self.WINDING_WIDTH / 2.0
-        number_turns_in_layer = self.NUMBER_TURNS_IN_LAYER
-        array = np.arange(init_pos_x, self.WINDING_WIDTH*number_turns_in_layer+init_pos_x, self.WINDING_WIDTH)
+    @staticmethod
+    def winding_y_pos_list():
+        """
+        Creates a horizontal array with y-position of a consecutive magnet layer
+        :return: numpy array with one row
+        """
+        init_pos_x = MagneticMap.WINDING_WIDTH / 2.0
+        number_turns_in_layer = MagneticMap.NUMBER_TURNS_IN_LAYER
+        array = np.arange(init_pos_x, MagneticMap.WINDING_WIDTH*number_turns_in_layer+init_pos_x,
+                          MagneticMap.WINDING_WIDTH)
         return array
 
-    def winding_x_pos_list(self):
-        init_pos_x = self.WINDING_WIDTH / 2.0
-        number_layers = self.NUMBER_LAYERS
-        array = np.arange(init_pos_x, self.WINDING_WIDTH*number_layers+init_pos_x, self.WINDING_WIDTH)
+    @staticmethod
+    def winding_x_pos_list():
+        """
+        Creates a horizontal array with x-position of a consecutive magnet layer
+        :return: numpy array with one row
+        """
+        init_pos_x = MagneticMap.WINDING_WIDTH / 2.0
+        number_layers = MagneticMap.NUMBER_LAYERS
+        array = np.arange(init_pos_x, MagneticMap.WINDING_WIDTH*number_layers+init_pos_x, MagneticMap.WINDING_WIDTH)
         return array
 
     def make_magnetic_contour_plot(self):
+        """
+        Creates contour map of magnetic field distribution in the magnet cross-section
+        :return: plot instance
+        """
         x_axis = self.mag_map[:, 0] - self.mag_map[:, 0].min()
         y_axis = self.mag_map[:, 1] - self.mag_map[:, 1].min()
         B_field = self.mag_map[:, 5]
@@ -125,6 +146,10 @@ class MagneticMap(object):
         return Quad_mag_field_contour
 
     def make_magnetic_colour_plot(self):
+        """
+        Creates colour map of magnetic field distribution in the magnet cross-section
+        :return: plot instance
+        """
         x_axis = self.mag_map[:, 0] - self.mag_map[:, 0].min()
         y_axis = self.mag_map[:, 1] - self.mag_map[:, 1].min()
         B_field = self.mag_map[:, 5]
@@ -133,7 +158,6 @@ class MagneticMap(object):
         z = B_field.reshape(20, 20)
         Quad_mag_field_colour = plt.contourf(x, y, z, 20)
         plt.axis('equal')
-        # plt.title('Magnetic field contour map')
         plt.xlabel("x-direction [mm]")
         plt.ylabel("y-direction [mm]")
         filename = "Quadrupole_Magnetic_Colour_plot.png"
@@ -144,6 +168,10 @@ class MagneticMap(object):
         return Quad_mag_field_colour
 
     def plot_error_between_meas_and_interpolation(self):
+        """
+        Creates colour map with relative error between interpolation function and measurements from analysis
+        :return: plot instance
+        """
         x_axis = self.mag_map[:, 0] - self.mag_map[:, 0].min()
         y_axis = self.mag_map[:, 1] - self.mag_map[:, 1].min()
         B_field = self.mag_map[:, 5]
@@ -169,6 +197,10 @@ class MagneticMap(object):
         return quad_mag_error_colour
 
     def make_winding_pos_map(self):
+        """
+        Plots winding positions in x-y Cartesian coordinate system
+        :return: plot instance
+        """
         pos_x = self.pos_x_winding
         pos_y = self.pos_y_winding
         fig = plt.figure()
@@ -185,10 +217,15 @@ class MagneticMap(object):
         plt.show()
         return plot
 
-    def make_winding_pos_x(self):
+    @staticmethod
+    def make_winding_pos_x():
+        """
+        Creates vertical array where each row represents x_position of a winding in numerical order
+        :return: numpy array, 1st column x_pos of winding as float
+        """
         init_pos_x = 0.941 / 2.0
-        number_turns_in_layer = self.NUMBER_TURNS_IN_LAYER
-        number_layers = self.NUMBER_LAYERS
+        number_turns_in_layer = MagneticMap.NUMBER_TURNS_IN_LAYER
+        number_layers = MagneticMap.NUMBER_LAYERS
         pos_x = np.zeros((number_turns_in_layer * number_layers, 1))
         wind_counter_x = 1
         for i in range(number_layers):
@@ -198,9 +235,14 @@ class MagneticMap(object):
             init_pos_x += 0.941
         return pos_x
 
-    def make_winding_pos_y(self):
-        number_turns_in_layer = self.NUMBER_TURNS_IN_LAYER
-        number_layers = self.NUMBER_LAYERS
+    @staticmethod
+    def make_winding_pos_y():
+        """
+        Creates vertical array where each row represents y_position of a winding in numerical order
+        :return: numpy array, 1st column y_pos of winding as float
+        """
+        number_turns_in_layer = MagneticMap.NUMBER_TURNS_IN_LAYER
+        number_layers = MagneticMap.NUMBER_LAYERS
         pos_y = np.zeros((number_turns_in_layer * number_layers, 1))
         wind_counter_y = 1
         for i in range(0, number_layers, 2):

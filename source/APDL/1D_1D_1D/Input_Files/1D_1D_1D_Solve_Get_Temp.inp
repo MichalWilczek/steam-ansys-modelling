@@ -13,11 +13,13 @@ allsel
 *mwrite,node_Temp,Temperature_Data,txt
 (2E20.10)
 
+*if,electric_analysis,eq,1,then
 *get,resistive_voltage,node,1,volt
 *cfopen,Resistive_Voltage,txt
 *vwrite,resistive_voltage
 (1(ES16.7))
 *cfclose
+*endif
 
 ! added 30.07.2019
 /post1
@@ -54,6 +56,7 @@ plnsol,temp
 /rename,Quench000,png,,STRCAT('Coil-Nodal-Temp',chrval(time_step)),png,
 /delete,Quench001,png
 
+*if,electric_analysis,eq,1,then
 /SHOW,png,,0
 plnsol,volt
 /GFILE,1000,
@@ -62,7 +65,7 @@ plnsol,volt
 /DEVICE,VECTOR,0
 /rename,Quench000,png,,STRCAT('Coil-Nodal-Volt',chrval(time_step)),png,
 /delete,Quench001,png
-
+*endif
 
 *cfopen,Process_Finished,txt
 *vwrite,1

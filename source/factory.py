@@ -95,6 +95,9 @@ class AnalysisBuilder(object):
     def get_transverse_division_insulation(self):
         return self.parameters['transverse_division_insulation']
 
+    def get_electric_analysis(self):
+        return self.parameters['electric_analysis']
+
 
 class AnalysisDirectory(object):
 

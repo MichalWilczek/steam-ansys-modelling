@@ -1,11 +1,10 @@
 
 import numpy as np
 from source.factory import AnalysisDirectory, AnalysisBuilder
+from source.material_properties import Materials
 
 
-class QuenchDetect:
-
-    MAGNETIC_FIELD_STRENGTH = 2.88
+class QuenchDetect(Materials):
 
     def __init__(self, coil_length, npoints, directory=None):
         """
@@ -13,6 +12,7 @@ class QuenchDetect:
         :param directory: analysis_directory as string
         :param npoints: number of nodes in geometry as integer
         """
+        super().__init__()
         self.coil_length = coil_length
         self.factory = AnalysisBuilder()
         self.npoints = npoints
@@ -22,7 +22,7 @@ class QuenchDetect:
         else:
             self.analysis_directory = directory
 
-    def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field=MAGNETIC_FIELD_STRENGTH):
+    def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field):
         """
         :param input_quench_front_vector: list of QuenchFront objects
         :param temperature_profile_file: file with nodal temperature as string
@@ -30,7 +30,7 @@ class QuenchDetect:
         :return: list of new quench fronts positions in meters
         """
         input_quench_front_vector_sorted = QuenchDetect.sort_input_quench_front_vector(input_quench_front_vector)
-        critical_temperature = QuenchDetect.calculate_critical_temperature(magnetic_field=magnetic_field)
+        critical_temperature = self.calculate_critical_temperature(magnetic_field=magnetic_field)
         temperature_profile_sliced = QuenchDetect.slice_temperature_profile(input_quench_front_vector=input_quench_front_vector_sorted, temperature_profile=temperature_profile)
         temp_profile_sliced_quench_detection = QuenchDetect.find_quenched_nodes(sliced_temperature_profile=temperature_profile_sliced, critical_temperature=critical_temperature)
         new_quenched_fronts_before_rejection = QuenchDetect.find_new_quench_fronts(quenched_nodes=temp_profile_sliced_quench_detection)
@@ -47,17 +47,6 @@ class QuenchDetect:
         :return: list of QuenchFront objects sorted from lowest x_down to highest x_down
         """
         return sorted(input_quench_front_vector, key=lambda QuenchFront: QuenchFront.x_down)
-
-    @staticmethod
-    def calculate_critical_temperature(magnetic_field=MAGNETIC_FIELD_STRENGTH):
-        """
-        :param magnetic_field: magnetic field strength as float
-        :return: critical temperature as float
-        """
-        critical_temperature_0 = 9.2              # [K]
-        critical_magnetic_field_0 = 14.5          # [T]
-        critical_temperature = critical_temperature_0*(1.0-magnetic_field/critical_magnetic_field_0)**0.59
-        return critical_temperature
 
     @staticmethod
     def slice_temperature_profile(input_quench_front_vector, temperature_profile):

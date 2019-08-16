@@ -162,6 +162,12 @@ class Plots(object):
         return fig
 
     def plot_resistive_voltage(self, voltage, time_step, iteration):
+        """
+        Plots resistive voltage as a function of time
+        :param voltage: voltage value as float
+        :param time_step: time step as float
+        :param iteration: iteration number as integer
+        """
         if iteration == 0:
             self.voltage_fig = plt.figure()
             self.voltage_plot = self.voltage_fig.add_subplot(111)
@@ -202,22 +208,22 @@ class Plots(object):
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
 
-    def save_list_to_file(self, my_list, filename):
-        os.chdir(self.directory)
-        with open(filename, 'w') as f:
-            for item in my_list:
-                f.write("%s\n" % item)
-
     @staticmethod
-    def plot_gaussian_temperature_distribution(gaussian_distribution, coil_geometry):
-        # os.chdir(self.directory)
-        gaussian_plot_array = np.column_stack((coil_geometry[:, 1], gaussian_distribution[:, 1]))
+    def plot_gaussian_temperature_distribution(temperature_distribution, coil_geometry):
+        """
+        Plots the initial temperature distribution set in ANSYS
+        :param temperature_distribution: temperature profile numpy array; 1st column: node number as integer,
+        2nd column: temperature as float
+        :param coil_geometry: 1D imaginary coil geometry as numpy array
+        :return: instance with a plot
+        """
+        temp_plot_array = np.column_stack((coil_geometry[:, 1], temperature_distribution[:, 1]))
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.set_xlabel('Position [m]')
         ax.set_ylabel('Initial Temperature [K]')
         plt.title("Initial temperature distribution")
-        ax.plot(gaussian_plot_array[:, 0], gaussian_plot_array[:, 1])
+        ax.plot(temp_plot_array[:, 0], temp_plot_array[:, 1])
         plt.grid(True)
         plt.show()
         filename = "initial_temperature_distribution.png"

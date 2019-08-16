@@ -21,11 +21,18 @@ class AnsysCommands(object):
 
     # functions responsible for deleting unnecessary ansys files
     def delete_old_files(self):
+        """
+        Deletes unnecessary files saved during previous analyses
+        """
         self.delete_file(directory=self.analysis_directory, filename='Variable_Input.inp')
         self.delete_file(directory=self.analysis_directory, filename='File_Position.txt')
         self.delete_file(directory=self.analysis_directory, filename='Process_Finished.txt')
 
-    def choose_material_repository(self):
+    def choose_material_repository(self, ):
+        """
+        Chooses between linear and nonlinear material properties set in json file
+        :return: Class with material properties
+        """
         material_option = self.factory.get_material_properties_type()
         if material_option == "linear":
             return MaterialsLinear()
@@ -34,6 +41,12 @@ class AnsysCommands(object):
 
     @staticmethod
     def create_artificial_magnetic_field_map(number_of_windings, magnetic_field=2.88):
+        """
+        Creates artificial magnetic field map in case when magnetic field is assumed to be constant
+        :param number_of_windings: integer
+        :param magnetic_field: float
+        :return: dictionary; key: winding%number%, value: magnetic field as float
+        """
         magnetic_field_map = {}
         for i in range(number_of_windings):
             magnetic_field_map["winding"+str(i+1)] = magnetic_field
@@ -41,6 +54,11 @@ class AnsysCommands(object):
 
     @staticmethod
     def create_variable_table_method(directory):
+        """
+        Creates a Class object
+        :param directory: analysis_directory as string
+        :return: Class for creation of ANSYS files
+        """
         filename = directory
         filename += '/Variable_Input'
         extension = 'inp'
@@ -48,24 +66,27 @@ class AnsysCommands(object):
 
     @staticmethod
     def wait_for_process_to_finish(data):
+        """
+        Writes down in the opened file the APDL commands to create the file named "Process_Finished.txt"
+        :param data: Class object to create APDL commands .txt file
+        """
         data.write_text('*cfopen,Process_Finished,txt')  # for reading purposes between ansys and python
         data.write_text('*vwrite,1')
         data.write_text('(1(ES16.7))')
         data.write_text('*cfclose')
 
-    @staticmethod
-    def variable_file_invariable_input(data):
+    def variable_file_invariable_input(self, data):
         """
+        :param data: Class object to create APDL commands .txt file
         Creates an input file with parameters used by ANSYS
         """
-        # changed 08.08.2019
         data.write_text('/clear')
         data.write_text('/title,Quench_Analysis_' + AnalysisBuilder().get_dimensionality())
         data.write_text('/prep7')
         data.write_text('/nerr,999999999999')
-        # added 30.07.2019
         data.write_text('/graphics,power')
         data.write_text('/show,png')
+        data.write_text('electric_analysis={}'.format(self.factory.get_electric_analysis()))
 
     @staticmethod
     def wait_python(filename, directory, file_length=1):
@@ -94,7 +115,7 @@ class AnsysCommands(object):
     def delete_file(filename, directory):
         """
         Deletes file in directory
-        :param directory:
+        :param directory: analysis directory as string
         :param filename: filename to delete as string
         """
         full_filename = "{}.".format(filename)
@@ -125,7 +146,11 @@ class AnsysCommands(object):
 
     # not needed anymore
     def set_gaussian_initial_temperature_distribution(self, gaussian_temperature_distr):
-
+        """
+        Sets initial temperature to all nodes according to gaussian distribution curve
+        :param gaussian_temperature_distr: temperature distribution numpy array; 1st column: node number as integer,
+         2nd column: temperature as float
+        """
         self.allsel()
         for i in range(len(gaussian_temperature_distr[:, 0])):
             node_number = gaussian_temperature_distr[i, 0]
@@ -133,6 +158,12 @@ class AnsysCommands(object):
             self.mapdl.executeCommandToString("ic,{},temp,{}".format(node_number, temperature))
 
     # general commands
+    def create_dim_table(self, dim_name, dim_type, name1, size1, size2=" ", size3=" "):
+        self.mapdl.executeCommand("*dim,{},{},{},{},{},{}".format(dim_name, dim_type, size1, size2, size3, name1))
+
+    def fill_dim_table(self, dim_name, row, column, value):
+        self.mapdl.executeCommand("{}({},{})={}".format(dim_name, row, column, value))
+
     def clear_all(self):
         self.mapdl.executeCommand("/clear,all,")
 
@@ -193,6 +224,9 @@ class AnsysCommands(object):
     def define_element_type(self, element_number, element_name):
         self.mapdl.executeCommand('et,{},{}'.format(element_number, element_name))
 
+    def define_element_type_with_keyopt(self, element_number, element_name, keyopt):
+        self.mapdl.executeCommand('et,{},{},{}'.format(element_number, element_name, keyopt))
+
     def define_element_constant(self, element_number, element_constant):
         self.mapdl.executeCommand('r,{},{}'.format(element_number, element_constant))
 
@@ -228,6 +262,11 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString("/solu"))
 
     def set_time_step(self, time_step, iteration):
+        """
+        Sets time step and creates APDL variable "time_step" used for further post-processing plotting
+        :param time_step: time step as float
+        :param iteration: current analysis iteration as integer
+        """
         print(self.mapdl.executeCommandToString("time_step={}".format(iteration)))
         print(self.mapdl.executeCommandToString("time,{}".format(time_step)))
 
@@ -247,6 +286,9 @@ class AnsysCommands(object):
     def set_heat_generation_in_elements(self, element_number, value):
         self.mapdl.executeCommand("bfe,{},hgen,,{}".format(element_number, value))
 
+    def set_heat_generation_in_nodes(self, node_number, value):
+        self.mapdl.executeCommand("bf,{},hgen,{}".format(node_number, value))
+
     def set_heat_flow_into_nodes(self, value):
         self.mapdl.executeCommand("f,all,heat,{}".format(value))
 
@@ -265,7 +307,8 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
-        # print(self.mapdl.executeCommandToString('deltim,1e-4,1e-4,1e-3'))
+        print(self.mapdl.executeCommandToString('deltim,1e-5,1e-5,1e-3'))
+        print(self.mapdl.executeCommandToString('deltim,1e-4,1e-4,1e-3'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
         print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal integration (default) into backward Euler formulation
 

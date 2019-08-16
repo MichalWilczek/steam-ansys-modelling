@@ -15,18 +15,23 @@ class Materials(object):
     tc0 = 9.2
     bc20 = 14.5
 
-    cu_dens = 8960.0      # kg/m3
-    # cu_dens = 1.0  # kg/m3
+    c1 = 3449.0
+    c2 = -257.0
+
+    cu_dens = 8960.0      # kg/m3, room temperature of copper
     nb_ti_dens = 6000.0   # kg/m3
-    # nb_ti_dens = 1.0  # kg/m3
-    g10_dens = 1420.0     # kg/m3
+    g10_dens = 1948.0     # kg/m3
     f_cu_f_nbti = 2.2
 
     temp_min = 1        # [K]
     temp_max = 300      # [K}
-    temp_step = 0.01       # [K]
+    temp_step = 1       # [K]
 
     def __init__(self, plotting="no"):
+        """
+        Initialises plot creation if plotting is set to "yes"
+        :param plotting: string, default as "no"
+        """
 
         self.plt = plt
         self.plot = plotting
@@ -45,16 +50,43 @@ class Materials(object):
     def reduced_wire_area(self, wire_diameter):
         return self.wire_area(wire_diameter) * self.f_cu
 
-    def create_temperature_step(self):
+    def reduced_wire_diameter(self, wire_diameter):
+        return (4.0*self.reduced_wire_area(wire_diameter)/math.pi)**0.5
+
+    def calculate_critical_temperature(self, magnetic_field):
+        """
+        :param magnetic_field: magnetic field strength as float
+        :return: critical temperature as float
+        """
+        critical_temperature_0 = self.tc0              # [K]
+        critical_magnetic_field_0 = self.bc20          # [T]
+        critical_temperature = critical_temperature_0*(1.0-magnetic_field/critical_magnetic_field_0)**0.59
+        return critical_temperature
+
+    @staticmethod
+    def create_temperature_step(temp_min, temp_max, temp_step):
+        """
+        Creates temperature values to be input in all material properties functions
+        :param temp_min: minimum temperature as integer
+        :param temp_max: maximum temperature as integer
+        :param temp_step: temperature step as integer
+        :return: list of temperature steps
+        """
         temperature_step_profile = []
-        i = self.temp_min
-        while i <= self.temp_max:
+        i = temp_min
+        while i <= temp_max:
             temperature_step_profile.append(i)
-            i += self.temp_step
+            i += temp_step
         return temperature_step_profile
 
     @staticmethod
     def plot_properties(array, y_axis_name):
+        """
+        Plots material properties
+        :param array: numpy array to be plotted; 1st column: temperature as float, 2nd column: variable value as float
+        :param y_axis_name: variable name as string
+        :return: instance with figure
+        """
         left_boundary = array[0, 0]
         right_boundary = array[len(array) - 1, 0]
         fig = plt.figure()
