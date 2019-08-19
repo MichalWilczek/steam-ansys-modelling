@@ -323,10 +323,3 @@ class Geometry(object):
         Plots.plot_gaussian_temperature_distribution(gaussian_distribution_array, imaginary_1d_geometry)
         return gaussian_distribution_array
 
-# CWD = os.path.dirname(__file__)
-# DIRECTORY = os.path.join(CWD, 'nodes_search')
-# coil_geometry = create_1d_coil_geometry(division=100, filename="File_Position_101nodes_1m.txt", directory=DIRECTORY)
-# Geometry().define_gaussian_temperature_distribution_array(coil_geometry)
-#
-#
-# print(coil_geometry)

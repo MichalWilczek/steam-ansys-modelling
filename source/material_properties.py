@@ -24,7 +24,7 @@ class Materials(object):
     f_cu_f_nbti = 2.2
 
     temp_min = 1        # [K]
-    temp_max = 300      # [K}
+    temp_max = 100      # [K}
     temp_step = 1       # [K]
 
     def __init__(self, plotting="no"):
@@ -80,21 +80,22 @@ class Materials(object):
         return temperature_step_profile
 
     @staticmethod
-    def plot_properties(array, y_axis_name):
+    def plot_properties(array, y_axis_name, x_axis_name='Temperature, [K]'):
         """
         Plots material properties
-        :param array: numpy array to be plotted; 1st column: temperature as float, 2nd column: variable value as float
-        :param y_axis_name: variable name as string
+        :param array: numpy array to be plotted; 1st column: x values as float, 2nd column: y values as float
+        :param y_axis_name: y-axis name as string
+        :param x_axis_name: x-axis name as string set default as 'Temperature, [K]'
         :return: instance with figure
         """
         left_boundary = array[0, 0]
         right_boundary = array[len(array) - 1, 0]
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.set_xlabel('Temperature, [K]')
+        ax.set_xlabel(x_axis_name)
         ax.set_ylabel(y_axis_name)
         plt.xlim(left_boundary, right_boundary)
         ax.plot(array[:, 0], array[:, 1])
         plt.grid(True)
-        plt.show()
+        # plt.show()
         return fig

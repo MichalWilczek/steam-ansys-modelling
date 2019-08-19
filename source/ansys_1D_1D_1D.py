@@ -2,15 +2,10 @@
 import time
 from source.ansys import AnsysCommands
 from source.ansys_table import Table
+from source.polynomial_fit import Polynomials
 import math
 
 class AnsysCommands1D1D1D(AnsysCommands):
-
-    STRAND_DIAMETER = 0.7       # [mm]
-    WINDING_SIDE = 0.941        # [mm]
-    COIL_LONG_SIDE = 413.21     # [mm]
-    COIL_SHORT_SIDE = 126.81    # [mm]
-    COIL_INITIAL_RADIUS = 9.15  # [mm]
 
     def create_variable_file(self):
         """
@@ -27,7 +22,6 @@ class AnsysCommands1D1D1D(AnsysCommands):
         data.write_text('transverse_dimension_winding =' + str(self.factory.get_transverse_dimension_winding()))
         data.write_text('transverse_division_insulation =' + str(self.factory.get_transverse_division_insulation()))
         data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d_quadrupole()))
-
         data.write_text('division_per_winding = ' + str(self.factory.get_division_per_winding()))
         data.write_text('length_per_winding = ' + str(self.factory.get_length_per_winding()))
         self.wait_for_process_to_finish(data)
@@ -48,7 +42,6 @@ class AnsysCommands1D1D1D(AnsysCommands):
                 self.define_element_type_with_keyopt(element_number=i + 1, element_name=element_name, keyopt=1)
                 equivalent_winding_diameter = mat.reduced_wire_diameter(wire_diameter=AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
                 self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_diameter)
-                self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
             elif element_name == "link33":
                 self.define_element_type(element_number=i + 1, element_name=element_name)
                 self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
@@ -128,7 +121,18 @@ class AnsysCommands1D1D1D(AnsysCommands):
         self.create_dim_table(dim_name="heatgen", dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
         self.fill_dim_table(dim_name="heatgen", row=0, column=1, value=0.0)
         for i in range(len(heat_gen_array[:, 0])):
-            self.fill_dim_table(dim_name="heatgen", row=i+1, column=1, value=0.0)
+            self.fill_dim_table(dim_name="heatgen", row=i+1, column=0, value=heat_gen_array[i, 0])
+            self.fill_dim_table(dim_name="heatgen", row=i+1, column=1, value=heat_gen_array[i, 1])
+
+    def input_heat_flow_table(self):
+        self.enter_preprocessor()
+        heat_flow_array = Polynomials.extract_polynomial_function()
+
+        self.create_dim_table(dim_name="heat_flow", dim_type="table", size1=len(heat_flow_array), size2=1, size3=1, name1="time")
+        self.fill_dim_table(dim_name="heat_flow", row=0, column=1, value=0.0)
+        for i in range(len(heat_flow_array[:, 0])):
+            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=0, value=heat_flow_array[i, 0])
+            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=heat_flow_array[i, 1])
 
     def input_geometry(self, filename='1D_1D_1D_Geometry_quadrupole'):
         """
@@ -191,23 +195,17 @@ class AnsysCommands1D1D1D(AnsysCommands):
         if self.factory.get_number_of_windings() != 1:
             strand_area = math.pi / 4.0 * AnsysCommands1D1D1D.STRAND_DIAMETER ** 2.0
             winding_area = AnsysCommands1D1D1D.WINDING_SIDE ** 2.0
-
             number_of_windings_in_layer = self.factory.get_number_of_windings_in_reel()
             number_of_layers = self.factory.get_number_of_windings() / number_of_windings_in_layer
-
             radius = self.COIL_INITIAL_RADIUS
-
             coil_total_length = 0.0
             for i in range(int(number_of_layers)):
                 coil_total_length += (2.0*(self.COIL_LONG_SIDE+self.COIL_SHORT_SIDE) + math.pi*radius**2.0)*number_of_windings_in_layer
                 radius += AnsysCommands1D1D1D.WINDING_SIDE
-
             G10_total_volume = coil_total_length*(winding_area-strand_area)
             number_divisions_in_winding = (2.0*self.factory.get_division_long_side()+2.0*self.factory.get_division_short_side()+self.factory.get_division_radius()*4.0)
-
             number_of_transverse_insulation_elements_1 = (number_divisions_in_winding+1.0)*(number_of_windings_in_layer-1)*number_of_layers
             number_of_transverse_insulation_elements_2 = (number_divisions_in_winding+1.0)*(number_of_layers-1)*number_of_windings_in_layer
-
             total_number_of_G10_elements = number_of_transverse_insulation_elements_1+number_of_transverse_insulation_elements_2
             volume_per_G10_element = G10_total_volume / total_number_of_G10_elements
             G10_element_length = self.factory.get_transverse_dimension_winding() * 1000.0  # [mm]

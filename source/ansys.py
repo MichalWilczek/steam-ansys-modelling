@@ -11,6 +11,12 @@ from source. material_properties_linear import MaterialsLinear
 
 class AnsysCommands(object):
 
+    STRAND_DIAMETER = 0.7       # [mm]
+    WINDING_SIDE = 0.941        # [mm]
+    COIL_LONG_SIDE = 413.21     # [mm]
+    COIL_SHORT_SIDE = 126.81    # [mm]
+    COIL_INITIAL_RADIUS = 9.15  # [mm]
+
     def __init__(self):
         self.factory = AnalysisBuilder()
         self.analysis_directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
@@ -230,6 +236,9 @@ class AnsysCommands(object):
     def define_element_constant(self, element_number, element_constant):
         self.mapdl.executeCommand('r,{},{}'.format(element_number, element_constant))
 
+    def define_element_constants(self, element_number, constant1, constant2):
+        self.mapdl.executeCommand('r,{},{},{}'.format(element_number, constant1, constant2))
+
     def define_element_density(self, element_number, value):
         self.mapdl.executeCommand('mp,dens,{},{}'.format(element_number, value))
 
@@ -307,8 +316,8 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
-        print(self.mapdl.executeCommandToString('deltim,1e-5,1e-5,1e-3'))
-        print(self.mapdl.executeCommandToString('deltim,1e-4,1e-4,1e-3'))
+        # print(self.mapdl.executeCommandToString('deltim,1e-5,1e-5,1e-3'))
+        # print(self.mapdl.executeCommandToString('deltim,1e-4,1e-4,1e-3'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
         print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal integration (default) into backward Euler formulation
 

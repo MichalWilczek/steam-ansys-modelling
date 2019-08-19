@@ -15,7 +15,7 @@ transverse_dimension_winding =0.000941
 transverse_division_insulation =5
 G10_element_area =1.0
 division_per_winding = 1000
-length_per_winding = 10.0
+length_per_winding = 5.0
 *cfopen,Process_Finished,txt
 *vwrite,1
 (1(ES16.7))

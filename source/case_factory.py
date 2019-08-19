@@ -8,6 +8,8 @@ from source.ansys_1D_1D_1D import AnsysCommands1D1D1D
 from source.ansys_2D import AnsysCommands2D
 from source.factory import AnalysisBuilder
 
+from source.material_properties_nonlinear import MaterialsNonLinear
+from source.material_properties_linear import MaterialsLinear
 
 class CaseFactory(AnalysisBuilder):
 
@@ -34,3 +36,15 @@ class CaseFactory(AnalysisBuilder):
             return AnsysCommands2D()
         else:
             raise ValueError(dimensionality)
+
+    def get_material_properties_class(self):
+        """
+        Chooses between linear and nonlinear material properties set in json file
+        :return: Class with material properties
+        """
+        material_option = self.get_material_properties_type()
+        if material_option == "linear":
+            return MaterialsLinear()
+        elif material_option == "nonlinear":
+            return MaterialsNonLinear()
+
