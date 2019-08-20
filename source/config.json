@@ -18,12 +18,13 @@
     "transverse_division_winding": 4,
 
     "length_per_winding": 5.0,
-    "division_per_winding": 1000,
+    "division_per_winding": 2500,
 
-    "quench_init_pos": 10.0,
+    "quench_init_pos": 2.5,
+
     "quench_init_length": 0.2,
-    "total_time": 0.1,
-    "time_division": 10.0,
+    "total_time": 0.14,
+    "time_division": 14.0,
 
     "current": 86.0,
     "initial_temperature": 1.9,

@@ -67,6 +67,18 @@ class Plots(object):
         plt.grid(True)
         return fig
 
+    def save_array(self, filename, array):
+        array_filename = self.directory + "\\" + filename
+        np.savetxt(array_filename, array)
+
+    def write_line_in_file(self, filename, mydata, newfile=True):
+        if newfile:
+            with open(filename, "wb") as f:
+                np.savetxt(f, mydata, delimiter=' ')
+        else:
+            with open(filename, "ab") as f:
+                np.savetxt(f, mydata, delimiter=' ')
+
     @staticmethod
     def save_quench_plot(fig, iteration):
         """
@@ -173,7 +185,7 @@ class Plots(object):
             self.voltage_plot = self.voltage_fig.add_subplot(111)
             self.voltage_plot.set_xlabel('Time [s]')
             self.voltage_plot.set_ylabel('Electric Potential [V]')
-            self.voltage_plot.set_xlim(0, self.factory.get_total_time())
+            self.voltage_plot.set_xlim(0, self.factory.get_total_time()+0.01)
             self.voltage_plot.set_ylim(0, 1.0)
             self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
             plt.grid(True)

@@ -18,7 +18,7 @@ ans.create_variable_file()
 ans.input_file(filename='Variable_Input', extension='inp')
 
 # input of magnetic map onto material properties
-magnetic_map = ans.create_artificial_magnetic_field_map(CaseFactory.get_number_of_windings(), magnetic_field=3.0)
+magnetic_map = ans.create_artificial_magnetic_field_map(CaseFactory.get_number_of_windings(), magnetic_field=2.5)
 ans.input_winding_non_quenched_material_properties(magnetic_map, element_name="fluid116")
 # ans.input_insulation_material_properties()
 
@@ -37,14 +37,15 @@ max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
 
 # user's time stepping vector
 time = ModelInput.power_input_time_stepping()
-q_v_time_array = np.zeros((len(time)-1, 2))
-
 q_det = QuenchDetect(coil_geometry, npoints)
 quench_fronts = []
 quench_state_plots = []
 quench_temperature_plots = []
 
-# initial iteration
+#####################
+# INITIAL TIME STEP #
+#####################
+
 quench_label = 1
 i = 0
 t = time[i]
@@ -59,7 +60,7 @@ if gaussian_init_temp:
     gaussian_initial_temperature = coil_geo.define_gaussian_temperature_distribution_array(coil_geometry, magnetic_field=magnetic_map["winding1"])
     ans.set_gaussian_initial_temperature_distribution(gaussian_initial_temperature)
 else:
-    ans.select_nodes_in_analysis(coil_geo, x_down_node=501, x_up_node=501)
+    ans.select_nodes_in_analysis(coil_geo, x_down_node=1251, x_up_node=1251)
     ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
 
 ans.allsel()
@@ -71,16 +72,33 @@ ans.input_solver()
 # get temperature profile
 temperature_profile = ans.get_temperature_profile(npoints=npoints, class_geometry=coil_geo)
 
-# detect new quench position
+# detect new quench position and calculate quench velocity
+q_v_time_array = np.zeros((1, 3))
 quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field=magnetic_map["winding1"])
 if len(quench_front_new) > 0:
+    pos_x_down = quench_front_new[0][0]
     pos_x_up = quench_front_new[0][1]
-    pos_x_down = quench_front_new[0][1]
+    q_length_up = abs(pos_x_up - CaseFactory.get_quench_init_pos())
+    q_length_down = abs(pos_x_down - CaseFactory.get_quench_init_pos())
+    q_vel = ((q_length_up + q_length_down) / 2.0) / t
+    q_v_time_array[0, 0] = t
+    q_v_time_array[0, 1] = q_length_down + q_length_up
+    q_v_time_array[0, 2] = q_vel
+else:
+    q_v_time_array[0, 0] = t
+    q_v_time_array[0, 1] = 0.0
+    q_v_time_array[0, 2] = 0.0
+
+# write down quench velocity
+if i == 1:
+    Plots.write_line_in_file("Q_V_array.txt", q_v_time_array)
+else:
+    Plots.write_line_in_file("Q_V_array.txt", q_v_time_array, newfile=False)
 
 for qf in quench_front_new:
     quench_fronts = [QuenchFront(x_down=qf[0], x_up=qf[1], label=quench_label)]
 
-# here add the function with resistivity
+# calculate coil resistance
 quenched_winding_list = []
 for qf in quench_fronts:
     # position transformation into nodes
@@ -103,7 +121,16 @@ for qf in quench_fronts:
 
 # plot temperature and quench
 temperature_plot = Plots.plot_and_save_temperature(coil_geometry, temperature_profile, iteration=i, time_step=t)
+Plots.save_array("Temperature_Profile_"+str(i)+".txt", temperature_profile)
 quench_temperature_plots.append(temperature_plot)
+
+# plot resistive voltage
+res_voltage = CaseFactory.get_current()*coil_resistance
+Plots.plot_resistive_voltage(res_voltage, time_step=t, iteration=i)
+res_voltage_array = np.zeros((1, 2))
+res_voltage_array[0, 0] = t
+res_voltage_array[0, 1] = res_voltage
+Plots.write_line_in_file("Res_Voltage.txt", res_voltage_array)
 
 # start calculation after initial time step
 for i in range(1, len(time)):
@@ -123,22 +150,61 @@ for i in range(1, len(time)):
     temperature_profile = ans.get_temperature_profile(npoints=npoints, class_geometry=coil_geo)
 
     # detect new quench position
+    q_v_time_array = np.zeros((1, 3))
+    quench_fronts = []
     quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field=magnetic_map["winding1"])
     if len(quench_front_new) > 0:
-        q_length_up = abs(pos_x_up - q_v_time_array[i-1, 0])
+        pos_x_down = quench_front_new[0][0]
+        pos_x_up = quench_front_new[0][1]
+        q_length_up = abs(pos_x_up - CaseFactory.get_quench_init_pos())
         q_length_down = abs(pos_x_down - CaseFactory.get_quench_init_pos())
         q_vel = ((q_length_up + q_length_down) / 2.0) / t
-        q_v_time_array[i-1, 0] = t
-        q_v_time_array[i-1, 1] = q_vel
-        pos_x_up = quench_front_new[0][1]
-        pos_x_down = quench_front_new[0][1]
+        q_v_time_array[0, 0] = t
+        q_v_time_array[0, 1] = q_length_down + q_length_up
+        q_v_time_array[0, 2] = q_vel
+
+    if i == 1:
+        Plots.write_line_in_file("Q_V_array.txt", q_v_time_array)
+    else:
+        Plots.write_line_in_file("Q_V_array.txt", q_v_time_array, newfile=False)
+
+    for qf in quench_front_new:
+        quench_fronts = [QuenchFront(x_down=qf[0], x_up=qf[1], label=quench_label)]
+
+    # here add the function with resistivity
+    quenched_winding_list = []
+    for qf in quench_fronts:
+        # position transformation into nodes
+        qf.convert_quench_front_to_nodes(coil_geometry)
+        quenched_winding_list.append(
+            coil_geo.retrieve_quenched_winding_numbers_from_quench_fronts(coil_data=coil_geo.coil_data, x_down_node=qf.x_down_node, x_up_node=qf.x_up_node))
+    coil_resistance = 0.0
+    for qf in quench_fronts:
+        qf_resistance = 0.0
+        quench_dict = coil_geo.retrieve_winding_numbers_and_quenched_nodes(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node)
+        for key in quench_dict:
+            winding_number = int(float(key[7 :]))
+            mag_field = magnetic_map["winding" + str(winding_number)]
+            n_down = quench_dict["winding" + str(winding_number)][0]
+            n_up = quench_dict["winding" + str(winding_number)][1]
+            qf_resistance = mat.calculate_qf_resistance(qf_down=n_down, qf_up=n_up, im_temp_profile=temperature_profile,
+                                                        im_coil_geom=coil_geometry, mag_field=mag_field,
+                                                        wire_diameter=ans.STRAND_DIAMETER)
+        coil_resistance += qf_resistance
 
     # plot temperature and quench
     temperature_plot = Plots.plot_and_save_temperature(coil_geometry, temperature_profile, iteration=i, time_step=t)
+    Plots.save_array("Temperature_Profile_" + str(i) + ".txt", temperature_profile)
     quench_temperature_plots.append(temperature_plot)
 
-array_filename = ans.analysis_directory + "\\Q_V_array.txt"
-np.savetxt(array_filename, q_v_time_array)
+    # plot resistive voltage
+    res_voltage = CaseFactory.get_current() * coil_resistance
+    Plots.plot_resistive_voltage(res_voltage, time_step=t, iteration=i)
+    res_voltage_array = np.zeros((1, 2))
+    res_voltage_array[0, 0] = t
+    res_voltage_array[0, 1] = res_voltage
+    Plots.write_line_in_file("Res_Voltage.txt", res_voltage_array, newfile=False)
+
 Plots.create_video(plot_array=quench_temperature_plots, filename='video_temperature_distribution.gif')
 ans.save_analysis()
 ans.terminate_analysis()

@@ -21,7 +21,7 @@ class Geometry1D1D(Geometry):
         self.file_node_position = Geometry.load_file_with_winding_nodes_position(directory=self.directory, filename="Node_Position.txt")
         self.center_plane_position = self.calculate_windings_lengths(position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
         self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position, number_of_windings=self.factory.get_number_of_windings())
-        self.coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
+        self.coil_length_1d = self.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
         self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
         self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes(windings_lengths=self.center_plane_position, number_of_windings=self.factory.get_number_of_windings())
 

@@ -213,8 +213,7 @@ class Geometry(object):
         unique_a = np.unique(array.view([('', array.dtype)] * array.shape[1]))
         return unique_a.view(array.dtype).reshape((unique_a.shape[0], array.shape[1]))
 
-    @staticmethod
-    def retrieve_1d_imaginary_coil(coil_data):
+    def retrieve_1d_imaginary_coil(self, coil_data):
         """
         Retrieves two last columns from coil_data numpy array
         :param coil_data: 4-column numpy array
@@ -224,11 +223,17 @@ class Geometry(object):
         coil_length_1d = coil_data[:, 2:4]
         coil_length_1d = Geometry.unique_rows(coil_length_1d)
         coil_length_1d_sorted = coil_length_1d[coil_length_1d[:, 0].argsort()]
+        self.save_array(directory=self.directory, filename="Im_Coil_Length.txt", array=coil_length_1d_sorted)
         return coil_length_1d_sorted
 
     @staticmethod
     def load_1d_temperature(directory, npoints, filename="Temperature_Data.txt"):
         return Geometry.load_file(analysis_directory=directory, npoints=npoints, filename=filename, file_lines_length=npoints)
+
+    @staticmethod
+    def save_array(directory, filename, array):
+        array_filename = directory + "\\" + filename
+        np.savetxt(array_filename, array)
 
     @staticmethod
     def prepare_ansys_nodes_selection_list(real_nodes_list):
