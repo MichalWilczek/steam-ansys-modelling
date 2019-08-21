@@ -68,9 +68,9 @@ winding_counter = 1
   *do,b,1,number_of_windings/number_of_windings_in_reel
     *do,i,1,number_of_windings_in_reel-1
       kp_number = ((i-1)*kp_per_winding)+1+ kp_no_in_reel
-      type,3
-      real,3
-      mat,3
+      type,number_of_windings*2+1
+      real,number_of_windings*2+1
+      mat,number_of_windings*2+1
       *do,j,kp_number,kp_per_winding+kp_number-1,1
         l,j,j+(kp_per_winding),transverse_division_insulation
         allsel
@@ -90,9 +90,9 @@ winding_counter = 1
 
   *do,i,1,number_of_windings/number_of_windings_in_reel-1
     *do,j,1,number_of_windings_in_reel
-      type,3
-      real,3
-      mat,3
+      type,number_of_windings*2+1
+      real,number_of_windings*2+1
+      mat,number_of_windings*2+1
       *do,k,1,kp_per_winding,1
         l,low_kp_number+(k-1),high_kp_number+(k-1),transverse_division_insulation
         allsel

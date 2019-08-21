@@ -2,7 +2,7 @@
 from source.nodes_search import SearchNodes
 
 
-class QuenchFront:
+class QuenchFront(object):
 
     def __init__(self, x_down, x_up, label):
         """
@@ -10,8 +10,6 @@ class QuenchFront:
         :param x_up: top position of quench front in [m]
         :param label: assigned number to QuenchFront as string
         """
-
-        self.q_v = 1.0            # [m/s]
         self.x_down = x_down
         self.x_up = x_up
         self.x_centre = (x_up+x_down)/2.0
@@ -22,15 +20,15 @@ class QuenchFront:
         self.x_up_previous_node = None
         self.x_down_previous_node = None
 
-    def calculate_quench_front_position(self, t_step, min_length, max_length):
+    def calculate_quench_front_position(self, q_length, min_length, max_length):
         """
         Calculates position of quench at each time step and prints the data
         :param t_step: time step as float
         :param min_length: max length of the coil as float
         :param max_length: max length of the coil as float
         """
-        self.calculate_q_front_pos_down(t_step=t_step, min_length=min_length)
-        self.calculate_q_front_pos_up(t_step=t_step, max_length=max_length)
+        self.calculate_q_front_pos_down(q_length, min_coil_length=min_length)
+        self.calculate_q_front_pos_up(q_length, max_coil_length=max_length)
         self.position_to_string()
 
     def convert_quench_front_to_nodes(self, coil_length):
@@ -48,32 +46,32 @@ class QuenchFront:
     def node_to_string(self):
         return "{}: x_down_node = {}, x_up_node = {}".format(self.label, self.x_down_node, self.x_up_node)
 
-    def calculate_q_front_pos_up(self, t_step, max_length):
+    def calculate_q_front_pos_up(self, q_length, max_coil_length):
         """
         :param t_step: time step as float
         :param max_length: max length of the coil as float
         :return: quench front position in meters in upper direction as float
         """
-        if self.x_up == max_length:
+        if self.x_up == max_coil_length:
             return self.x_up
         else:
-            self.x_up = self.x_up + self.q_v * t_step
-            if self.x_up > max_length:
-                self.x_up = max_length
+            self.x_up = self.x_up + q_length
+            if self.x_up > max_coil_length:
+                self.x_up = max_coil_length
             return self.x_up
 
-    def calculate_q_front_pos_down(self, t_step, min_length):
+    def calculate_q_front_pos_down(self, q_length, min_coil_length):
         """
         :param t_step: time step as float
         :param min_length: max length of the coil as float
         :return: quench front position in meters in lower direction as float
         """
-        if self.x_down == min_length:
+        if self.x_down == min_coil_length:
             return self.x_down
         else:
-            self.x_down = self.x_down - self.q_v * t_step
-            if self.x_down < min_length:
-                self.x_down = min_length
+            self.x_down = self.x_down - q_length
+            if self.x_down < min_coil_length:
+                self.x_down = min_coil_length
             return self.x_down
 
     def is_position_in_front(self, position):

@@ -133,7 +133,9 @@ class Geometry1D1D(Geometry):
                 else:
                     node_mapping = np.vstack((node_mapping, temporary_list))
         node_mapping_sorted = node_mapping[node_mapping[:, 0].argsort()]
-        return node_mapping_sorted
+        # added, 21.08.2019
+        node_mapping_sorted2 = node_mapping_sorted[node_mapping_sorted[:, 1].argsort()]
+        return node_mapping_sorted2
 
     def create_node_list_for_bf(self):
         node_list_for_bf = {}
@@ -252,63 +254,3 @@ class Geometry1D1D(Geometry):
                 real_nodes_list.append(real_node_in_imaginary_node)
         real_nodes_list.sort()
         return real_nodes_list
-
-
-
-    # def set_initial_gaussian_temperature(self, imaginary_1d_coil_geometry):
-    #     """
-    #     :return:
-    #     """
-    #     gaussian_imaginary_temperature_profile = self.define_gaussian_temperature_distribution_array(imaginary_1d_coil_geometry)
-    #     for i in range(len(gaussian_imaginary_temperature_profile[0, :])):
-    #         dsf
-
-
-# list_test = []
-#
-# Geo = Geometry1D1D()
-# set1 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(Geo.coil_data, x_down_node=158, x_up_node=650)
-# set2 = Geo.retrieve_quenched_winding_numbers_from_quench_fronts(Geo.coil_data, x_down_node=24, x_up_node=810)
-# list_test.append(set1)
-# list_test.append(set2)
-# print(list_test)
-
-
-
-# quench_dict = Geo.retrieve_winding_numbers_and_quenched_nodes(x_down_node=361, x_up_node=361)
-# print(quench_dict)
-
-
-# for keys in quench_dict:
-#     qf = quench_dict[keys]
-#     # ans.select_nodes_in_analysis(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node, class_geometry=coil_geo)
-#     real_nodes = Geo.convert_imaginary_nodes_set_into_real_nodes_1d_1d_winding_number(winding_number=keys, x_down_node=qf[0], x_up_node=qf[1])
-
-# # initial analysis definition
-# ans.enter_preprocessor()
-# ans.select_nodes_in_analysis(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node, class_geometry=coil_geo)
-# ans.select_elem_from_nodes()
-# ans.modify_material_type(element_number=1)
-# ans.modify_material_constant(constant_number=1)
-# ans.modify_material_number(material_number=1)
-
-
-
-
-#
-# list_test.append(set1)
-# list_test.append(set2)
-# print(list_test)
-#
-# flat_list = Geo.make_one_list_from_list_of_lists(list_test)
-# print(flat_list)
-#
-# flat_list_without_repetitions = Geo.remove_repetitive_values_from_list(flat_list)
-# print(flat_list_without_repetitions)
-
-
-
-
-
-
-

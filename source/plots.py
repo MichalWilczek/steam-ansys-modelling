@@ -173,7 +173,7 @@ class Plots(object):
         Plots.delete_file(directory=directory, filename=filename)
         return fig
 
-    def plot_resistive_voltage(self, voltage, time_step, iteration):
+    def plot_resistive_voltage(self, voltage, time_step, iteration, additional_descr="ansys"):
         """
         Plots resistive voltage as a function of time
         :param voltage: voltage value as float
@@ -184,7 +184,7 @@ class Plots(object):
             self.voltage_fig = plt.figure()
             self.voltage_plot = self.voltage_fig.add_subplot(111)
             self.voltage_plot.set_xlabel('Time [s]')
-            self.voltage_plot.set_ylabel('Electric Potential [V]')
+            self.voltage_plot.set_ylabel('Voltage [V]')
             self.voltage_plot.set_xlim(0, self.factory.get_total_time()+0.01)
             self.voltage_plot.set_ylim(0, 1.0)
             self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
@@ -192,7 +192,7 @@ class Plots(object):
         else:
             self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
             plt.show()
-        filename = "resistive_voltage_{}.png".format(iteration)
+        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
         self.voltage_fig.savefig(filename)
 
     @staticmethod

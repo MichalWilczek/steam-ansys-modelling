@@ -5,22 +5,25 @@
     "filename_nodal_position": "Node_Position.txt",
     "filename_nodal_temperature": "Temperature_Data.txt",
     "nonlinear_material_properties": "nonlinear",
+    "quench_velocity_model": "numerical",
+    "magnetic_map_model": "nonconstant",
+    "electric_analysis": 1,
 
     "division_long_side": 200,
     "division_short_side": 60,
     "division_radius": 40,
 
-    "number_of_windings": 1,
-    "number_of_windings_in_reel": 1,
+    "number_of_windings": 4,
+    "number_of_windings_in_reel": 2,
 
     "transverse_division_insulation": 5,
     "transverse_dimension_winding": 0.000941,
     "transverse_division_winding": 4,
 
-    "length_per_winding": 5.0,
-    "division_per_winding": 2500,
+    "length_per_winding": 2.0,
+    "division_per_winding": 500,
 
-    "quench_init_pos": 2.5,
+    "quench_init_pos": 1.0,
 
     "quench_init_length": 0.2,
     "total_time": 0.14,
@@ -31,8 +34,7 @@
     "initial_peak_temperature": 20.0,
 
     "winding_plane_max_number_nodes": 5,
-    "transverse_dimension_insulation": 0.0,
-    "electric_analysis": 0
+    "transverse_dimension_insulation": 0.0
 }
 
 

@@ -1,3 +1,4 @@
+
 from source.geometry_1D import Geometry1D
 from source.geometry_1D_1D import Geometry1D1D
 from source.geometry_2D import Geometry2D
@@ -10,6 +11,12 @@ from source.factory import AnalysisBuilder
 
 from source.material_properties_nonlinear import MaterialsNonLinear
 from source.material_properties_linear import MaterialsLinear
+
+from source.quench_velocity_constant import QuenchFrontConst
+from source.quench_velocity_numerical import QuenchFrontNum
+
+from source.magnetic_field_mapping_const import MagneticMapConst
+from source.magnetic_field_mapping_non_const import MagneticMapNonConst
 
 class CaseFactory(AnalysisBuilder):
 
@@ -47,4 +54,32 @@ class CaseFactory(AnalysisBuilder):
             return MaterialsLinear()
         elif material_option == "nonlinear":
             return MaterialsNonLinear()
+        else:
+            raise ValueError("Class MaterialProperties does not exist")
+
+    def get_quench_velocity_class(self):
+        """
+        Chooses between QuenchFront classes calculating qv in different manners
+        :return: Class QuenchFront
+        """
+        qv_model = self.get_quench_velocity_model()
+        if qv_model == "constant":
+            return QuenchFrontConst
+        elif qv_model == "numerical":
+            return QuenchFrontNum
+        else:
+            raise ValueError("Class QuenchFront does not exist")
+
+    def get_magnetic_map_class(self, winding_start, winding_end, number_of_reels):
+        """
+        Chooses between Classes with constant and non-constant magnetic field map
+        :return: Class MagneticMap
+        """
+        mag_model = self.get_magnetic_map_model()
+        if mag_model == "constant":
+            return MagneticMapConst(winding_start, winding_end, number_of_reels)
+        elif mag_model == "nonconstant":
+            return MagneticMapNonConst(winding_start, winding_end, number_of_reels)
+        else:
+            raise ValueError("Class MagneticMap does not exist")
 

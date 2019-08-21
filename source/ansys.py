@@ -34,30 +34,6 @@ class AnsysCommands(object):
         self.delete_file(directory=self.analysis_directory, filename='File_Position.txt')
         self.delete_file(directory=self.analysis_directory, filename='Process_Finished.txt')
 
-    def choose_material_repository(self, ):
-        """
-        Chooses between linear and nonlinear material properties set in json file
-        :return: Class with material properties
-        """
-        material_option = self.factory.get_material_properties_type()
-        if material_option == "linear":
-            return MaterialsLinear()
-        else:
-            return MaterialsNonLinear()
-
-    @staticmethod
-    def create_artificial_magnetic_field_map(number_of_windings, magnetic_field=2.88):
-        """
-        Creates artificial magnetic field map in case when magnetic field is assumed to be constant
-        :param number_of_windings: integer
-        :param magnetic_field: float
-        :return: dictionary; key: winding%number%, value: magnetic field as float
-        """
-        magnetic_field_map = {}
-        for i in range(number_of_windings):
-            magnetic_field_map["winding"+str(i+1)] = magnetic_field
-        return magnetic_field_map
-
     @staticmethod
     def create_variable_table_method(directory):
         """

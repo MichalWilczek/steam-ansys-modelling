@@ -98,6 +98,11 @@ class AnalysisBuilder(object):
     def get_electric_analysis(self):
         return self.parameters['electric_analysis']
 
+    def get_quench_velocity_model(self):
+        return self.parameters['quench_velocity_model']
+
+    def get_magnetic_map_model(self):
+        return self.parameters["magnetic_map_model"]
 
 class AnalysisDirectory(object):
 
@@ -150,5 +155,3 @@ class AnalysisDirectory(object):
         source = AnalysisDirectory.define_main_path()
         path = os.path.join(source, 'APDL', '3D')
         return path
-
-

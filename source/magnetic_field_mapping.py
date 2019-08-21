@@ -13,33 +13,101 @@ class MagneticMap(object):
     NUMBER_LAYERS = 26
     WINDING_WIDTH = 0.941
 
-    def __init__(self):
+    def __init__(self, plot=False):
         self.mag_map = self.load_magnetic_field_map()
-        self.mag_plot_contour = self.make_magnetic_contour_plot()
-        self.mag_plot_colour = self.make_magnetic_colour_plot()
         self.pos_x_winding = self.make_winding_pos_x()
         self.pos_y_winding = self.make_winding_pos_y()
-        self.winding_pos_plot = self.make_winding_pos_map()
         self.interpolation_f = self.create_interpolation_f_magnetic_field()
-        self.wind_mag_dict = self.assign_magnetic_field_to_windings()
-        self.plot_interpolated_function()
-        self.interpol_error_plot = self.plot_error_between_meas_and_interpolation()
 
-    def assign_magnetic_field_to_windings(self):
-        """
-        Calculates magnetic field strength in each winding based on interpolation function
-        :return: dictionary; key: winding%number%, value: magnetic field strength as float
-        """
-        winding_main_dict = {}
-        pos_x_win = self.pos_x_winding
-        pos_y_wind = self.pos_y_winding
-        for i in range(len(pos_x_win)):
-            wind_data = []
-            wind_data.append(pos_x_win[i, :][0])
-            wind_data.append(pos_y_wind[i, :][0])
-            wind_data.append(self.interpolation_f.__call__(pos_y_wind[i, :][0], pos_x_win[i, :][0])[0][0])
-            winding_main_dict["winding"+str(i+1)] = wind_data
-        return winding_main_dict
+        if plot:
+            self.mag_plot_contour = self.make_magnetic_contour_plot()
+            self.mag_plot_colour = self.make_magnetic_colour_plot()
+            self.plot_winding_vector_arrangement()
+            self.winding_pos_plot = self.make_winding_pos_map()
+            self.plot_interpolated_function()
+            self.interpol_error_plot = self.plot_error_between_meas_and_interpolation()
+
+    def create_wind_real_number_list(self, winding_start, winding_end, number_of_reels, mag_map):
+        wind_no = self.define_winding_numbers_in_geometry(winding_start, winding_end, number_of_reels)
+        flat_wind_no = self.flatten_list(wind_no)
+        return self.create_list_with_winding_names(flat_wind_no)
+
+    def define_winding_numbers_in_geometry(self, winding_start, winding_end, number_of_reels):
+        start = winding_start
+        end = winding_end
+        winding_list_of_sublists = []
+        for i in range(number_of_reels):
+            reel = []
+            for j in range(start, end+1):
+                reel.append(j)
+            winding_list_of_sublists.append(reel)
+            start += MagneticMap.NUMBER_TURNS_IN_LAYER
+            end += MagneticMap.NUMBER_TURNS_IN_LAYER
+        return winding_list_of_sublists
+
+    @staticmethod
+    def flatten_list(list_to_flatten):
+        flat_list = []
+        for sublist in list_to_flatten:
+            for item in sublist:
+                flat_list.append(item)
+        return flat_list
+
+    @staticmethod
+    def create_list_with_winding_names(list_numbers):
+        winding_list = []
+        for item in list_numbers:
+            winding_list.append("winding" + str(item))
+        return winding_list
+
+    @staticmethod
+    def shorten_mag_map_dict(mag_map, winding_name_list):
+        new_mag_map = {}
+        for name in winding_name_list:
+            value = mag_map[name]
+            new_mag_map[name] = value[2]
+        return new_mag_map
+
+    def plot_winding_vector_arrangement(self, transverse_lines=False):
+
+        x_pos = self.winding_x_pos_list()
+        y_pos = self.winding_y_pos_list()
+
+        x_pos_up = x_pos[::2]
+        x_pos_down = x_pos[1::2]
+
+        y_pos_up = y_pos[0]
+        y_pos_down = y_pos[-1]
+
+        y_pos_up_list = []
+        for i in range(len(x_pos_up)):
+            y_pos_up_list.append(y_pos_up)
+
+        y_pos_down_list = []
+        for i in range(len(x_pos_down)):
+            y_pos_down_list.append(y_pos_down)
+
+        fig = plt.figure()
+        plot = fig.add_subplot(111)
+        plot.quiver(x_pos_up, y_pos_up_list, 0, 1, scale=1.5, color="red")
+        plot.quiver(x_pos_down, y_pos_down_list, 0, -1, scale=1.5, color="red")
+
+        if transverse_lines:
+            x_pos_right = x_pos[:(len(x_pos) - 1)]
+            y_pos_right = []
+            for i in range(len(x_pos)):
+                y_pos_right.append(y_pos_down)
+                y_pos_right.append(y_pos_up)
+            y_pos_right = y_pos_right[0:int((len(x_pos) - 1.0))]
+            plot.quiver(x_pos_right, y_pos_right, 1, 0, scale=25, color="red")
+
+        plt.axis('equal')
+        plt.xlabel("x-direction [mm]")
+        plt.ylabel("y-direction [mm]")
+        plt.grid(True)
+        filename = "Winding_Scheme.png"
+        plt.savefig(filename, dpi=200)
+        plt.show()
 
     @staticmethod
     def load_magnetic_field_map():
@@ -58,9 +126,9 @@ class MagneticMap(object):
         """
         x_meas = (self.mag_map[:, 0] - self.mag_map[:, 0].min())[:20]
         y_meas = (self.mag_map[:, 1] - self.mag_map[:, 1].min())[0::20]
-        B_field_meas = self.mag_map[:, 5]
-        B_field_meas_grid = B_field_meas.reshape(20, 20)
-        return interpolate.RectBivariateSpline(y_meas, x_meas, B_field_meas_grid, kx=2, ky=2)
+        b_field_meas = self.mag_map[:, 5]
+        b_field_meas_grid = b_field_meas.reshape(20, 20)
+        return interpolate.RectBivariateSpline(y_meas, x_meas, b_field_meas_grid, kx=2, ky=2)
 
     def create_interpolated_mag_field_matrix(self):
         """
@@ -130,12 +198,12 @@ class MagneticMap(object):
         """
         x_axis = self.mag_map[:, 0] - self.mag_map[:, 0].min()
         y_axis = self.mag_map[:, 1] - self.mag_map[:, 1].min()
-        B_field = self.mag_map[:, 5]
+        b_field = self.mag_map[:, 5]
         x = x_axis.reshape(20, 20)
         y = y_axis.reshape(20, 20)
-        z = B_field.reshape(20, 20)
-        Quad_mag_field_contour = plt.contour(x, y, z, 12)
-        plt.clabel(Quad_mag_field_contour, inline=1, fontsize=10)
+        z = b_field.reshape(20, 20)
+        quad_mag_field_contour = plt.contour(x, y, z, 12)
+        plt.clabel(quad_mag_field_contour, inline=1, fontsize=10)
         plt.axis('equal')
         plt.xlabel("x-direction [mm]")
         plt.ylabel("y-direction [mm]")
@@ -143,7 +211,7 @@ class MagneticMap(object):
         filename = "Quadrupole_Magnetic_Contour_plot.png"
         plt.savefig(filename, dpi=200)
         plt.show()
-        return Quad_mag_field_contour
+        return quad_mag_field_contour
 
     def make_magnetic_colour_plot(self):
         """
@@ -152,11 +220,11 @@ class MagneticMap(object):
         """
         x_axis = self.mag_map[:, 0] - self.mag_map[:, 0].min()
         y_axis = self.mag_map[:, 1] - self.mag_map[:, 1].min()
-        B_field = self.mag_map[:, 5]
+        b_field = self.mag_map[:, 5]
         x = x_axis.reshape(20, 20)
         y = y_axis.reshape(20, 20)
-        z = B_field.reshape(20, 20)
-        Quad_mag_field_colour = plt.contourf(x, y, z, 20)
+        z = b_field.reshape(20, 20)
+        quad_mag_field_colour = plt.contourf(x, y, z, 20)
         plt.axis('equal')
         plt.xlabel("x-direction [mm]")
         plt.ylabel("y-direction [mm]")
@@ -165,7 +233,7 @@ class MagneticMap(object):
         plt.colorbar(label='Magnetic Field [T]')
         plt.savefig(filename, dpi=200)
         plt.show()
-        return Quad_mag_field_colour
+        return quad_mag_field_colour
 
     def plot_error_between_meas_and_interpolation(self):
         """
@@ -174,10 +242,10 @@ class MagneticMap(object):
         """
         x_axis = self.mag_map[:, 0] - self.mag_map[:, 0].min()
         y_axis = self.mag_map[:, 1] - self.mag_map[:, 1].min()
-        B_field = self.mag_map[:, 5]
+        b_field = self.mag_map[:, 5]
         x = x_axis.reshape(20, 20)
         y = y_axis.reshape(20, 20)
-        z = B_field.reshape(20, 20)
+        z = b_field.reshape(20, 20)
 
         interpolation_matrix = np.zeros((len(z[:, 0]), len(z[0, :])))
         for i in range(len(z[:, 0])):
@@ -263,14 +331,7 @@ class MagneticMap(object):
             wind_counter_y += number_turns_in_layer
         return pos_y
 
-
-
-
-
-
-
-
-
-
-
-
+    @staticmethod
+    def check_if_kwarg_exists(kwargs, name):
+        if name not in kwargs:
+            raise ValueError("kwarg '{}' is not called in the function".format(name))
