@@ -74,7 +74,7 @@ temperature_profile = ans.get_temperature_profile(npoints=npoints, class_geometr
 
 # detect new quench position and calculate quench velocity
 q_v_time_array = np.zeros((1, 3))
-quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field=magnetic_map["winding1"])
+quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field_map=magnetic_map)
 if len(quench_front_new) > 0:
     pos_x_down = quench_front_new[0][0]
     pos_x_up = quench_front_new[0][1]
@@ -152,7 +152,7 @@ for i in range(1, len(time)):
     # detect new quench position
     q_v_time_array = np.zeros((1, 3))
     quench_fronts = []
-    quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field=magnetic_map["winding1"])
+    quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field_map=magnetic_map)
     if len(quench_front_new) > 0:
         pos_x_down = quench_front_new[0][0]
         pos_x_up = quench_front_new[0][1]

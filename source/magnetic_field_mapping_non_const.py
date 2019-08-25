@@ -4,10 +4,10 @@ from source.magnetic_field_mapping import MagneticMap
 
 class MagneticMapNonConst(MagneticMap):
 
-    def __init__(self, winding_start, winding_end, number_of_reels):
+    def __init__(self, windings_in_geometry):
         MagneticMap.__init__(self)
         self.mag_dict = self.assign_magnetic_field_to_windings()
-        self.real_wind_numbers = self.create_wind_real_number_list(winding_start, winding_end, number_of_reels, mag_map=self.mag_dict)
+        self.real_wind_numbers = self.create_wind_real_number_list(winding_list=windings_in_geometry)
         self.short_mag_dict = self.shorten_mag_map_dict(self.mag_dict, self.real_wind_numbers)
         self.im_short_mag_dict = self.change_winding_number_to_fit_geometry()
 
@@ -32,13 +32,3 @@ class MagneticMapNonConst(MagneticMap):
         for i in range(len(self.real_wind_numbers)):
             new_mag_dict["winding"+str(i+1)] = self.short_mag_dict[self.real_wind_numbers[i]]
         return new_mag_dict
-#
-# Mag = MagneticMapNonConst(winding_start=12, winding_end=18, number_of_reels=4)
-# x = Mag.mag_dict
-# y = Mag.short_mag_dict
-# z = Mag.change_winding_number_to_fit_geometry()
-#
-#
-# # print(x)
-# print(y)
-# print(z)

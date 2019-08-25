@@ -3,7 +3,7 @@ import math
 import scipy.integrate
 import numpy as np
 from source.quench_velocity_map import QuenchVelocityMap
-from source.quench_velocity import QuenchFront
+from source.quench_velocity_numerical import QuenchFrontNum
 
 def ex_trapezoidal_integration(x):
         return 2.0 + math.cos(2.0 * math.sqrt(x))
@@ -23,7 +23,7 @@ print("Hello")
 
 Map = QuenchVelocityMap()
 f_interpol = Map.f_interpolation
-QF = QuenchFront(x_down=100, x_up=150, label=1, q_v_interpolation_f=f_interpol)
+QF = QuenchFrontNum(x_down=100, x_up=150, label=1, q_v_interpolation_f=f_interpol)
 
 q_length = QF.calculate_q_length(initial_time=0.14, final_time=0.18, mag_field=0.5)
 

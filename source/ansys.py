@@ -5,8 +5,6 @@ from source.factory import AnalysisBuilder
 from source.factory import AnalysisDirectory
 import source.geometry as geometry
 import time
-from source.material_properties_nonlinear import MaterialsNonLinear
-from source. material_properties_linear import MaterialsLinear
 
 
 class AnsysCommands(object):
@@ -293,7 +291,7 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
         # print(self.mapdl.executeCommandToString('deltim,1e-5,1e-5,1e-3'))
-        print(self.mapdl.executeCommandToString('deltim,1e-4,1e-4,1e-3'))
+        print(self.mapdl.executeCommandToString('deltim,5e-4,5e-4,1e-2'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
         print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal integration (default) into backward Euler formulation
 

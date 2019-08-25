@@ -21,7 +21,8 @@ class Plots(object):
     def __init__(self):
         self.factory = AnalysisBuilder()
         self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
-        self.voltage_plot = None
+        self.voltage_plot_ansys = None
+        self.voltage_plot_python = None
 
     @staticmethod
     def plot_quench(coil_length, quench_fronts, time_step):
@@ -72,6 +73,7 @@ class Plots(object):
         np.savetxt(array_filename, array)
 
     def write_line_in_file(self, filename, mydata, newfile=True):
+        os.chdir(self.directory)
         if newfile:
             with open(filename, "wb") as f:
                 np.savetxt(f, mydata, delimiter=' ')
@@ -173,27 +175,55 @@ class Plots(object):
         Plots.delete_file(directory=directory, filename=filename)
         return fig
 
-    def plot_resistive_voltage(self, voltage, time_step, iteration, additional_descr="ansys"):
+    def plot_resistive_voltage_ansys(self, voltage, time_step, iteration):
         """
         Plots resistive voltage as a function of time
         :param voltage: voltage value as float
         :param time_step: time step as float
         :param iteration: iteration number as integer
         """
+        additional_descr = "ansys"
+        os.chdir(self.directory)
         if iteration == 0:
-            self.voltage_fig = plt.figure()
-            self.voltage_plot = self.voltage_fig.add_subplot(111)
-            self.voltage_plot.set_xlabel('Time [s]')
-            self.voltage_plot.set_ylabel('Voltage [V]')
-            self.voltage_plot.set_xlim(0, self.factory.get_total_time()+0.01)
-            self.voltage_plot.set_ylim(0, 1.0)
-            self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
+            self.voltage_fig_ansys = None
+            self.voltage_fig_ansys = plt.figure()
+            self.voltage_plot_ansys = self.voltage_fig_ansys.add_subplot(111)
+            self.voltage_plot_ansys.set_xlabel('Time [s]')
+            self.voltage_plot_ansys.set_ylabel('Voltage [V]')
+            self.voltage_plot_ansys.set_xlim(0, self.factory.get_total_time() + 0.01)
+            self.voltage_plot_ansys.set_ylim(0, 0.5)
+            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
             plt.grid(True)
         else:
-            self.voltage_plot.plot(time_step, voltage, 'o', markersize=5, color="b")
-            plt.show()
+            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
+        plt.show()
         filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
-        self.voltage_fig.savefig(filename)
+        self.voltage_fig_ansys.savefig(filename)
+
+    def plot_resistive_voltage_python(self, voltage, time_step, iteration):
+        """
+        Plots resistive voltage as a function of time
+        :param voltage: voltage value as float
+        :param time_step: time step as float
+        :param iteration: iteration number as integer
+        """
+        additional_descr = "python"
+        os.chdir(self.directory)
+        if iteration == 0:
+            self.voltage_fig_python = None
+            self.voltage_fig_python = plt.figure()
+            self.voltage_plot_python = self.voltage_fig_python.add_subplot(111)
+            self.voltage_plot_python.set_xlabel('Time [s]')
+            self.voltage_plot_python.set_ylabel('Voltage [V]')
+            self.voltage_plot_python.set_xlim(0, self.factory.get_total_time() + 0.01)
+            self.voltage_plot_python.set_ylim(0, 0.5)
+            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
+            plt.grid(True)
+        else:
+            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
+        plt.show()
+        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
+        self.voltage_fig_python.savefig(filename)
 
     @staticmethod
     def save_temperature_plot(fig, iteration):
@@ -216,6 +246,7 @@ class Plots(object):
         :param fig: temperature distribution as plt.figure()
         :param iteration: simulation iteration as integer
         """
+        os.chdir(self.directory)
         fig = Plots.plot_temperature(coil_length, self.directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file

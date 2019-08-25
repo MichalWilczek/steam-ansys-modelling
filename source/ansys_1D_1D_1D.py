@@ -22,6 +22,7 @@ class AnsysCommands1D1D1D(AnsysCommands):
         data.write_text('transverse_dimension_winding =' + str(self.factory.get_transverse_dimension_winding()))
         data.write_text('transverse_division_insulation =' + str(self.factory.get_transverse_division_insulation()))
         data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d_quadrupole()))
+        # data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d()))
         data.write_text('division_per_winding = ' + str(self.factory.get_division_per_winding()))
         data.write_text('length_per_winding = ' + str(self.factory.get_length_per_winding()))
         self.wait_for_process_to_finish(data)
@@ -119,6 +120,21 @@ class AnsysCommands1D1D1D(AnsysCommands):
             self.fill_dim_table(dim_name="heatgen", row=i+1, column=0, value=heat_gen_array[i, 0])
             self.fill_dim_table(dim_name="heatgen", row=i+1, column=1, value=heat_gen_array[i, 1])
 
+    def input_heat_generation_table_winding(self, class_mat, magnetic_field, winding_number):
+        self.enter_preprocessor()
+        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER,
+                                                     current=self.factory.get_current())
+        dim_name = "heatgen_"+winding_number
+        self.create_dim_table(dim_name=dim_name, dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
+        self.fill_dim_table(dim_name=dim_name, row=0, column=1, value=0.0)
+        for i in range(len(heat_gen_array[:, 0])):
+            self.fill_dim_table(dim_name=dim_name, row=i+1, column=0, value=heat_gen_array[i, 0])
+            self.fill_dim_table(dim_name=dim_name, row=i+1, column=1, value=heat_gen_array[i, 1])
+
+    def input_heat_generation_on_windings(self, winding_number):
+        dim_name = "%heatgen_" + winding_number[7:] + "%"
+        self.set_heat_generation_in_nodes(node_number="all", value=dim_name)
+
     def input_heat_flow_table(self):
         self.enter_preprocessor()
         heat_flow_array = Polynomials.extract_polynomial_function()
@@ -193,12 +209,14 @@ class AnsysCommands1D1D1D(AnsysCommands):
             number_of_windings_in_layer = self.factory.get_number_of_windings_in_reel()
             number_of_layers = self.factory.get_number_of_windings() / number_of_windings_in_layer
             radius = self.COIL_INITIAL_RADIUS
-            coil_total_length = 0.0
-            for i in range(int(number_of_layers)):
-                coil_total_length += (2.0*(self.COIL_LONG_SIDE+self.COIL_SHORT_SIDE) + math.pi*radius**2.0)*number_of_windings_in_layer
-                radius += AnsysCommands1D1D1D.WINDING_SIDE
+            # coil_total_length = 0.0
+            # for i in range(int(number_of_layers)):
+            #     coil_total_length += (2.0*(self.COIL_LONG_SIDE+self.COIL_SHORT_SIDE) + math.pi*radius**2.0)*number_of_windings_in_layer
+            #     radius += AnsysCommands1D1D1D.WINDING_SIDE
+            coil_total_length = self.factory.get_number_of_windings()*(2*self.COIL_SHORT_SIDE+2*self.COIL_LONG_SIDE)
             G10_total_volume = coil_total_length*(winding_area-strand_area)
-            number_divisions_in_winding = (2.0*self.factory.get_division_long_side()+2.0*self.factory.get_division_short_side()+self.factory.get_division_radius()*4.0)
+            # number_divisions_in_winding = (2.0*self.factory.get_division_long_side()+2.0*self.factory.get_division_short_side()+self.factory.get_division_radius()*4.0)
+            number_divisions_in_winding = (2.0 * self.factory.get_division_long_side() + 2.0 * self.factory.get_division_short_side())
             number_of_transverse_insulation_elements_1 = (number_divisions_in_winding+1.0)*(number_of_windings_in_layer-1)*number_of_layers
             number_of_transverse_insulation_elements_2 = (number_divisions_in_winding+1.0)*(number_of_layers-1)*number_of_windings_in_layer
             total_number_of_G10_elements = number_of_transverse_insulation_elements_1+number_of_transverse_insulation_elements_2

@@ -25,9 +25,10 @@ class QuenchDetect(Materials):
 
     def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field_map):
         """
+        Main function for quench detection
         :param input_quench_front_vector: list of QuenchFront objects
         :param temperature_profile: file with nodal temperature as string
-        # :param magnetic_field_map: magnetic fields strength value as float  TO BE CHANGED!!!
+        :param magnetic_field_map: magnetic field winding map as dictionary
         :return: list of new quench fronts positions in meters
         """
         input_quench_front_vector_sorted = QuenchDetect.sort_input_quench_front_vector(input_quench_front_vector)
@@ -40,24 +41,6 @@ class QuenchDetect(Materials):
         new_quench_fronts_sorted = QuenchDetect.define_final_new_quench_fronts(fronts_list=new_quench_fronts_list_without_repetitions, new_quench_fronts_nodes=new_quenched_fronts_before_rejection)
         quench_fronts_position = QuenchDetect.search_quench_length(coil_length=self.coil_length, new_quench_fronts_nodes=new_quench_fronts_sorted)
         return quench_fronts_position
-
-    # def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field):
-    #     """
-    #     :param input_quench_front_vector: list of QuenchFront objects
-    #     :param temperature_profile_file: file with nodal temperature as string
-    #     :param magnetic_field: magnetic fields strength value as float
-    #     :return: list of new quench fronts positions in meters
-    #     """
-    #     input_quench_front_vector_sorted = QuenchDetect.sort_input_quench_front_vector(input_quench_front_vector)
-    #     critical_temperature = self.calculate_critical_temperature(magnetic_field=magnetic_field)
-    #     temperature_profile_sliced = QuenchDetect.slice_temperature_profile(input_quench_front_vector=input_quench_front_vector_sorted, temperature_profile=temperature_profile)
-    #     temp_profile_sliced_quench_detection = QuenchDetect.find_quenched_nodes(sliced_temperature_profile=temperature_profile_sliced, critical_temperature=critical_temperature)
-    #     new_quenched_fronts_before_rejection = QuenchDetect.find_new_quench_fronts(quenched_nodes=temp_profile_sliced_quench_detection)
-    #     new_quench_fronts_list = QuenchDetect.create_new_quench_fronts_list(input_quench_front_vector=input_quench_front_vector_sorted, new_quench_fronts=new_quenched_fronts_before_rejection)
-    #     new_quench_fronts_list_without_repetitions = QuenchDetect.find_repetitive_fronts(new_quench_fronts_list)
-    #     new_quench_fronts_sorted = QuenchDetect.define_final_new_quench_fronts(fronts_list=new_quench_fronts_list_without_repetitions, new_quench_fronts_nodes=new_quenched_fronts_before_rejection)
-    #     quench_fronts_position = QuenchDetect.search_quench_length(coil_length=self.coil_length, new_quench_fronts_nodes=new_quench_fronts_sorted)
-    #     return quench_fronts_position
 
     @staticmethod
     def sort_input_quench_front_vector(input_quench_front_vector):
@@ -96,23 +79,32 @@ class QuenchDetect(Materials):
         return sliced_temperature_profile
 
     def slice_temperature_profile_with_respect_to_winding_numbers(self, sliced_temp_profile):
+        """
 
+        :param sliced_temp_profile: list of non-quenched zones as numpy arrays
+        :return:
+        """
         sliced_temp_wind_profile_list = []
         for slice_pro in sliced_temp_profile:
-
-            dict_slice = {}
-            slice_node = slice_pro[:, 0]
-            winding_temp_dict = self.geo.retrieve_winding_numbers_and_quenched_nodes(
-                x_down_node=slice_node[0], x_up_node=slice_node[len(slice_node)-1])
-
-            for key in winding_temp_dict:
-                value = winding_temp_dict[key]
-                temp_profile_winding = slice_pro[(int(value[0])-1):(int(value[1])), :]
-                dict_slice[key] = temp_profile_winding
-            sliced_temp_wind_profile_list.append(dict_slice)
+            if len(slice_pro) != 0:
+                dict_slice = {}
+                slice_node = slice_pro[:, 0]
+                winding_temp_dict = self.geo.retrieve_winding_numbers_and_quenched_nodes(
+                    x_down_node=slice_node[0], x_up_node=slice_node[len(slice_node)-1])
+                for key in winding_temp_dict:
+                    value = winding_temp_dict[key]
+                    temp_profile_winding = slice_pro[(int(value[0])-1):(int(value[1])), :]
+                    dict_slice[key] = temp_profile_winding
+                sliced_temp_wind_profile_list.append(dict_slice)
         return sliced_temp_wind_profile_list
 
     def find_quenched_nodes(self, sliced_temp_wind_profile_list, magnetic_map_dict):
+        """
+        Returns list of quenched nodes by counting critical temperature dependent on magnetic field at each winding
+        :param sliced_temp_wind_profile_list:
+        :param magnetic_map_dict:
+        :return:
+        """
         quenched_nodes = []
         for item in sliced_temp_wind_profile_list:
             for key in item:
@@ -120,25 +112,9 @@ class QuenchDetect(Materials):
                 mag_field = magnetic_map_dict[key]
                 critic_temp = self.calculate_critical_temperature(magnetic_field=mag_field)
                 temporary_quenched_nodes = array[np.where(array[:, 1] >= critic_temp)]
-                if len(temporary_quenched_nodes) != 0 :
+                if len(temporary_quenched_nodes) != 0:
                     quenched_nodes.append(temporary_quenched_nodes)
         return quenched_nodes
-
-    # THIS REQUIRES MODIFICATION
-
-    # @staticmethod
-    # def find_quenched_nodes(sliced_temperature_profile, critical_temperature):
-    #     """
-    #     :param sliced_temperature_profile: list of non-quenched zones as numpy arrays
-    #     :param critical_temperature: critical temperature as float
-    #     :return: list quenched nodes as numpy arrays
-    #     """
-    #     quenched_nodes = []
-    #     for each_zone in sliced_temperature_profile:
-    #         temporary_quenched_nodes = each_zone[np.where(each_zone[:, 1] >= critical_temperature)]
-    #         if len(temporary_quenched_nodes) != 0:
-    #             quenched_nodes.append(temporary_quenched_nodes)
-    #     return quenched_nodes
 
     @staticmethod
     def find_new_quench_fronts(quenched_nodes):

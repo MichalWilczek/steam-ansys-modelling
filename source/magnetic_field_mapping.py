@@ -27,23 +27,39 @@ class MagneticMap(object):
             self.plot_interpolated_function()
             self.interpol_error_plot = self.plot_error_between_meas_and_interpolation()
 
-    def create_wind_real_number_list(self, winding_start, winding_end, number_of_reels, mag_map):
-        wind_no = self.define_winding_numbers_in_geometry(winding_start, winding_end, number_of_reels)
-        flat_wind_no = self.flatten_list(wind_no)
-        return self.create_list_with_winding_names(flat_wind_no)
+    def create_wind_real_number_list(self, winding_list):
+        return self.create_list_with_winding_names(winding_list)
 
-    def define_winding_numbers_in_geometry(self, winding_start, winding_end, number_of_reels):
-        start = winding_start
-        end = winding_end
-        winding_list_of_sublists = []
-        for i in range(number_of_reels):
-            reel = []
-            for j in range(start, end+1):
-                reel.append(j)
-            winding_list_of_sublists.append(reel)
-            start += MagneticMap.NUMBER_TURNS_IN_LAYER
-            end += MagneticMap.NUMBER_TURNS_IN_LAYER
-        return winding_list_of_sublists
+    # def odd_layer_winding_numbers(self, winding_start, winding_end, number_of_layers):
+    #     layer_no = 1
+    #     winding_list = []
+    #     start = winding_start
+    #     end = winding_end
+    #     while layer_no < number_of_layers:
+    #         for i in range(start, end+1):
+    #             winding_list.append(i)
+    #         start += self.NUMBER_TURNS_IN_LAYER
+    #         end += self.NUMBER_TURNS_IN_LAYER
+    #         layer_no += 2
+    #     return winding_list
+    #
+    # def even_layer_winding_numbers(self, winding_start, winding_end, number_of_layers):
+    #     layer_no = 2
+    #     winding_list = []
+    #     start = winding_start + 2 * (self.NUMBER_TURNS_IN_LAYER-winding_start)
+
+    # def define_winding_numbers_in_geometry(self, winding_start, winding_end, number_of_reels):
+    #     start = winding_start
+    #     end = winding_end
+    #     winding_list_of_sublists = []
+    #     for i in range(number_of_reels):
+    #         reel = []
+    #         for j in range(start, end+1):
+    #             reel.append(j)
+    #         winding_list_of_sublists.append(reel)
+    #         start += MagneticMap.NUMBER_TURNS_IN_LAYER
+    #         end += MagneticMap.NUMBER_TURNS_IN_LAYER
+    #     return winding_list_of_sublists
 
     @staticmethod
     def flatten_list(list_to_flatten):

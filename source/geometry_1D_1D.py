@@ -56,9 +56,9 @@ class Geometry1D1D(Geometry):
                 first_node_of_winding = value[0]
                 dict_quenched_fronts["winding" + str(quenched_winding_numbers[i])] = [first_node_of_winding, last_node_of_winding]
 
-            value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[len(quenched_winding_numbers)-1])]
+            value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[len(quenched_winding_numbers) - 1])]
             first_node_of_winding = value[0]
-            dict_quenched_fronts["winding" + str(len(quenched_winding_numbers))] = [first_node_of_winding, x_up_node]
+            dict_quenched_fronts["winding" + str(quenched_winding_numbers[len(quenched_winding_numbers) - 1])] = [first_node_of_winding, x_up_node]
         return dict_quenched_fronts
 
     def create_node_dict_for_each_winding(self):

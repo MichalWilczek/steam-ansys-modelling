@@ -9,16 +9,16 @@
     "magnetic_map_model": "nonconstant",
     "electric_analysis": 1,
 
-    "division_long_side": 200,
-    "division_short_side": 60,
-    "division_radius": 40,
+    "division_long_side": 100,
+    "division_short_side": 30,
+    "division_radius": 5,
 
-    "number_of_windings": 4,
-    "number_of_windings_in_reel": 2,
+    "number_of_windings": 18,
+    "number_of_windings_in_reel": 6,
 
     "transverse_division_insulation": 5,
     "transverse_dimension_winding": 0.000941,
-    "transverse_division_winding": 4,
+    "transverse_division_winding": 3,
 
     "length_per_winding": 2.0,
     "division_per_winding": 500,

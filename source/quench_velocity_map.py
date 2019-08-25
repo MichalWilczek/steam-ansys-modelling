@@ -18,11 +18,20 @@ class QuenchVelocityMap(object):
             self.plot_interpolated_function(self.f_interpolation)
 
     def load_q_v_array(self, filename="Q_V_array.txt"):
+        """
+        Loads Quench velocity array from file
+        :param filename: filename as string (default: Q_V_array.txt)
+        :return: numpy array
+        """
         os.chdir(self.DIRECTORY)
         array = np.loadtxt(fname=filename, skiprows=1)
         return array
 
     def create_interpolation_f_qv(self):
+        """
+        Creates interpolation quench velocity function
+        :return: interpolation instance
+        """
         t_axis = self.time_axis.ravel()
         B_axis = np.arange(0.0, 3.5, 0.5)
         q_v_grid = self.q_v_array
@@ -30,6 +39,10 @@ class QuenchVelocityMap(object):
 
     @staticmethod
     def plot_interpolated_function(f_interpolation):
+        """
+        Plots 3D quench velocity interpolation plot as function of time and B-field
+        :param f_interpolation: interpolation instance
+        """
         t_axis = np.arange(0.0, 0.16, 0.01)
         B_axis = np.arange(0.0, 3.1, 0.1)
         T = t_axis

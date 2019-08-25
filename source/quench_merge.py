@@ -1,5 +1,5 @@
 
-class QuenchMerge:
+class QuenchMerge(object):
 
     @staticmethod
     def quench_merge(quench_fronts):
@@ -46,8 +46,8 @@ class QuenchMerge:
                 is_overlap = qf_outer.check_overlap(qf_inner)
                 is_set_included = qf_outer.check_set_included(qf_inner)
                 to_be_merged = is_overlap or is_set_included
-                print(
-                    "Checking overlap of: {} and {}. The result is {}".format(qf_outer.label, qf_inner.label, is_overlap))
+                print("Checking overlap of: {} and {}. The result is {}".format(
+                      qf_outer.label, qf_inner.label, is_overlap))
                 if to_be_merged:
                     qf_merged = qf_outer.merge(qf_inner)
                     qf_outer = qf_merged
