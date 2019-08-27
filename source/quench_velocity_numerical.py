@@ -10,14 +10,17 @@ class QuenchFrontNum(QuenchFront):
     def __init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=False):
         self.testunit = testunit
         QuenchFront.__init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=self.testunit)
-        # qv_map = QuenchVelocityMap()
-        # self.f_q_v = qv_map.f_interpolation
-        #
-        # self.quench_velocity_up = None
-        # self.quench_velocity_down = None
-        #
-        # self.q_length_up = None
-        # self.q_length_down = None
+        if testunit:
+            pass
+        else:
+            qv_map = QuenchVelocityMap()
+            self.f_q_v = qv_map.f_interpolation
+
+            self.quench_velocity_up = None
+            self.quench_velocity_down = None
+
+            self.q_length_up = None
+            self.q_length_down = None
 
     def merge(self, qf, testunit=False):
         """
