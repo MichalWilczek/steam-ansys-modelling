@@ -8,7 +8,7 @@ import os
 
 class QuenchVelocityMap(object):
 
-    DIRECTORY = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\1D_1D_1D\\1D_analyses\\Quench_Velocity"
+    DIRECTORY = "C:\\gitlab\\steam-ansys-modelling\\source\APDL\\1D_1D_1D\\1D_analyses\\1_cable_initial_quench\\Quench_Velocity"
 
     def __init__(self, plot=False):
         self.time_axis = self.load_q_v_array()[:, 0]

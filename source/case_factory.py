@@ -70,14 +70,14 @@ class CaseFactory(AnalysisBuilder):
         else:
             raise ValueError("Class QuenchFront does not exist")
 
-    def get_magnetic_map_class(self, winding_list):
+    def get_magnetic_map_class(self, winding_list, **kwargs):
         """
         Chooses between Classes with constant and non-constant magnetic field map
         :return: Class MagneticMap
         """
         mag_model = self.get_magnetic_map_model()
         if mag_model == "constant":
-            return MagneticMapConst(windings_in_geometry=winding_list)
+            return MagneticMapConst(windings_in_geometry=winding_list, **kwargs)
         elif mag_model == "nonconstant":
             return MagneticMapNonConst(windings_in_geometry=winding_list)
         else:

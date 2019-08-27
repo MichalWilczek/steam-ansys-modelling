@@ -4,10 +4,12 @@ from source.magnetic_field_mapping import MagneticMap
 
 class MagneticMapConst(MagneticMap):
 
-    def __init__(self, winding_start, winding_end, number_of_reels):
+    def __init__(self, windings_in_geometry, **kwargs):
         MagneticMap.__init__(self)
-        self.mag_dict = self.assign_magnetic_field_to_windings()
-        self.real_wind_numbers = self.create_wind_real_number_list(winding_start, winding_end, number_of_reels, mag_map=self.mag_dict)
+        MagneticMap.check_if_kwarg_exists(kwargs, "magnetic_field")
+        magnetic_field = kwargs["magnetic_field"]
+        self.mag_dict = self.assign_magnetic_field_to_windings(magnetic_field=magnetic_field)
+        self.real_wind_numbers = self.create_wind_real_number_list(winding_list=windings_in_geometry)
         self.short_mag_dict = self.shorten_mag_map_dict(self.mag_dict, self.real_wind_numbers)
         self.im_short_mag_dict = self.change_winding_number_to_fit_geometry()
 

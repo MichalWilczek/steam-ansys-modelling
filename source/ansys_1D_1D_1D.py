@@ -143,7 +143,9 @@ class AnsysCommands1D1D1D(AnsysCommands):
         self.fill_dim_table(dim_name="heat_flow", row=0, column=1, value=0.0)
         for i in range(len(heat_flow_array[:, 0])):
             self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=0, value=heat_flow_array[i, 0])
-            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=heat_flow_array[i, 1])
+            # self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=heat_flow_array[i, 1])
+            # added for special analysis 25.08.19
+            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=2.0*heat_flow_array[i, 1])
 
     def input_geometry(self, filename='1D_1D_1D_Geometry_quadrupole'):
         """

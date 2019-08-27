@@ -5,7 +5,7 @@ import numpy as np
 
 class QuenchFront(object):
 
-    def __init__(self, x_down, x_up, label, coil_geometry, coil_data):
+    def __init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=False):
         """
         :param x_down: bottom position of quench front in [m]
         :param x_up: top position of quench front in [m]
@@ -17,12 +17,13 @@ class QuenchFront(object):
         self.label = label
         self.coil_geometry = coil_geometry
         self.coil_data = coil_data
-        self.x_down_node = self.front_down_to_node(self.coil_geometry, initial_search=True)
-        self.x_up_node = self.front_up_to_node(self.coil_geometry, initial_search=True)
-        self.x_up_previous_node = self.x_down_node
-        self.x_down_previous_node = self.x_up_node
-        self.front_down_winding_numbers = self.define_front_down_winding_number(self.coil_data)
-        self.front_up_winding_numbers = self.define_front_up_winding_number(self.coil_data)
+        if not testunit:
+            self.x_down_node = self.front_down_to_node(self.coil_geometry, initial_search=True)
+            self.x_up_node = self.front_up_to_node(self.coil_geometry, initial_search=True)
+            self.x_up_previous_node = self.x_down_node
+            self.x_down_previous_node = self.x_up_node
+            self.front_down_winding_numbers = self.define_front_down_winding_number(self.coil_data)
+            self.front_up_winding_numbers = self.define_front_up_winding_number(self.coil_data)
 
     def calculate_quench_front_position(self, q_length_down, q_length_up, min_length, max_length):
         """

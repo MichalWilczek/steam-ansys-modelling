@@ -6,13 +6,14 @@ from source.material_properties import Materials
 
 class QuenchDetect(Materials):
 
-    def __init__(self, npoints, class_geometry, directory=None):
+    def __init__(self, npoints, class_geometry, directory=None, testunit=False):
         """
         :param coil_length:
         :param directory: analysis_directory as string
         :param npoints: number of nodes in geometry as integer
         """
         super().__init__()
+        self.testunit = testunit
         self.geo = class_geometry
         self.coil_length = self.geo.coil_geometry
         self.factory = AnalysisBuilder()
@@ -33,8 +34,12 @@ class QuenchDetect(Materials):
         """
         input_quench_front_vector_sorted = QuenchDetect.sort_input_quench_front_vector(input_quench_front_vector)
         temperature_profile_sliced = QuenchDetect.slice_temperature_profile(input_quench_front_vector=input_quench_front_vector_sorted, temperature_profile=temperature_profile)
-        temp_profile_windings_sliced = self.slice_temperature_profile_with_respect_to_winding_numbers(temperature_profile_sliced)
-        temp_profile_sliced_quench_detection = self.find_quenched_nodes(temp_profile_windings_sliced, magnetic_field_map)
+        if self.testunit:
+            temperature_profile_sliced = QuenchDetect.slice_temperature_profile(input_quench_front_vector=input_quench_front_vector_sorted, temperature_profile=temperature_profile)
+            temp_profile_sliced_quench_detection = QuenchDetect.find_quenched_nodes_testunit(sliced_temperature_profile=temperature_profile_sliced, critical_temperature=4.35)
+        else:
+            temp_profile_windings_sliced = self.slice_temperature_profile_with_respect_to_winding_numbers(temperature_profile_sliced)
+            temp_profile_sliced_quench_detection = self.find_quenched_nodes(temp_profile_windings_sliced, magnetic_field_map)
         new_quenched_fronts_before_rejection = QuenchDetect.find_new_quench_fronts(quenched_nodes=temp_profile_sliced_quench_detection)
         new_quench_fronts_list = QuenchDetect.create_new_quench_fronts_list(input_quench_front_vector=input_quench_front_vector_sorted, new_quench_fronts=new_quenched_fronts_before_rejection)
         new_quench_fronts_list_without_repetitions = QuenchDetect.find_repetitive_fronts(new_quench_fronts_list)
@@ -115,6 +120,21 @@ class QuenchDetect(Materials):
                 if len(temporary_quenched_nodes) != 0:
                     quenched_nodes.append(temporary_quenched_nodes)
         return quenched_nodes
+
+    @staticmethod
+    def find_quenched_nodes_testunit(sliced_temperature_profile, critical_temperature):
+        """
+        :param sliced_temperature_profile: list of non-quenched zones as numpy arrays
+        :param critical_temperature: critical temperature as float
+        :return: list quenched nodes as numpy arrays
+        """
+        quenched_nodes = []
+        for each_zone in sliced_temperature_profile:
+            temporary_quenched_nodes = each_zone[np.where(each_zone[:, 1] >= critical_temperature)]
+            if len(temporary_quenched_nodes) != 0:
+                quenched_nodes.append(temporary_quenched_nodes)
+        return quenched_nodes
+
 
     @staticmethod
     def find_new_quench_fronts(quenched_nodes):

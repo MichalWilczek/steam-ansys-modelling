@@ -13,7 +13,7 @@ import numpy as np
 case = CaseFactory()
 plots = Plots()
 ans = case.get_ansys_class()
-remap = WindingRemap(start_winding=13, end_winding=18, layers=3)
+remap = WindingRemap(start_winding=13, end_winding=17, layers=3)
 mag = case.get_magnetic_map_class(winding_list=remap.map_winding_list())
 mat = case.get_material_properties_class()
 QuenchFront = case.get_quench_velocity_class()
@@ -74,8 +74,8 @@ ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperatur
 # to be defined for power input
 ans.select_nodes_in_analysis(coil_geo, x_down_node=750, x_up_node=750)
 ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
-ans.select_nodes_in_analysis(coil_geo, x_down_node=1031, x_up_node=1031)
-ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
+# ans.select_nodes_in_analysis(coil_geo, x_down_node=1031, x_up_node=1031)
+# ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
 
 # set constant inflow current
 ans.select_nodes_for_current(class_geometry=coil_geo)

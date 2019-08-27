@@ -7,8 +7,9 @@ import scipy.integrate
 
 class QuenchFrontNum(QuenchFront):
 
-    def __init__(self, x_down, x_up, label, coil_geometry, coil_data):
-        QuenchFront.__init__(self, x_down, x_up, label, coil_geometry, coil_data)
+    def __init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=False):
+        self.testunit = testunit
+        QuenchFront.__init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=self.testunit)
         qv_map = QuenchVelocityMap()
         self.f_q_v = qv_map.f_interpolation
 
@@ -26,7 +27,7 @@ class QuenchFrontNum(QuenchFront):
         x_down_new = min(self.x_down, qf.x_down)
         x_up_new = max(self.x_up, qf.x_up)
         return QuenchFrontNum(x_down_new, x_up_new, str(self.label) + "_" + str(qf.label),
-                              self.coil_geometry, self.coil_data)
+                              self.coil_geometry, self.coil_data, testunit=self.testunit)
 
     def q_v_to_string(self):
         return "QUENCH FRONT NO {}; instantaneous quench_velocity [m/s]: up = {}, down = {}\n".format(
