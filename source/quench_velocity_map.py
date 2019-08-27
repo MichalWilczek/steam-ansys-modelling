@@ -9,7 +9,7 @@ import os
 class QuenchVelocityMap(object):
 
     CWD = os.path.dirname(__file__)
-    DIRECTORY = os.path.join(CWD, 'APDL\\1D_1D_1D\\1D_analyses\\1_cable_initial_quench\\Quench_Velocity')
+    DIRECTORY = os.path.join(CWD, 'APDL', '1D_1D_1D', '1D_analyses', '1_cable_initial_quench', 'Quench_Velocity')
 
     def __init__(self, plot=False):
         self.time_axis = self.load_q_v_array()[:, 0]
