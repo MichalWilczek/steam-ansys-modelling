@@ -24,10 +24,7 @@ class QuenchVelocityMap(object):
         :param filename: filename as string (default: Q_V_array.txt)
         :return: numpy array
         """
-
         filename = os.path.join(self.DIRECTORY, filename)
-
-        # os.chdir(self.DIRECTORY)
         array = np.loadtxt(fname=filename, skiprows=1)
         return array
 
