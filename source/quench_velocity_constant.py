@@ -9,7 +9,7 @@ class QuenchFrontConst(QuenchFront):
         QuenchFront.__init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=self.testunit)
         self.q_v = 1.0       # [m/s]
 
-    def merge(self, qf):
+    def merge(self, qf, testunit=False):
         """
         :param qf: QuenchFront object
         :return: New quench QuenchFront object merged from quench front and qf
@@ -17,7 +17,7 @@ class QuenchFrontConst(QuenchFront):
         x_down_new = min(self.x_down, qf.x_down)
         x_up_new = max(self.x_up, qf.x_up)
         return QuenchFrontConst(x_down_new, x_up_new, str(self.label) + "_" + str(qf.label),
-                                self.coil_geometry, self.coil_data, testunit=self.testunit)
+                                self.coil_geometry, self.coil_data, testunit)
 
     def return_quench_front_position(self, initial_time, final_time, min_length, max_length):
         """

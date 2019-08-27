@@ -22,7 +22,7 @@ class QuenchFrontNum(QuenchFront):
         self.q_length_up = None
         self.q_length_down = None
 
-    def merge(self, qf):
+    def merge(self, qf, testunit=False):
         """
         :param qf: QuenchFront object
         :return: New quench QuenchFront object merged from quench front and qf
@@ -30,7 +30,7 @@ class QuenchFrontNum(QuenchFront):
         x_down_new = min(self.x_down, qf.x_down)
         x_up_new = max(self.x_up, qf.x_up)
         return QuenchFrontNum(x_down_new, x_up_new, str(self.label) + "_" + str(qf.label),
-                              self.coil_geometry, self.coil_data, testunit=self.testunit)
+                              self.coil_geometry, self.coil_data, testunit=testunit)
 
     def q_v_to_string(self):
         return "QUENCH FRONT NO {}; instantaneous quench_velocity [m/s]: up = {}, down = {}\n".format(

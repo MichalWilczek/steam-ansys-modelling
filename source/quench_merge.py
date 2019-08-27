@@ -2,13 +2,13 @@
 class QuenchMerge(object):
 
     @staticmethod
-    def quench_merge(quench_fronts):
+    def quench_merge(quench_fronts, testunit=False):
         """
         :param quench_fronts: list of inherited QuenchFront objects
         """
         qf_sorted = QuenchMerge.sort_quench_fronts(quench_fronts=quench_fronts)
         QuenchMerge.print_quench_fronts(quench_fronts=qf_sorted)
-        qf_merged = QuenchMerge.merge_quench_fronts(quench_fronts_sorted=qf_sorted)
+        qf_merged = QuenchMerge.merge_quench_fronts(quench_fronts_sorted=qf_sorted, testunit=testunit)
         QuenchMerge.print_quench_fronts_after_merging(quench_fronts_merged=qf_merged)
         return qf_merged
 
@@ -31,7 +31,7 @@ class QuenchMerge(object):
             print("{}: x_down = {}, x_up = {}".format(qf.label, qf.x_down, qf.x_up))
 
     @staticmethod
-    def merge_quench_fronts(quench_fronts_sorted):
+    def merge_quench_fronts(quench_fronts_sorted, testunit=False):
         """
         :param quench_fronts: list of sorted QuenchFront objects with respect to x_down
         :return: list of merged QuenchFront objects if previous fronts overlapped
@@ -49,7 +49,7 @@ class QuenchMerge(object):
                 print("Checking overlap of: {} and {}. The result is {}".format(
                       qf_outer.label, qf_inner.label, is_overlap))
                 if to_be_merged:
-                    qf_merged = qf_outer.merge(qf_inner)
+                    qf_merged = qf_outer.merge(qf_inner, testunit)
                     qf_outer = qf_merged
                     index = j + 1
 
