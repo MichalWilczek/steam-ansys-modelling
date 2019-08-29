@@ -19,10 +19,14 @@ class AnsysCommands1D1D1D(AnsysCommands):
         data.write_text('division_radius =' + str(self.factory.get_division_radius()))
         data.write_text('number_of_windings_in_reel =' + str(self.factory.get_number_of_windings_in_reel()))
         data.write_text('elem_per_line =' + str(1))
-        data.write_text('transverse_dimension_winding =' + str(self.factory.get_transverse_dimension_winding()))
+
+        # data.write_text('transverse_dimension_winding =' + str(self.factory.get_transverse_dimension_winding()))
+        data.write_text('transverse_dimension_winding =' + str(self.calculate_insulation_length()))
+
         data.write_text('transverse_division_insulation =' + str(self.factory.get_transverse_division_insulation()))
-        data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d_quadrupole()))
+        # data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d_quadrupole()))
         # data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d()))
+        data.write_text('G10_element_area =' + str(self.calculate_effective_insulation_area()))
         data.write_text('division_per_winding = ' + str(self.factory.get_division_per_winding()))
         data.write_text('length_per_winding = ' + str(self.factory.get_length_per_winding()))
         self.wait_for_process_to_finish(data)
@@ -47,8 +51,8 @@ class AnsysCommands1D1D1D(AnsysCommands):
                 self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
             self.define_element_density(element_number=i+1, value=class_mat.cu_dens)
             cu_rho = 1.0e-16
-            cu_therm_cond = class_mat.calculate_cu_thermal_cond(magnetic_field, rrr=class_mat.rrr)
-            winding_cp = class_mat.calculate_winding_eq_cp(magnetic_field)
+            cu_therm_cond = class_mat.calculate_cu_thermal_cond(magnetic_field=magnetic_field, rrr=class_mat.rrr)
+            winding_cp = class_mat.calculate_winding_eq_cp(magnetic_field=magnetic_field)
             for j in range(class_mat.temp_min, class_mat.temp_max, class_mat.temp_step):
                 self.define_temperature_for_material_property(temperature=j)
                 self.define_element_conductivity(element_number=i+1, value=cu_therm_cond[j, 1])
@@ -87,9 +91,9 @@ class AnsysCommands1D1D1D(AnsysCommands):
         equivalent_winding_area = class_mat.reduced_wire_area(AnsysCommands1D1D1D.STRAND_DIAMETER * 0.001)
         self.define_element_constant(element_number=element_number, element_constant=equivalent_winding_area)  # need to calculate the area
         self.define_element_density(element_number=element_number, value=class_mat.cu_dens)
-        cu_rho = class_mat.calculate_cu_rho(magnetic_field, rrr=class_mat.rrr)
-        cu_therm_cond = class_mat.calculate_cu_thermal_cond(magnetic_field, rrr=class_mat.rrr)
-        winding_cp = class_mat.calculate_winding_eq_cp(magnetic_field)
+        cu_rho = class_mat.calculate_cu_rho(magnetic_field=magnetic_field, rrr=class_mat.rrr)
+        cu_therm_cond = class_mat.calculate_cu_thermal_cond(magnetic_field=magnetic_field, rrr=class_mat.rrr)
+        winding_cp = class_mat.calculate_winding_eq_cp(magnetic_field=magnetic_field)
         for j in range(class_mat.temp_min, class_mat.temp_max, class_mat.temp_step):
             self.define_temperature_for_material_property(temperature=j)
             self.define_element_conductivity(element_number=element_number, value=cu_therm_cond[j, 1])
@@ -193,8 +197,7 @@ class AnsysCommands1D1D1D(AnsysCommands):
             winding_area = AnsysCommands1D1D1D.WINDING_SIDE ** 2.0
             G10_volume_per_winding = (winding_area - strand_area) * self.factory.get_length_per_winding() * 1000.0  # [mm3]
             G10_total_volume = G10_volume_per_winding * self.factory.get_number_of_windings()
-            total_number_of_G10_elements = (self.factory.get_number_of_windings() - 1) * (
-                        self.factory.get_division_per_winding() + 1)
+            total_number_of_G10_elements = (self.factory.get_number_of_windings() - 1) * (self.factory.get_division_per_winding() + 1)
             volume_per_G10_element = G10_total_volume / total_number_of_G10_elements
             G10_element_length = self.factory.get_transverse_dimension_winding() * 1000.0  # [mm]
             G10_element_area = volume_per_G10_element / G10_element_length  # [mm2]
@@ -210,14 +213,8 @@ class AnsysCommands1D1D1D(AnsysCommands):
             winding_area = AnsysCommands1D1D1D.WINDING_SIDE ** 2.0
             number_of_windings_in_layer = self.factory.get_number_of_windings_in_reel()
             number_of_layers = self.factory.get_number_of_windings() / number_of_windings_in_layer
-            radius = self.COIL_INITIAL_RADIUS
-            # coil_total_length = 0.0
-            # for i in range(int(number_of_layers)):
-            #     coil_total_length += (2.0*(self.COIL_LONG_SIDE+self.COIL_SHORT_SIDE) + math.pi*radius**2.0)*number_of_windings_in_layer
-            #     radius += AnsysCommands1D1D1D.WINDING_SIDE
             coil_total_length = self.factory.get_number_of_windings()*(2*self.COIL_SHORT_SIDE+2*self.COIL_LONG_SIDE)
             G10_total_volume = coil_total_length*(winding_area-strand_area)
-            # number_divisions_in_winding = (2.0*self.factory.get_division_long_side()+2.0*self.factory.get_division_short_side()+self.factory.get_division_radius()*4.0)
             number_divisions_in_winding = (2.0 * self.factory.get_division_long_side() + 2.0 * self.factory.get_division_short_side())
             number_of_transverse_insulation_elements_1 = (number_divisions_in_winding+1.0)*(number_of_windings_in_layer-1)*number_of_layers
             number_of_transverse_insulation_elements_2 = (number_divisions_in_winding+1.0)*(number_of_layers-1)*number_of_windings_in_layer
@@ -230,6 +227,22 @@ class AnsysCommands1D1D1D(AnsysCommands):
             return G10_element_area_meters2
         else:
             return 1.0
+
+    def calculate_effective_insulation_area(self):
+        if self.factory.get_number_of_windings() != 1:
+            eff_side = (self.WINDING_SIDE + math.pi * self.STRAND_DIAMETER/4.0)/2.0
+            winding_total_length = 2.0*self.COIL_SHORT_SIDE + 2.0*self.COIL_LONG_SIDE
+            total_insulation_area = eff_side * winding_total_length
+            number_divisions_in_winding = (2.0 * self.factory.get_division_long_side() + 2.0 * self.factory.get_division_short_side())
+            elem_ins_area = total_insulation_area / (number_divisions_in_winding+1.0)
+            elem_ins_area_meters = elem_ins_area * 10.0**(-6.0)
+            return elem_ins_area_meters
+        else:
+            return 1.0
+
+    def calculate_insulation_length(self):
+        l_eq = 0.5*(self.WINDING_SIDE**2.0-0.25*math.pi*0.7**2.0)/(self.WINDING_SIDE+math.pi*self.STRAND_DIAMETER/4.0)*0.001
+        return l_eq*2.0
 
     def input_material_properties_file_old(self):
         print("________________ \nMaterial properties are being uploaded...")

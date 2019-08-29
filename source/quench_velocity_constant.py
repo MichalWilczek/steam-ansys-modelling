@@ -7,7 +7,7 @@ class QuenchFrontConst(QuenchFront):
     def __init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=False):
         self.testunit = testunit
         QuenchFront.__init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=self.testunit)
-        self.q_v = 1.0       # [m/s]
+        self.q_v = 7.5       # [m/s]
 
     def merge(self, qf, testunit=False):
         """
@@ -19,7 +19,7 @@ class QuenchFrontConst(QuenchFront):
         return QuenchFrontConst(x_down_new, x_up_new, str(self.label) + "_" + str(qf.label),
                                 self.coil_geometry, self.coil_data, testunit)
 
-    def return_quench_front_position(self, initial_time, final_time, min_length, max_length):
+    def return_quench_front_position(self, initial_time, final_time, min_length, max_length, **kwargs):
         """
         Calculates quench front position in meters and nodal numbers
         :param initial_time: initial time of integration as float
@@ -29,6 +29,7 @@ class QuenchFrontConst(QuenchFront):
         """
         q_length = self.calculate_q_length(initial_time, final_time)
         self.calculate_quench_front_position(q_length, q_length, min_length, max_length)
+        self.convert_quench_front_to_nodes(self.coil_geometry)
 
     def calculate_q_length(self, initial_time, final_time):
         """

@@ -8,7 +8,6 @@ from source.model_input import ModelInput
 from source.case_factory import CaseFactory
 import numpy as np
 
-
 # input Class instances
 case = CaseFactory()
 plots = Plots()
@@ -45,10 +44,14 @@ ans.input_heat_flow_table()
 
 # input user's time stepping vector
 time = ModelInput.power_input_time_stepping()
+# time = ModelInput.power_input_time_stepping(power_time_step=2)
 
 quench_fronts = []
 quench_state_plots = []
 quench_temperature_plots = []
+
+ans.save_analysis()
+ans.terminate_analysis()
 
 #####################
 # INITIAL TIME STEP #
@@ -182,6 +185,9 @@ for i in range(1, len(time)):
 
     # get temperature profile
     temperature_profile = ans.get_temperature_profile(npoints=npoints, class_geometry=coil_geo)
+
+    if i == 10:
+        print("Hello John")
 
     # detect new quench position
     quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field_map=magnetic_map)

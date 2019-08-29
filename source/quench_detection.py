@@ -98,7 +98,8 @@ class QuenchDetect(Materials):
                     x_down_node=slice_node[0], x_up_node=slice_node[len(slice_node)-1])
                 for key in winding_temp_dict:
                     value = winding_temp_dict[key]
-                    temp_profile_winding = slice_pro[(int(value[0])-1):(int(value[1])), :]
+                    temp_profile_winding = slice_pro[np.where(slice_pro[:, 0] >= int(value[0]))]
+                    temp_profile_winding = temp_profile_winding[np.where(temp_profile_winding[:, 0] <= int(value[1]))]
                     dict_slice[key] = temp_profile_winding
                 sliced_temp_wind_profile_list.append(dict_slice)
         return sliced_temp_wind_profile_list

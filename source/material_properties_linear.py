@@ -4,7 +4,20 @@ import numpy as np
 
 class MaterialsLinear(Materials):
 
-    def calculate_cu_rho(self, *args):
+    def __init__(self, plot_curves="no", plotting="no"):
+        self.plot_curves = plot_curves
+        super().__init__(plotting)
+
+    def calculate_qf_resistance(self, qf_down, qf_up, im_temp_profile, im_coil_geom, mag_field, wire_diameter):
+        qf_resistance = 0.0
+        for i in range(qf_down, qf_up):
+            rho_elem = self.cu_rho()
+            elem_length = abs(im_coil_geom[i, 1] - im_coil_geom[i-1, 1])
+            elem_res = rho_elem*elem_length/self.reduced_wire_area(wire_diameter*0.001)
+            qf_resistance += elem_res
+        return qf_resistance
+
+    def calculate_cu_rho(self, **kwargs):
         temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         cu_rho_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
@@ -14,7 +27,7 @@ class MaterialsLinear(Materials):
             self.plot_properties(cu_rho_array, "Cu resistivity, [Ohm*m]")
         return cu_rho_array
 
-    def calculate_cu_thermal_cond(self, *args):
+    def calculate_cu_thermal_cond(self, **kwargs):
         temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         cu_thermal_cond_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
@@ -24,7 +37,7 @@ class MaterialsLinear(Materials):
             self.plot_properties(cu_thermal_cond_array, "Cu thermal conductivity, [W/(m*K)]")
         return cu_thermal_cond_array
 
-    def calculate_winding_eq_cp(self, *args):
+    def calculate_winding_eq_cp(self, **kwargs):
         temperature_profile = self.create_temperature_step(self.temp_min, self.temp_max, self.temp_step)
         winding_cp_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
@@ -73,10 +86,10 @@ class MaterialsLinear(Materials):
     # G10 material properties
     @staticmethod
     def g10_therm_cond():
-        g10_therm_cond = 0.05
+        g10_therm_cond = 1.0
         return g10_therm_cond
 
     @staticmethod
     def g10_cp():
-        g10_cp = 20.0
+        g10_cp = 5.0
         return g10_cp

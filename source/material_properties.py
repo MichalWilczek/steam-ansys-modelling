@@ -24,7 +24,7 @@ class Materials(object):
     f_cu_f_nbti = 2.2
 
     temp_min = 1        # [K]
-    temp_max = 100      # [K}
+    temp_max = 99       # [K}
     temp_step = 1       # [K]
 
     def __init__(self, plotting="no"):

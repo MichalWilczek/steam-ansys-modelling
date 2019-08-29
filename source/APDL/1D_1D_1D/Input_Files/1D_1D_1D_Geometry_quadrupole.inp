@@ -6,6 +6,7 @@
 long_side = 0.41321       ! [m]
 short_side = 0.12681      ! [m]
 radius = (9+0.15)*0.001   ! [m]
+initial_radius = radius
 coupling_span = 0.005     ! [m]
 
 reel_number = 1
@@ -148,7 +149,6 @@ csys,0
   radius = radius + transverse_dimension_winding
 *enddo
 
-
 allsel
 kp_no_in_reel = 0
 *do,b,1,number_of_windings/number_of_windings_in_reel
@@ -166,7 +166,6 @@ kp_no_in_reel = 0
   *enddo
   kp_no_in_reel = kp_no_in_reel + kp_per_winding*number_of_windings_in_reel
 *enddo
-
 
 allsel
 low_kp_number = 1
