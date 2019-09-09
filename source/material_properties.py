@@ -11,7 +11,7 @@ class Materials(object):
     a1 = 2.33 * 10.0 ** 9.0
     a2 = 9.57 * 10 ** 5.0
     a3 = 163.0
-    rrr = 100.0
+    rrr = 193.0
     tc0 = 9.2
     bc20 = 14.5
 
@@ -24,8 +24,8 @@ class Materials(object):
     f_cu_f_nbti = 2.2
 
     temp_min = 1        # [K]
-    temp_max = 99       # [K}
-    temp_step = 1       # [K]
+    temp_max = 300       # [K}
+    temp_step = 3.5       # [K]
 
     def __init__(self, plotting="no"):
         """

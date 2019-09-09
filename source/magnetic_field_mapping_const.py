@@ -34,6 +34,10 @@ class MagneticMapConst(MagneticMap):
         return magnetic_field_map
 
     def change_winding_number_to_fit_geometry(self):
+        """
+        Assigns real winding number to imaginary winding numbers taken into consideration in Python
+        :return: magnetic field map dictionary with changed keys
+        """
         new_mag_dict = {}
         for i in range(len(self.real_wind_numbers)):
             new_mag_dict["winding"+str(i+1)] = self.short_mag_dict[self.real_wind_numbers[i]]

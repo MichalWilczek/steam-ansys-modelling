@@ -12,7 +12,7 @@ import numpy as np
 case = CaseFactory()
 plots = Plots()
 ans = case.get_ansys_class()
-remap = WindingRemap(start_winding=13, end_winding=17, layers=3)
+remap = WindingRemap(start_winding=291, end_winding=293, layers=5)
 mag = case.get_magnetic_map_class(winding_list=remap.map_winding_list())
 mat = case.get_material_properties_class()
 QuenchFront = case.get_quench_velocity_class()
@@ -24,14 +24,11 @@ ans.input_file(filename='Variable_Input', extension='inp')
 # input magnetic map, assign magnetic field strength if 2D map is not used
 magnetic_map = mag.im_short_mag_dict
 print(magnetic_map)
-# ans.input_winding_non_quenched_material_properties(magnetic_map, class_mat=mat)
-# ans.input_insulation_material_properties(class_mat=mat)
-ans.input_point_mass_material_properties(class_mat=mat)
-ans.input_hot_spot_insulation_material_properties(class_mat=mat)
+ans.input_winding_non_quenched_material_properties(magnetic_map, class_mat=mat)
+ans.input_insulation_material_properties(class_mat=mat)
 
 # input geometry
-ans.input_geometry()
-# ans.input_geometry(filename='1D_1D_1D_Geometry_slab')
+ans.input_geometry()        # magnet geometry, not a 3D slab
 coil_geo = case.get_geometry_class()
 npoints = coil_geo.load_parameter(filename="Nnode.txt")
 coil_geometry = coil_geo.coil_geometry
@@ -41,9 +38,6 @@ max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
 # input class for quench detect
 q_det = QuenchDetect(npoints, class_geometry=coil_geo)
 
-# ans.input_initial_power_curve
-ans.input_heat_flow_table()
-
 # input user's time stepping vector
 time = ModelInput.power_input_time_stepping()
 
@@ -52,7 +46,6 @@ quench_state_plots = []
 quench_temperature_plots = []
 
 ans.save_analysis()
-ans.terminate_analysis()
 
 #####################
 # INITIAL TIME STEP #
@@ -75,11 +68,9 @@ ans.set_analysis_setting()
 ans.set_time_step(time_step=t, iteration=0)
 ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperature())
 
-# to be defined for power input
-ans.select_nodes_in_analysis(coil_geo, x_down_node=750, x_up_node=750)
-ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
-# ans.select_nodes_in_analysis(coil_geo, x_down_node=1031, x_up_node=1031)
-# ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
+# to be defined for initial gaussian distribuiton
+gaussian_initial_temperature = coil_geo.define_gaussian_temperature_distribution_array(coil_geometry, magnetic_field=1.962)
+ans.set_gaussian_initial_temperature_distribution(gaussian_initial_temperature)
 
 # set constant inflow current
 ans.select_nodes_for_current(class_geometry=coil_geo)
@@ -186,9 +177,6 @@ for i in range(1, len(time)):
 
     # get temperature profile
     temperature_profile = ans.get_temperature_profile(npoints=npoints, class_geometry=coil_geo)
-
-    if i == 10:
-        print("Hello John")
 
     # detect new quench position
     quench_front_new = q_det.detect_quench(quench_fronts, temperature_profile, magnetic_field_map=magnetic_map)

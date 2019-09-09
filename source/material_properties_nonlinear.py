@@ -408,27 +408,27 @@ class MaterialsNonLinear(Materials):
         for i in range(len(temperature_profile)):
             heat_gen_array[i, 0] = temperature_profile[i]
             heat_gen_array[i, 1] = self.calculate_joule_heating(magnetic_field, wire_diameter, current, temperature=temperature_profile[i])
-        fig = self.plot_properties(heat_gen_array, "Heat Generation [J/m3]")
+        fig = self.plot_properties(heat_gen_array, "Heat Generation [W/m3]")
         filename = "Heat_Generation_Curve_B_{}.png".format(magnetic_field)
         fig.savefig(filename, dpi=200)
         return heat_gen_array
 
-    def minimum_propagating_zone(self, magnetic_field, current, temp_init):
-        temp_critic = self.calculate_critical_temperature(magnetic_field)
-        temp_cs = self.calculate_temperature_cs(temp_critic, current, magnetic_field)
-        # k_cu = self.cu_thermal_cond_nist(magnetic_field, temp_critic, rrr=self.rrr)
-        k_cu = 0.1
-        # rho_cu = self.cu_rho_nist(magnetic_field, temp_critic, rrr=self.rrr)
-        rho_cu =6.5*10.0**(-7)
-        i_c = self.calculate_critical_current_ic(current, temp_critic, temp_critic, temp_cs)/self.wire_area(wire_diameter=0.007)
-        mpz = math.sqrt((2.0*k_cu*(temp_critic-temp_init))/(rho_cu*i_c**2.0))
-        return mpz
-
-    def calculate_mpz(self, temp_init=1.9, current=86.3):
-        mag_array = np.arange(0.01, 3.0, 0.01)
-        mpz_array = np.zeros((len(mag_array), 2))
-        for i in range(len(mag_array)):
-            mpz_array[i, 0] = mag_array[i]
-            mpz_array[i, 1] = self.minimum_propagating_zone(mag_array[i], current, temp_init)
-        self.plot_properties(mpz_array, x_axis_name="Magnetic Field, [B]", y_axis_name="MPZ, [m]")
+    # def minimum_propagating_zone(self, magnetic_field, current, temp_init):
+    #     temp_critic = self.calculate_critical_temperature(magnetic_field)
+    #     temp_cs = self.calculate_temperature_cs(temp_critic, current, magnetic_field)
+    #     # k_cu = self.cu_thermal_cond_nist(magnetic_field, temp_critic, rrr=self.rrr)
+    #     k_cu = 0.1
+    #     # rho_cu = self.cu_rho_nist(magnetic_field, temp_critic, rrr=self.rrr)
+    #     rho_cu =6.5*10.0**(-7)
+    #     i_c = self.calculate_critical_current_ic(current, temp_critic, temp_critic, temp_cs)/self.wire_area(wire_diameter=0.007)
+    #     mpz = math.sqrt((2.0*k_cu*(temp_critic-temp_init))/(rho_cu*i_c**2.0))
+    #     return mpz
+    #
+    # def calculate_mpz(self, temp_init=1.9, current=86.3):
+    #     mag_array = np.arange(0.01, 3.0, 0.01)
+    #     mpz_array = np.zeros((len(mag_array), 2))
+    #     for i in range(len(mag_array)):
+    #         mpz_array[i, 0] = mag_array[i]
+    #         mpz_array[i, 1] = self.minimum_propagating_zone(mag_array[i], current, temp_init)
+    #     self.plot_properties(mpz_array, x_axis_name="Magnetic Field, [B]", y_axis_name="MPZ, [m]")
 

@@ -85,9 +85,10 @@ class QuenchDetect(Materials):
 
     def slice_temperature_profile_with_respect_to_winding_numbers(self, sliced_temp_profile):
         """
-
-        :param sliced_temp_profile: list of non-quenched zones as numpy arrays
-        :return:
+        Returns list of dictionaries; each dictionary divides a sliced temperature profile into sub-regions
+        with respect to winding number
+        :param sliced_temp_profile: list of non-quenched zones (list of nodes) as numpy arrays
+        :return: list of dictionaries; each dictionary assigns node numbers to different winding number
         """
         sliced_temp_wind_profile_list = []
         for slice_pro in sliced_temp_profile:
@@ -107,9 +108,9 @@ class QuenchDetect(Materials):
     def find_quenched_nodes(self, sliced_temp_wind_profile_list, magnetic_map_dict):
         """
         Returns list of quenched nodes by counting critical temperature dependent on magnetic field at each winding
-        :param sliced_temp_wind_profile_list:
-        :param magnetic_map_dict:
-        :return:
+        :param sliced_temp_wind_profile_list: list of dictionaries
+        :param magnetic_map_dict: magnetic map as dictionary assigning different magnetic field to each winding
+        :return: list of newly quenched nodes (list of integers)
         """
         quenched_nodes = []
         for item in sliced_temp_wind_profile_list:

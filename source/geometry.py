@@ -47,6 +47,10 @@ class Geometry(object):
         self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
 
     @staticmethod
+    def number_of_im_nodes_per_winding(dict_im_nodes):
+        return len(dict_im_nodes["winding1"])
+
+    @staticmethod
     def make_one_list_from_list_of_lists(list_of_lists):
         """
         Creates one single list out of lists of lists
@@ -186,7 +190,10 @@ class Geometry(object):
     @staticmethod
     def create_dict_with_imaginary_nodes(windings_lengths, number_of_windings):
         """
-        Some comment needed to be added !!!
+        TO BE ADDED !!!
+        :param windings_lengths: dictionary which assigns a numpy array with x, y, z positions to each winding
+        :param number_of_windings: number of windings as integer
+        :return:
         """
         imaginary_node = 1
         coil_data = {}
@@ -228,10 +235,22 @@ class Geometry(object):
 
     @staticmethod
     def load_1d_temperature(directory, npoints, filename="Temperature_Data.txt"):
+        """
+        Loads file with nodal temperature results
+        :param directory: directory of the file as string
+        :param npoints: number of nodes in geometry as integer
+        :param filename: filename as string; default: "Temperature_Data.txt"
+        """
         return Geometry.load_file(analysis_directory=directory, npoints=npoints, filename=filename, file_lines_length=npoints)
 
     @staticmethod
     def save_array(directory, filename, array):
+        """
+        Saves array as txt file
+        :param directory: directory to save file as string
+        :param filename: filename to be created as string
+        :param array: array to be saved
+        """
         array_filename = directory + "\\" + filename
         np.savetxt(array_filename, array)
 
@@ -294,6 +313,11 @@ class Geometry(object):
 
     # gaussian temperature distribution - not needed anymore
     def calculate_alpha(self, magnetic_field):
+        """
+        Calculates gaussian distribution function coefficient as a function of magnetic field
+        :param magnetic_field: magnetic field as float
+        :return: coefficient as float
+        """
 
         temp_quench = Materials().calculate_critical_temperature(magnetic_field=magnetic_field)
         temp_peak = self.factory.get_peak_initial_temperature()
@@ -306,6 +330,12 @@ class Geometry(object):
         return alpha
 
     def calculate_node_gaussian_temperature(self, position, magnetic_field):
+        """
+        Calculates nodal initial temperature corresponding to gaussian distribution
+        :param position: position in metres as float
+        :param magnetic_field: magnetic field value at given node as float
+        :return: temperature at node as float
+        """
 
         alpha = self.calculate_alpha(magnetic_field)
         temp_peak = self.factory.get_peak_initial_temperature()

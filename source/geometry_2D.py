@@ -105,6 +105,10 @@ class Geometry2D(Geometry):
         return node_mapping_sorted
 
     def create_node_list_for_bf(self):
+        """
+        Creates list of lists with two nodes (1st and last one for each neighbouring windings)
+        :return: list of lists
+        """
         node_list_for_bf = {}
         for key in self.dict_winding_nodes:
             value = self.dict_winding_nodes[key]
@@ -168,6 +172,10 @@ class Geometry2D(Geometry):
         return coil_temperature_1d
 
     def create_node_list_to_couple_windings(self):
+        """
+        Returns list of lists with nodes to be coupled electrically and thermally
+        :return: list of lists
+        """
         node_list_for_bf = self.create_node_list_for_bf()
         coupling_node_list = []
         for i in range(len(node_list_for_bf)-1):
@@ -185,6 +193,10 @@ class Geometry2D(Geometry):
         return coupling_node_list
 
     def create_node_list_to_couple_interfaces(self):
+        """
+        Returns list of lists with nodes which are placed at the interface of two different domains
+        :return: list of lists
+        """
         node_list_for_bf = self.create_node_list_for_bf()
         node_list_to_unselect = []
         for i in range(len(node_list_for_bf)):
@@ -198,6 +210,10 @@ class Geometry2D(Geometry):
         return node_list_to_unselect
 
     def create_node_list_for_current(self):
+        """
+        Returns list of real node numbers where BC with current needs to be applied
+        :return: list
+        """
         node_list_current = []
         for key in self.winding_node_dict:
             value = self.winding_node_dict[key]
@@ -208,6 +224,10 @@ class Geometry2D(Geometry):
         return node_list_current
 
     def create_node_list_for_ground(self):
+        """
+        Returns list of real node numbers where BC with electric grounding needs to be applied
+        :return: list
+        """
         node_list_for_bf = self.create_node_list_for_bf()
         nodes_list_for_ground = []
         for node in node_list_for_bf["winding"+str(len(node_list_for_bf))][1]:

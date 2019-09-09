@@ -20,15 +20,13 @@ class AnsysCommands1D1D1D(AnsysCommands):
         data.write_text('number_of_windings_in_reel =' + str(self.factory.get_number_of_windings_in_reel()))
         data.write_text('elem_per_line =' + str(1))
 
-        # data.write_text('transverse_dimension_winding =' + str(self.factory.get_transverse_dimension_winding()))
         data.write_text('transverse_dimension_winding =' + str(self.calculate_insulation_length()))
-
         data.write_text('transverse_division_insulation =' + str(self.factory.get_transverse_division_insulation()))
-        # data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d_quadrupole()))
-        # data.write_text('G10_element_area =' + str(self.calculate_insulation_area_1d_1d_1d()))
-        data.write_text('G10_element_area =' + str(self.calculate_effective_insulation_area()))
+
+        # variables required when a slab (not magnet) geometry is considered
         data.write_text('division_per_winding = ' + str(self.factory.get_division_per_winding()))
         data.write_text('length_per_winding = ' + str(self.factory.get_length_per_winding()))
+
         self.wait_for_process_to_finish(data)
         time.sleep(2)
 
@@ -53,8 +51,9 @@ class AnsysCommands1D1D1D(AnsysCommands):
             cu_rho = 1.0e-16
             cu_therm_cond = class_mat.calculate_cu_thermal_cond(magnetic_field=magnetic_field, rrr=class_mat.rrr)
             winding_cp = class_mat.calculate_winding_eq_cp(magnetic_field=magnetic_field)
-            for j in range(class_mat.temp_min, class_mat.temp_max, class_mat.temp_step):
-                self.define_temperature_for_material_property(temperature=j)
+
+            for j in range(len(cu_therm_cond[:, 0])):
+                self.define_temperature_for_material_property(table_placement=j+1, temperature=cu_therm_cond[j, 0])
                 self.define_element_conductivity(element_number=i+1, value=cu_therm_cond[j, 1])
                 self.define_element_heat_capacity(element_number=i+1, value=winding_cp[j, 1])
                 if element_name == "link68":
@@ -67,15 +66,50 @@ class AnsysCommands1D1D1D(AnsysCommands):
         self.enter_preprocessor()
         element_number = 2*self.factory.get_number_of_windings() + 1
         self.define_element_type(element_number=element_number, element_name="link33")
-        insulation_area = self.calculate_insulation_area_1d_1d_1d_quadrupole()
+        insulation_area = self.calculate_effective_insulation_area()
         self.define_element_constant(element_number=element_number, element_constant=insulation_area)
         self.define_element_density(element_number=element_number, value=class_mat.g10_dens)
         g10_therm_cond = class_mat.calculate_g10_therm_cond()
         g10_cp = class_mat.calculate_g10_cp()
-        for j in range(class_mat.temp_min, class_mat.temp_max, class_mat.temp_step):
-            self.define_temperature_for_material_property(temperature=j)
+
+        for j in range(len(g10_therm_cond[:, 0])):
+            self.define_temperature_for_material_property(table_placement=j+1, temperature=g10_therm_cond[j, 0])
             self.define_element_conductivity(element_number=element_number, value=g10_therm_cond[j, 1])
             self.define_element_heat_capacity(element_number=element_number, value=g10_cp[j, 1])
+
+    def input_point_mass_material_properties(self, class_mat, elem_volume):
+        self.enter_preprocessor()
+        element_number = 2 * self.factory.get_number_of_windings() + 2
+        self.define_element_type(element_number=element_number, element_name="mass71")
+        self.define_element_constant(element_number=element_number, element_constant=elem_volume)
+        self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)  # real constant interpreted as volume with density and specific heat defined as material properties
+        self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)  # heat generation independent of temperature
+
+        res_cp = class_mat.calculate_cu_cp()
+        for j in range(len(res_cp[:, 0])):
+            self.define_temperature_for_material_property(table_placement=j+1, temperature=res_cp[j, 0])
+            self.define_element_heat_capacity(element_number=element_number, value=res_cp[j, 1])
+        return element_number
+
+    def input_hot_spot_insulation_material_properties(self, class_mat, number_of_initially_quenched_windings=1):
+        self.enter_preprocessor()
+        element_number = 2 * self.factory.get_number_of_windings() + 3
+        self.define_element_type(element_number=element_number, element_name="link33")
+
+        eff_side = (self.WINDING_SIDE + math.pi * self.STRAND_DIAMETER / 4.0) / 2.0
+        hot_spot_length = 0.002  # m
+        eff_area = (eff_side*0.001) * hot_spot_length * float(number_of_initially_quenched_windings)
+
+        self.define_element_constant(element_number=element_number, element_constant=eff_area)
+        self.define_element_density(element_number=element_number, value=class_mat.g10_dens)
+        g10_therm_cond = class_mat.calculate_g10_therm_cond()
+        g10_cp = class_mat.calculate_g10_cp()
+
+        for j in range(len(g10_therm_cond[:, 0])):
+            self.define_temperature_for_material_property(table_placement=j+1, temperature=g10_therm_cond[j, 0])
+            self.define_element_conductivity(element_number=element_number, value=g10_therm_cond[j, 1])
+            self.define_element_heat_capacity(element_number=element_number, value=g10_cp[j, 1])
+        return element_number
 
     def input_winding_quench_material_properties(self, magnetic_field_map, winding_number, class_mat, element_name="link68"):
         """
@@ -94,8 +128,8 @@ class AnsysCommands1D1D1D(AnsysCommands):
         cu_rho = class_mat.calculate_cu_rho(magnetic_field=magnetic_field, rrr=class_mat.rrr)
         cu_therm_cond = class_mat.calculate_cu_thermal_cond(magnetic_field=magnetic_field, rrr=class_mat.rrr)
         winding_cp = class_mat.calculate_winding_eq_cp(magnetic_field=magnetic_field)
-        for j in range(class_mat.temp_min, class_mat.temp_max, class_mat.temp_step):
-            self.define_temperature_for_material_property(temperature=j)
+        for j in range(len(cu_therm_cond[:, 0])):
+            self.define_temperature_for_material_property(table_placement=j+1, temperature=cu_therm_cond[j, 0])
             self.define_element_conductivity(element_number=element_number, value=cu_therm_cond[j, 1])
             self.define_element_heat_capacity(element_number=element_number, value=winding_cp[j, 1])
             if element_name == "link68":
@@ -103,8 +137,7 @@ class AnsysCommands1D1D1D(AnsysCommands):
 
     def input_heat_generation_curve(self, class_mat, magnetic_field):
         self.enter_preprocessor()
-        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER,
-                                                     current=self.factory.get_current())
+        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER, current=self.factory.get_current())
         filename = "HGEN_Table"
         filename_path = self.analysis_directory + "\\" + filename
         hgen = Table(filename_path, ext='.inp')
@@ -116,8 +149,7 @@ class AnsysCommands1D1D1D(AnsysCommands):
 
     def input_heat_generation_table(self, class_mat, magnetic_field):
         self.enter_preprocessor()
-        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER,
-                                                     current=self.factory.get_current())
+        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER, current=self.factory.get_current())
         self.create_dim_table(dim_name="heatgen", dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
         self.fill_dim_table(dim_name="heatgen", row=0, column=1, value=0.0)
         for i in range(len(heat_gen_array[:, 0])):
@@ -126,8 +158,7 @@ class AnsysCommands1D1D1D(AnsysCommands):
 
     def input_heat_generation_table_winding(self, class_mat, magnetic_field, winding_number):
         self.enter_preprocessor()
-        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER,
-                                                     current=self.factory.get_current())
+        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.STRAND_DIAMETER, current=self.factory.get_current())
         dim_name = "heatgen_"+winding_number
         self.create_dim_table(dim_name=dim_name, dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
         self.fill_dim_table(dim_name=dim_name, row=0, column=1, value=0.0)
@@ -139,17 +170,14 @@ class AnsysCommands1D1D1D(AnsysCommands):
         dim_name = "%heatgen_" + winding_number[7:] + "%"
         self.set_heat_generation_in_nodes(node_number="all", value=dim_name)
 
-    def input_heat_flow_table(self):
+    def input_heat_flow_table(self, number_windings_heated=1.0, scaling_factor=1.0):
         self.enter_preprocessor()
-        heat_flow_array = Polynomials.extract_polynomial_function()
-
+        heat_flow_array = Polynomials.extract_meas_power_function()
         self.create_dim_table(dim_name="heat_flow", dim_type="table", size1=len(heat_flow_array), size2=1, size3=1, name1="time")
         self.fill_dim_table(dim_name="heat_flow", row=0, column=1, value=0.0)
         for i in range(len(heat_flow_array[:, 0])):
             self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=0, value=heat_flow_array[i, 0])
-            # self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=heat_flow_array[i, 1])
-            # added for special analysis 25.08.19
-            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=2.0*heat_flow_array[i, 1])
+            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=(heat_flow_array[i, 1]/number_windings_heated)*scaling_factor)
 
     def input_geometry(self, filename='1D_1D_1D_Geometry_quadrupole'):
         """

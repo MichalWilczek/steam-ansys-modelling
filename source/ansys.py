@@ -198,14 +198,17 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString("antype,,rest,,,continue"))
 
     # preprocessor commands`
-    def define_temperature_for_material_property(self, temperature):
-        self.mapdl.executeCommand('mptemp,{},{}'.format(temperature, temperature))
+    def define_temperature_for_material_property(self, table_placement, temperature):
+        self.mapdl.executeCommand('mptemp,{},{}'.format(table_placement, temperature))
 
     def define_element_type(self, element_number, element_name):
         self.mapdl.executeCommand('et,{},{}'.format(element_number, element_name))
 
     def define_element_type_with_keyopt(self, element_number, element_name, keyopt):
         self.mapdl.executeCommand('et,{},{},{}'.format(element_number, element_name, keyopt))
+
+    def define_keyopt(self, element_number, keyopt_1, keyopt_2):
+        self.mapdl.executeCommand('keyopt,{},{},{}'.format(element_number, keyopt_1, keyopt_2))
 
     def define_element_constant(self, element_number, element_constant):
         self.mapdl.executeCommand('r,{},{}'.format(element_number, element_constant))
@@ -290,15 +293,12 @@ class AnsysCommands(object):
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
-
-        # print(self.mapdl.executeCommandToString('deltim,2.5e-4,2.5e-4,2.5e-3'))
-
-        # print(self.mapdl.executeCommandToString('deltim,1e-4,1e-4,1e-3'))
-        # print(self.mapdl.executeCommandToString('deltim,5e-4,5e-4,1e-2'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
         print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal integration (default) into backward Euler formulation
 
-    # postprocessor commands
+        print(self.mapdl.executeCommandToString('deltim,100.0e-6,100.0e-6,1000.0e-6'))
+
+    # postprocessor commands6
     def create_file(self, filename, extension):
         print(self.mapdl.executeCommandToString("*cfopen,{},{}".format(filename, extension)))
 

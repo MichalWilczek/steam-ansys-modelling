@@ -2,29 +2,32 @@
 from source.plots import Plots
 from source.quench_velocity import QuenchFront
 from source.quench_detection import QuenchDetect
+from source.winding_remap import WindingRemap
 from source.factory import AnalysisBuilder
 from source.model_input import ModelInput
 from source.case_factory import CaseFactory
 import numpy as np
 
-gaussian_init_temp = False
+mag_field_const = 1.962  # T
+gaussian_init_temp = True
+power_input = True
+
 CaseFactory = CaseFactory()
 Plots = Plots()
-mag = CaseFactory.get_magnetic_map_class(winding_list=[1], magnetic_field=3.0)
 ans = CaseFactory.get_ansys_class()
 mat = CaseFactory.get_material_properties_class()
+
+remap = WindingRemap(start_winding=1, end_winding=1, layers=1)
+mag = CaseFactory.get_magnetic_map_class(winding_list=remap.map_winding_list(), magnetic_field=mag_field_const)
+
 ans.delete_old_files()
 ans.create_variable_file()
 ans.input_file(filename='Variable_Input', extension='inp')
 
 # input of magnetic map onto material properties
 magnetic_map = mag.im_short_mag_dict
-ans.input_winding_non_quenched_material_properties(magnetic_map, class_mat=mat, element_name="fluid116")
-# ans.input_insulation_material_properties(class_mat=mat)
-
-# ans.input_heat_generation_curve(magnetic_field=magnetic_map["winding1"])
+ans.input_winding_non_quenched_material_properties(magnetic_map, class_mat=mat, element_name="link33")
 ans.input_heat_generation_table(class_mat=mat, magnetic_field=magnetic_map["winding1"])
-ans.input_heat_flow_table()
 
 # input geometry
 ans.input_geometry(filename='1D_1D_1D_Geometry_slab')
@@ -36,7 +39,11 @@ min_coil_length = coil_geometry[0, 1]
 max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
 
 # user's time stepping vector
-time = ModelInput.power_input_time_stepping()
+if power_input:
+    time = ModelInput.power_input_time_stepping()
+else:
+    time = ModelInput.linear_time_stepping()
+
 q_det = QuenchDetect(npoints, class_geometry=coil_geo)
 quench_fronts = []
 quench_state_plots = []
@@ -60,8 +67,10 @@ if gaussian_init_temp:
     gaussian_initial_temperature = coil_geo.define_gaussian_temperature_distribution_array(coil_geometry, magnetic_field=magnetic_map["winding1"])
     ans.set_gaussian_initial_temperature_distribution(gaussian_initial_temperature)
 else:
-    ans.select_nodes_in_analysis(coil_geo, x_down_node=1251, x_up_node=1251)
-    ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
+    ans.select_nodes_in_analysis(coil_geo, x_down_node=2001, x_up_node=2001)
+    temp_critic = mat.calculate_critical_temperature(magnetic_field=mag_field_const)
+    ans.set_quench_temperature(q_temperature=20.0)
+    # ans.set_heat_flow_into_nodes(value="%heat_flow%")  # power applied to one node/element
 
 ans.allsel()
 ans.set_heat_generation_in_nodes(node_number="all", value="%heatgen%")
@@ -188,7 +197,7 @@ for i in range(1, len(time)):
         qf_resistance = 0.0
         quench_dict = coil_geo.retrieve_winding_numbers_and_quenched_nodes(x_down_node=qf.x_down_node, x_up_node=qf.x_up_node)
         for key in quench_dict:
-            winding_number = int(float(key[7 :]))
+            winding_number = int(float(key[7:]))
             mag_field = magnetic_map["winding" + str(winding_number)]
             n_down = quench_dict["winding" + str(winding_number)][0]
             n_up = quench_dict["winding" + str(winding_number)][1]

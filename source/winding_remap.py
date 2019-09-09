@@ -12,6 +12,10 @@ class WindingRemap(ElemSwitch):
         ElemSwitch.__init__(self, number_of_layers=self.layers, number_of_windings_in_layer=self.windings_in_layer)
 
     def map_winding_list(self):
+        """
+        Creates a list of real winding numbers analyzed in the simulation
+        :return: list of integers
+        """
         map_main_list = []
         for j in range(self.start_winding, self.end_winding + 1):
             map_main_list.append(j)

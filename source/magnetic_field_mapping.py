@@ -28,41 +28,32 @@ class MagneticMap(object):
             self.interpol_error_plot = self.plot_error_between_meas_and_interpolation()
 
     def create_wind_real_number_list(self, winding_list):
+        """
+        Creates list of windings taken into consideration in analysis
+        :param winding_list: list of integers
+        :return: list of strings, winding%winding_number%
+        """
         return self.create_list_with_winding_names(winding_list)
 
-    # def odd_layer_winding_numbers(self, winding_start, winding_end, number_of_layers):
-    #     layer_no = 1
-    #     winding_list = []
-    #     start = winding_start
-    #     end = winding_end
-    #     while layer_no < number_of_layers:
-    #         for i in range(start, end+1):
-    #             winding_list.append(i)
-    #         start += self.NUMBER_TURNS_IN_LAYER
-    #         end += self.NUMBER_TURNS_IN_LAYER
-    #         layer_no += 2
-    #     return winding_list
-    #
-    # def even_layer_winding_numbers(self, winding_start, winding_end, number_of_layers):
-    #     layer_no = 2
-    #     winding_list = []
-    #     start = winding_start + 2 * (self.NUMBER_TURNS_IN_LAYER-winding_start)
-
-    # def define_winding_numbers_in_geometry(self, winding_start, winding_end, number_of_reels):
-    #     start = winding_start
-    #     end = winding_end
-    #     winding_list_of_sublists = []
-    #     for i in range(number_of_reels):
-    #         reel = []
-    #         for j in range(start, end+1):
-    #             reel.append(j)
-    #         winding_list_of_sublists.append(reel)
-    #         start += MagneticMap.NUMBER_TURNS_IN_LAYER
-    #         end += MagneticMap.NUMBER_TURNS_IN_LAYER
-    #     return winding_list_of_sublists
+    @staticmethod
+    def create_list_with_winding_names(list_numbers):
+        """
+        Returns the following list of strings; winding%winding_number%
+        :param list_numbers: list of integers
+        :return: list of strings
+        """
+        winding_list = []
+        for item in list_numbers:
+            winding_list.append("winding" + str(item))
+        return winding_list
 
     @staticmethod
     def flatten_list(list_to_flatten):
+        """
+        Flattens list of list
+        :param list_to_flatten: list of lists
+        :return: list
+        """
         flat_list = []
         for sublist in list_to_flatten:
             for item in sublist:
@@ -70,14 +61,13 @@ class MagneticMap(object):
         return flat_list
 
     @staticmethod
-    def create_list_with_winding_names(list_numbers):
-        winding_list = []
-        for item in list_numbers:
-            winding_list.append("winding" + str(item))
-        return winding_list
-
-    @staticmethod
     def shorten_mag_map_dict(mag_map, winding_name_list):
+        """
+        Returns dictionary with only windings taken into analysis
+        :param mag_map: full dictionary with assigned magnetic field
+        :param winding_name_list: list of strings with winding names taken into analysis
+        :return: reduced magnetic field map dictionary
+        """
         new_mag_map = {}
         for name in winding_name_list:
             value = mag_map[name]
@@ -85,7 +75,10 @@ class MagneticMap(object):
         return new_mag_map
 
     def plot_winding_vector_arrangement(self, transverse_lines=False):
-
+        """
+        Plots winding arrangement in a half quadrant of a quadrupole
+        :param transverse_lines: transverse vector lines plotting as boolean, default as False
+        """
         x_pos = self.winding_x_pos_list()
         y_pos = self.winding_y_pos_list()
 
