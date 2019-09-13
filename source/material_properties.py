@@ -1,5 +1,6 @@
 
 import matplotlib.pyplot as plt
+from matplotlib import rc
 import math
 
 
@@ -23,16 +24,19 @@ class Materials(object):
     g10_dens = 1948.0     # kg/m3
     f_cu_f_nbti = 2.2
 
+    # temp_min = 1        # [K]
+    # temp_max = 300       # [K}
+    # temp_step = 3.5       # [K]
+
     temp_min = 1        # [K]
-    temp_max = 300       # [K}
-    temp_step = 3.5       # [K]
+    temp_max = 50       # [K}
+    temp_step = 0.2       # [K]
 
     def __init__(self, plotting="no"):
         """
         Initialises plot creation if plotting is set to "yes"
         :param plotting: string, default as "no"
         """
-
         self.plt = plt
         self.plot = plotting
         self.f_nbti = self.ratio_nbti()
@@ -80,7 +84,7 @@ class Materials(object):
         return temperature_step_profile
 
     @staticmethod
-    def plot_properties(array, y_axis_name, x_axis_name='Temperature, [K]'):
+    def plot_properties(array, y_axis_name, x_axis_name='temperature, ' + r'[K]', fontsize=15):
         """
         Plots material properties
         :param array: numpy array to be plotted; 1st column: x values as float, 2nd column: y values as float
@@ -91,11 +95,16 @@ class Materials(object):
         left_boundary = array[0, 0]
         right_boundary = array[len(array) - 1, 0]
         fig = plt.figure()
+        # plt.rc('text', usetex=True)
         ax = fig.add_subplot(111)
-        ax.set_xlabel(x_axis_name)
-        ax.set_ylabel(y_axis_name)
+        ax.set_xlabel(x_axis_name, fontsize=fontsize)
+        ax.set_ylabel(y_axis_name, fontsize=fontsize)
         plt.xlim(left_boundary, right_boundary)
         ax.plot(array[:, 0], array[:, 1])
         plt.grid(True)
-        # plt.show()
+        # plt.rcParams()
+
+        # plt.rc('font', family='serif')
+        plt.show()
+        # plt.savefig("tex_demo")
         return fig

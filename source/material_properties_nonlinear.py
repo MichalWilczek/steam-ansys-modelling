@@ -11,11 +11,11 @@ class MaterialsNonLinear(Materials):
         self.plot_curves = plot_curves
         super().__init__(plotting)
         if self.plot_curves == "yes":
-            self.plot_cu_resistivity(rrr=50.0)
-            self.plot_cu_resistivity(rrr=150.0)
-            self.plot_cu_thermal_cond(rrr=50.0)
-            self.plot_cu_thermal_cond(rrr=150.0)
-            self.plot_nb_ti_cp()
+            self.plot_cu_resistivity(rrr=100.0)
+            self.plot_cu_resistivity(rrr=200.0)
+            # self.plot_cu_thermal_cond(rrr=100.0)
+            # self.plot_cu_thermal_cond(rrr=200.0)
+            # self.plot_nb_ti_cp()
 
     def calculate_qf_resistance(self, qf_down, qf_up, im_temp_profile, im_coil_geom, mag_field, wire_diameter):
         qf_resistance = 0.0
@@ -35,8 +35,12 @@ class MaterialsNonLinear(Materials):
         :param rrr: residual resistivity ratio as float
         """
         magnetic_field = [0.0, 3.0]
+        temperature_profile = self.create_temperature_step(temp_max=self.temp_max, temp_min=self.temp_min, temp_step=self.temp_step)
+        cu_rho_full_array = np.zeros((len(temperature_profile), len(magnetic_field)+1))
+        cu_rho_full_array[:, 0] = temperature_profile
         for i in range(len(magnetic_field)):
             cu_rho = self.calculate_cu_rho(magnetic_field[i], rrr=rrr)
+            cu_rho_full_array[:, i+1] = cu_rho[:, 1]
             left_boundary = cu_rho[0, 0]
             right_boundary = cu_rho[len(cu_rho) - 1, 0]
             if i == 0:
@@ -53,6 +57,7 @@ class MaterialsNonLinear(Materials):
         self.plt.legend(("B = {} [T]".format(magnetic_field[0]), "B = {} [T]".format(magnetic_field[1])), loc="upper right")
         filename = "Cu_Rho_B_Depenedence_plot_rrr_{}.png".format(int(rrr))
         self.cu_res_fig.savefig(filename, dpi=200)
+        np.savetxt("Cu_Rho_B_Depenedence_plot_rrr_{}.txt".format(int(rrr)), cu_rho_full_array, delimiter=",")
 
     def plot_cu_thermal_cond(self, rrr):
         """
@@ -102,6 +107,30 @@ class MaterialsNonLinear(Materials):
         self.plt.legend(("B = {} [T]".format(magnetic_field[0]), "B = {} [T]".format(magnetic_field[1])), loc="upper right")
         filename = "NbTi_Cp_B_Depenedence_plot.png"
         self.cu_res_fig.savefig(filename, dpi=200)
+
+    def calculate_strand_thermal_diffusivity(self, magnetic_field, rrr):
+        temperature_profile = self.create_temperature_step(temp_max=self.temp_max, temp_min=self.temp_min, temp_step=self.temp_step)
+        diffusivity_array = np.zeros((len(temperature_profile), 2))
+
+        cu_therm_cond = self.calculate_cu_thermal_cond(magnetic_field=magnetic_field, rrr=rrr)
+        strand_cp = self.calculate_winding_eq_cp(magnetic_field=magnetic_field)
+        diffusivity_array[:, 0] = temperature_profile
+        diffusivity_array[:, 1] = (cu_therm_cond[:, 1] / (self.cu_dens * strand_cp[:, 1]))
+        if self.plot == "yes":
+            self.plot_properties(diffusivity_array, "Strand thermal diffusivity, " + r'$\frac {m^2}{s}$')
+        np.savetxt("Eq_thermal_diffusivity.txt", diffusivity_array, delimiter=",")
+        return diffusivity_array
+
+    def calculate_g10_thermal_diffusivity(self):
+        temperature_profile = self.create_temperature_step(temp_max=self.temp_max, temp_min=self.temp_min, temp_step=self.temp_step)
+        diffusivity_array = np.zeros((len(temperature_profile), 2))
+        g10_therm_cond = self.calculate_g10_therm_cond()
+        g10_cp = self.calculate_g10_cp()
+        diffusivity_array[:, 0] = temperature_profile
+        diffusivity_array[:, 1] = (g10_therm_cond[:, 1] / (self.g10_dens * g10_cp[:, 1]))
+        if self.plot == "yes":
+            self.plot_properties(diffusivity_array, "G10 thermal diffusivity, " + r'$\frac {m^2}{s}$')
+        return diffusivity_array
 
     def calculate_cu_rho(self, magnetic_field, rrr):
         """
@@ -408,27 +437,12 @@ class MaterialsNonLinear(Materials):
         for i in range(len(temperature_profile)):
             heat_gen_array[i, 0] = temperature_profile[i]
             heat_gen_array[i, 1] = self.calculate_joule_heating(magnetic_field, wire_diameter, current, temperature=temperature_profile[i])
-        fig = self.plot_properties(heat_gen_array, "Heat Generation [W/m3]")
+        fig = self.plot_properties(heat_gen_array, "Heat Generation, " + r"\frac{\text{W}}{[text{m}^3}]")
         filename = "Heat_Generation_Curve_B_{}.png".format(magnetic_field)
         fig.savefig(filename, dpi=200)
         return heat_gen_array
 
-    # def minimum_propagating_zone(self, magnetic_field, current, temp_init):
-    #     temp_critic = self.calculate_critical_temperature(magnetic_field)
-    #     temp_cs = self.calculate_temperature_cs(temp_critic, current, magnetic_field)
-    #     # k_cu = self.cu_thermal_cond_nist(magnetic_field, temp_critic, rrr=self.rrr)
-    #     k_cu = 0.1
-    #     # rho_cu = self.cu_rho_nist(magnetic_field, temp_critic, rrr=self.rrr)
-    #     rho_cu =6.5*10.0**(-7)
-    #     i_c = self.calculate_critical_current_ic(current, temp_critic, temp_critic, temp_cs)/self.wire_area(wire_diameter=0.007)
-    #     mpz = math.sqrt((2.0*k_cu*(temp_critic-temp_init))/(rho_cu*i_c**2.0))
-    #     return mpz
-    #
-    # def calculate_mpz(self, temp_init=1.9, current=86.3):
-    #     mag_array = np.arange(0.01, 3.0, 0.01)
-    #     mpz_array = np.zeros((len(mag_array), 2))
-    #     for i in range(len(mag_array)):
-    #         mpz_array[i, 0] = mag_array[i]
-    #         mpz_array[i, 1] = self.minimum_propagating_zone(mag_array[i], current, temp_init)
-    #     self.plot_properties(mpz_array, x_axis_name="Magnetic Field, [B]", y_axis_name="MPZ, [m]")
+mat = MaterialsNonLinear(plotting="yes")
 
+mat.calculate_strand_thermal_diffusivity(magnetic_field=1.92, rrr=mat.rrr)
+# mat.calculate_g10_thermal_diffusivty()

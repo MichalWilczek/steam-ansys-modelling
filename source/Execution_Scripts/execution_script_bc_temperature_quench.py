@@ -6,6 +6,7 @@ from source.winding_remap import WindingRemap
 from source.factory import AnalysisBuilder
 from source.model_input import ModelInput
 from source.case_factory import CaseFactory
+from source.polynomial_fit import Polynomials
 import numpy as np
 
 # input Class instances
@@ -40,20 +41,11 @@ q_det = QuenchDetect(npoints, class_geometry=coil_geo)
 
 # input user's time stepping vector
 time = ModelInput.power_input_time_stepping()
+temperature_bc_list = Polynomials.create_linear_interpolation_for_temp_vector(time)
 
 quench_fronts = []
 quench_state_plots = []
 quench_temperature_plots = []
-
-ans.save_analysis()
-
-
-
-
-
-
-
-
 
 #####################
 # INITIAL TIME STEP #
@@ -76,9 +68,9 @@ ans.set_analysis_setting()
 ans.set_time_step(time_step=t, iteration=0)
 ans.set_initial_temperature(temperature=AnalysisBuilder().get_initial_temperature())
 
-# to be defined for initial gaussian distribuiton
-gaussian_initial_temperature = coil_geo.define_gaussian_temperature_distribution_array(coil_geometry, magnetic_field=1.962)
-ans.set_gaussian_initial_temperature_distribution(gaussian_initial_temperature)
+# to be defined for temperature at quenched node
+ans.select_nodes_in_analysis(coil_geo, x_down_node=5809, x_up_node=5809)
+ans.set_quench_temperature(q_temperature=temperature_bc_list[i])
 
 # set constant inflow current
 ans.select_nodes_for_current(class_geometry=coil_geo)
@@ -179,6 +171,10 @@ for i in range(1, len(time)):
     ans.enter_solver()
     ans.restart_analysis()
     ans.set_time_step(time_step=t, iteration=i)
+
+    # to be defined for temperature at quenched node
+    ans.select_nodes_in_analysis(coil_geo, x_down_node=5809, x_up_node=5809)
+    ans.set_quench_temperature(q_temperature=temperature_bc_list[i])
 
     # input solver ANSYS APDL file
     ans.input_solver()

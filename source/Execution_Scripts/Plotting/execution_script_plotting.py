@@ -14,4 +14,4 @@ from source.magnetic_field_mapping import MagneticMap
 # MagneticMap()
 
 # plotting minimum propagating zone
-MaterialsNonLinear(plot_curves="no").calculate_mpz()
+# MaterialsNonLinear(plot_curves="no").calculate_mpz()

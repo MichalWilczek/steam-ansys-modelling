@@ -7,7 +7,14 @@ import matplotlib.pyplot as plt
 class Polynomials(object):
 
     FILENAME = "Power_Data.txt"
+    FILENAME_TEMP_INSULATION = "Nodal_Temperature_Last_node.txt"
     DIRECTORY = "C:\\gitlab\\steam-ansys-modelling\\quadrupole_experimental_results"
+
+    @staticmethod
+    def create_linear_interpolation_for_temp_vector(time_vector):
+        temp_array = Polynomials.load_data(directory=Polynomials.DIRECTORY, filename=Polynomials.FILENAME_TEMP_INSULATION)
+        temperature_vector = np.interp(x=time_vector, xp=temp_array[:, 0], fp=temp_array[:, 1])
+        return temperature_vector
 
     @staticmethod
     def extract_meas_power_function():
@@ -15,7 +22,7 @@ class Polynomials(object):
         Creates array with power deposition fuction with respect to time
         :return: numpy array; column1: time, column2: power [W]
         """
-        power = Polynomials.load_power_data()
+        power = Polynomials.load_data(directory=Polynomials.DIRECTORY, filename=Polynomials.FILENAME)
         time = Polynomials.create_time_vector()
         Polynomials.plot_data(power, time)
         return Polynomials.create_polyfit_array(time, power)
@@ -26,20 +33,20 @@ class Polynomials(object):
         Created array with interpolation fuction corresponding to power deposition with respect to time
         :return: numpy array; column1: time, column2: power interpolation function [W]
         """
-        power = Polynomials.load_power_data()
+        power = Polynomials.load_data(directory=Polynomials.DIRECTORY, filename=Polynomials.FILENAME)
         time = Polynomials.create_time_vector()
         f_polyfit = Polynomials.create_polyfit(power, time)
         Polynomials().plot_data(power, time, f_fit=f_polyfit)
         return Polynomials.create_polyfit_array(time, f_polyfit)
 
     @staticmethod
-    def load_power_data():
+    def load_data(directory, filename):
         """
         Loads file with power data from file
         :return: numpy array 1D, column1: power [W]
         """
-        os.chdir(Polynomials.DIRECTORY)
-        power_meas = np.loadtxt(Polynomials.FILENAME)
+        os.chdir(directory)
+        power_meas = np.loadtxt(filename)
         return power_meas
 
     @staticmethod
