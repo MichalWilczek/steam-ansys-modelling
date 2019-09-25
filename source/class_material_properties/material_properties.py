@@ -7,7 +7,7 @@ import math
 
 class Materials(SkewQuadrupole):
 
-    material_properties_directory = "C:\\gitlab\\steam-ansys-modelling\\source\\Material_Properties"
+    material_properties_directory = "C:\\gitlab\\steam-ansys-modelling\\Material_Properties"
 
     a0 = 1.7
     a1 = 2.33 * 10.0 ** 9.0

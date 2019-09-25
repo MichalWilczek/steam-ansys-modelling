@@ -34,6 +34,8 @@ class CaseFactory(AnalysisBuilder):
 
     def get_ansys_class(self):
         dimensionality = self.get_dimensionality()
+        geometry_type = self.get_geometry_type()
+        magnet_type = self.get_magnet_type()
         if dimensionality == "1D":
             return Ansys1D()
         elif dimensionality == "1D_1D_1D" and geometry_type == "magnet" and magnet_type == "skew_quadrupole":

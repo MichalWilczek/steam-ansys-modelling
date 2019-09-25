@@ -14,6 +14,12 @@ class AnalysisBuilder(object):
         with open(filename) as json_data_file:
             return json.load(json_data_file)
 
+    def get_magnet_type(self):
+        return self.parameters['magnet_type']
+
+    def get_geometry_type(self):
+        return self.parameters['geometry_type']
+
     def get_dimensionality(self):
         return self.parameters['dimensionality']
 

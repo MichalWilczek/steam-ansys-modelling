@@ -1,5 +1,6 @@
 
 import time
+import math
 from source.class_ansys.ansys_net import AnsysNetwork
 
 class Ansys1D(AnsysNetwork):
@@ -43,3 +44,19 @@ class Ansys1D(AnsysNetwork):
     def get_temperature_profile(self, class_geometry, npoints):
         temperature_profile = class_geometry.load_1d_temperature(directory=self.factory.get_directory(), npoints=npoints)
         return temperature_profile
+
+    def calculate_effective_insulation_area(self):
+        if self.factory.get_number_of_windings() != 1:
+            eff_side = (self.WINDING_SIDE + math.pi * self.STRAND_DIAMETER/4.0)/2.0
+            winding_total_length = 2.0*self.COIL_SHORT_SIDE + 2.0*self.COIL_LONG_SIDE
+            total_insulation_area = eff_side * winding_total_length
+            number_divisions_in_winding = (2.0 * self.factory.get_division_long_side() + 2.0 * self.factory.get_division_short_side())
+            elem_ins_area = total_insulation_area / (number_divisions_in_winding+1.0)
+            elem_ins_area_meters = elem_ins_area * 10.0**(-6.0)
+            return elem_ins_area_meters * 4.0
+        else:
+            return 1.0
+
+    def calculate_insulation_length(self):
+        l_eq = 0.5*(self.WINDING_SIDE**2.0-0.25*math.pi*0.7**2.0)/(self.WINDING_SIDE+math.pi*self.STRAND_DIAMETER/4.0)*0.001
+        return l_eq
