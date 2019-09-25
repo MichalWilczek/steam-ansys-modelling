@@ -2,7 +2,7 @@
 import os
 import unittest
 import numpy as np
-from source.nodes_search import SearchNodes
+from source.class_quench_velocity.nodes_search import SearchNodes
 
 
 # methods for 1D analysis

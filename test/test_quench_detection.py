@@ -3,8 +3,8 @@ import unittest
 import numpy as np
 import os
 from source.quench_detection import QuenchDetect
-from source.quench_velocity import QuenchFront
-from source.geometry import Geometry
+from source.class_quench_velocity.quench_velocity import QuenchFront
+from source.class_geometry.geometry import Geometry
 
 class VirtualGeometry(object):
 
