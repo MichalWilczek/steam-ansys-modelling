@@ -1,7 +1,7 @@
 
 import numpy as np
 from source.factory import AnalysisDirectory, AnalysisBuilder
-from source.material_properties import Materials
+from source.class_material_properties.material_properties import Materials
 
 
 class QuenchDetect(Materials):

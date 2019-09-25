@@ -1,37 +1,38 @@
 
-
 {
-    "dimensionality": "1D_1D_1D",
+    "dimensionality": "1D",
     "filename_nodal_position": "Node_Position.txt",
     "filename_nodal_temperature": "Temperature_Data.txt",
     "nonlinear_material_properties": "nonlinear",
     "quench_velocity_model": "numerical",
-    "magnetic_map_model": "nonconstant",
-    "electric_analysis": 1,
+    "magnetic_map_model": "constant",
+    "geometry_type": "slab",
+    "magnet_type": "skew_quadrupole",
+    "electric_analysis": 0,
 
     "division_long_side": 100,
     "division_short_side": 30,
     "division_radius": 5,
 
-    "number_of_windings": 45,
-    "number_of_windings_in_reel": 5,
+    "number_of_windings": 1,
+    "number_of_windings_in_reel": 1,
 
-    "transverse_division_insulation": 5,
+    "transverse_division_insulation": 6,
     "transverse_dimension_winding": 0.000941,
     "transverse_division_winding": 3,
 
-    "length_per_winding": 3.0,
-    "division_per_winding": 3000,
+    "length_per_winding": 1.0,
+    "division_per_winding": 100,
 
-    "quench_init_pos": 7.5837,
+    "quench_init_pos": 0,
 
-    "quench_init_length": 0.004,
+    "quench_init_length": 0.1,
     "total_time": 0.14,
     "time_division": 14.0,
 
-    "current": 86.0,
-    "initial_temperature": 4.2,
-    "initial_peak_temperature": 40.0,
+    "current": 100.0,
+    "initial_temperature": 1.9,
+    "initial_peak_temperature": 20.0,
 
     "winding_plane_max_number_nodes": 5,
     "transverse_dimension_insulation": 0.0
