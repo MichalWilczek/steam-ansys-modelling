@@ -1,0 +1,100 @@
+
+winding_counter = 1
+reel_number = 1
+kp_per_winding = division_per_winding+1
+! feature which could be added
+elem_per_line = 1
+x=0
+y=0
+z=0
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! CREATE WINDING GEOMETRY !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*get,kp_first_winding_i,kp,,count
+kp_first_winding_i = kp_first_winding_i + 1
+*do,j,1,kp_per_winding,1
+  allsel
+  *get,knum,kp,,count
+    k,knum+1,(j-1)*(length_per_winding)/(division_per_winding),y,z
+*enddo
+allsel
+*get,kp_last_winding_i,kp,,count
+allsel
+*get,knum,kp,,count
+line_counter = knum - division_per_winding
+type,winding_counter
+real,winding_counter
+mat,winding_counter
+*do,k,line_counter,line_counter+division_per_winding-1,1
+  l,k,k+1,elem_per_line
+  allsel
+  *get,lnum,line,,count
+  lmesh,lnum
+*enddo
+allsel
+*get,lnum,line,,count
+lsel,s,line,,lnum+1-division_per_winding,lnum
+allsel,below,line
+cm,winding%winding_counter%,line
+
+allsel
+*get,nnode,node,,count
+*cfopen,Nnode,txt
+*vwrite,nnode
+(1(ES16.7))
+*cfclose
+
+!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! CREATE INSULATION !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!
+
+*get,kp_windings,kp,,count
+
+type,number_of_windings*2+1
+real,number_of_windings*2+1
+mat,number_of_windings*2+1
+*do,j,1,kp_per_winding,1
+  y = 0
+  *do,i,1,transverse_division_insulation
+    y = y + transverse_dimension_winding/transverse_division_insulation
+    allsel
+    *get,knum,kp,,count
+    *get,kposx,kp,j,loc,x
+    k,knum+1,kposx,y,z
+    *if,i,eq,1,then
+      l,j,knum+1,1
+    *else
+      l,knum,knum+1,1
+    *endif
+    allsel
+    *get,lnum,line,,count
+    lmesh,lnum
+  *enddo
+*enddo
+
+*do,i,1,number_of_windings
+  *dim,node_list_winding_%i%,array,division_per_winding+1,1
+  cmsel,s,winding%i%
+  allsel,below,line
+  *vget,node_list_winding_%i%,node,,nlist
+  *mwrite,node_list_winding_%i%,Winding_%i%,txt
+  (1E20.10)
+*enddo
+
+csys,0
+allsel
+*get,nnum_windings,node,,count
+*dim,node_loc_windings,array,nnum_windings,4
+*vget,node_loc_windings(1,1),node,,nlist
+*vget,node_loc_windings(1,2),node,,loc,x
+*vget,node_loc_windings(1,3),node,,loc,y
+*vget,node_loc_windings(1,4),node,,loc,z
+*mwrite,node_loc_windings,Node_Position,txt
+(4E20.10)
+
+*cfopen,Process_Finished,txt
+*vwrite,1
+(1(ES16.7))
+*cfclose

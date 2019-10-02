@@ -1,0 +1,75 @@
+/clear
+/title,Quench_Analysis_1D
+/prep7
+
+number_of_windings =1
+elem_per_line =1
+transverse_dimension_winding =0.00033582173873743536
+transverse_division_insulation =5
+division_per_winding = 10
+length_per_winding = 0.01
+
+et,1,link33
+et,3,link33
+
+winding_counter = 1
+reel_number = 1
+kp_per_winding = division_per_winding+1
+! feature which could be added
+elem_per_line = 1
+x=0
+y=0
+z=0
+
+! CREATE WINDING GEOMETRY
+*get,kp_first_winding_i,kp,,count
+kp_first_winding_i = kp_first_winding_i + 1
+*do,j,1,kp_per_winding,1
+  allsel
+  *get,knum,kp,,count
+    k,knum+1,(j-1)*(length_per_winding)/(division_per_winding),y,z
+*enddo
+allsel
+*get,kp_last_winding_i,kp,,count
+allsel
+*get,knum,kp,,count
+line_counter = knum - division_per_winding
+type,winding_counter
+real,winding_counter
+mat,winding_counter
+*do,k,line_counter,line_counter+division_per_winding-1,1
+  l,k,k+1,elem_per_line
+  allsel
+  *get,lnum,line,,count
+  lmesh,lnum
+*enddo
+allsel
+*get,lnum,line,,count
+lsel,s,line,,lnum+1-division_per_winding,lnum
+allsel,below,line
+cm,winding%winding_counter%,line
+
+! CREATE INSULATION
+*get,kp_windings,kp,,count
+
+type,number_of_windings*2+1
+real,number_of_windings*2+1
+mat,number_of_windings*2+1
+*do,j,1,kp_per_winding,1
+  y = 0
+  *do,i,1,transverse_division_insulation
+    y = y + transverse_dimension_winding/transverse_division_insulation
+    allsel
+    *get,knum,kp,,count
+    *get,kposx,kp,j,loc,x
+    k,knum+1,kposx,y,z
+    *if,i,eq,1,then
+      l,j,knum+1,1
+    *else
+      l,knum,knum+1,1
+    *endif
+    allsel
+    *get,lnum,line,,count
+    lmesh,lnum
+  *enddo
+*enddo

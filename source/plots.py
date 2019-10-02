@@ -1,31 +1,21 @@
 
-from source.factory import AnalysisDirectory, AnalysisBuilder
+from source.general_functions import GeneralFunctions
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 import os
 
-def file_length(filename, analysis_directory):
-    """
-    :param filename: filename with extension as string
-    :param analysis_directory: string
-    :return: number of rows in a file as integer
-    """
-    os.chdir(analysis_directory)
-    with open(filename) as myfile:
-        return int(len(myfile.readlines()))
 
-
-class Plots(object):
+class Plots(GeneralFunctions):
 
     def __init__(self):
-        self.factory = AnalysisBuilder()
-        self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
+        # self.factory = AnalysisBuilder()
+        # self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
         self.voltage_plot_ansys = None
         self.voltage_plot_python = None
 
     @staticmethod
-    def plot_quench(coil_length, quench_fronts, time_step):
+    def plot_quench_state(coil_length, quench_fronts, time_step):
         """
         Plots quench state
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -82,7 +72,7 @@ class Plots(object):
                 np.savetxt(f, mydata, delimiter=' ')
 
     @staticmethod
-    def save_quench_plot(fig, iteration):
+    def save_quench_state_plot(fig, iteration):
         """
         Saves quench state plot
         :param fig: quench plot as plt.figure()
@@ -92,7 +82,7 @@ class Plots(object):
         fig.savefig(filename)
         return filename
 
-    def plot_and_save_quench(self, coil_length, quench_fronts, iteration, time_step):
+    def plot_and_save_quench_state(self, coil_length, quench_fronts, iteration, time_step):
         """
         Plots and saves quench state plot
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -102,12 +92,12 @@ class Plots(object):
         :param iteration: simulation iteration as integer
         """
         os.chdir(self.directory)
-        fig = Plots.plot_quench(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
-        filename = Plots.save_quench_plot(fig=fig, iteration=iteration)
+        fig = Plots.plot_quench_state(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
+        filename = Plots.save_quench_state_plot(fig=fig, iteration=iteration)
         return filename
 
     @staticmethod
-    def create_video(plot_array, filename, duration=0.2):
+    def create_gif(plot_array, filename, duration=0.2):
         """
         Creates gif from series of plots
         :param plot_array: list of plots as plt.figure()
@@ -131,7 +121,7 @@ class Plots(object):
         exists = False
         while exists is False:
             exists = os.path.isfile(directory+"\\."+filename)
-            if exists and file_length(filename, analysis_directory=directory) == npoints:
+            if exists and GeneralFunctions.file_length(filename, analysis_directory=directory) == npoints:
                 os.chdir(directory)
                 temp_distr = np.loadtxt(directory+"\\."+filename)
             else:
@@ -252,7 +242,7 @@ class Plots(object):
         return saved_file
 
     @staticmethod
-    def plot_gaussian_temperature_distribution(temperature_distribution, coil_geometry):
+    def plot_gaussian_temperature_distribution(directory, temperature_distribution, coil_geometry):
         """
         Plots the initial temperature distribution set in ANSYS
         :param temperature_distribution: temperature profile numpy array; 1st column: node number as integer,
@@ -260,6 +250,7 @@ class Plots(object):
         :param coil_geometry: 1D imaginary coil geometry as numpy array
         :return: instance with a plot
         """
+        os.chdir(directory)
         temp_plot_array = np.column_stack((coil_geometry[:, 1], temperature_distribution[:, 1]))
         fig = plt.figure()
         ax = fig.add_subplot(111)
