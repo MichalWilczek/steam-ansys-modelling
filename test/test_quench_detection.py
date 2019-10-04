@@ -3,8 +3,8 @@ import unittest
 import numpy as np
 import os
 from source.processor_post.quench_detection import QuenchDetect
-from source.class_quench_velocity.quench_velocity import QuenchFront
-from source.class_geometry.geometry import Geometry
+from source.processor_post.quench_velocity.quench_velocity import QuenchFront
+from source.geometry.geometry import Geometry
 
 class VirtualGeometry(object):
 
@@ -44,7 +44,7 @@ class TestQuenchDetection(unittest.TestCase):
 
     def setUp(self):
         self.class_geometry = VirtualGeometry(division=100, filename="File_Position.txt", directory=TestQuenchDetection.DIRECTORY)
-        self.quench_detect = QuenchDetect(class_geometry=self.class_geometry, directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS, testunit=True)
+        self.quench_detect = QuenchDetect(class_geometry=self.class_geometry, npoints=TestQuenchDetection.NPOINTS, input_data=None, testunit=True)
 
     def test_1_find_one_quench_zone(self):
         q_pos_vector = [QuenchFront(x_down=0.2, x_up=0.7, label=1, coil_geometry=self.coil_geometry,

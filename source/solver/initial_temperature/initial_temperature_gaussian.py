@@ -28,31 +28,3 @@ class InitialTemperatureGaussian(InitialTemperature):
 
 
 
-
-
-
-
-
-
-
-###############################################
-# future unittest function, do not delete !!! #
-###############################################
-
-# array = np.zeros((10, 2))
-# nnum = 1
-# for i in range(len(array[:, 0])):
-#     array[i, 0] = nnum
-#     array[i, 1] = 1.9
-#     nnum += 1
-#
-# array[6, 1] = 5.0
-# array[7, 1] = 5.0
-#
-# print(array)
-# print("-----------")
-#
-# InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)
-
-################################################
-################################################

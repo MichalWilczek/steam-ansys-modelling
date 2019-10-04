@@ -11,7 +11,7 @@ class QuenchDetect(Materials):
         :param directory: analysis_directory as string
         :param npoints: number of nodes in geometry as integer
         """
-        super().__init__(input_data)
+        Materials.__init__(self, input_data)
         self.factory = input_data
 
         self.testunit = testunit
@@ -19,11 +19,6 @@ class QuenchDetect(Materials):
         self.coil_length = self.geo.coil_geometry
 
         self.npoints = npoints
-
-        # if directory is None:
-        #     self.analysis_directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
-        # else:
-        #     self.analysis_directory = directory
 
     def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field_map):
         """
