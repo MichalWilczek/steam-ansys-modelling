@@ -1,9 +1,9 @@
 
-from source.plots import Plots
+from source.processor_post.plots import Plots
 from source.class_quench_velocity.quench_merge import QuenchMerge
-from source.quench_detection import QuenchDetect
+from source.processor_post.quench_detection import QuenchDetect
 from source.factory import AnalysisBuilder
-from source.solver.model_input import ModelInput
+from source.solver.time_step import TimeStep
 from source.old_classes.factory_case import CaseFactory
 import numpy as np
 
@@ -39,7 +39,7 @@ q_det = QuenchDetect(npoints, class_geometry=coil_geo)
 ans.input_heat_flow_table()
 
 # input user's time stepping vector
-time = ModelInput.power_input_time_stepping()
+time = TimeStep.power_input_time_stepping()
 
 quench_fronts = []
 quench_state_plots = []

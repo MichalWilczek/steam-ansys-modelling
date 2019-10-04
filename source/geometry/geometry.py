@@ -2,7 +2,7 @@
 import os
 import math
 import numpy as np
-from source.plots import Plots
+from source.processor_post.plots import Plots
 from source.material_properties.material_properties import Materials
 
 # methods for 1D analysis
@@ -318,12 +318,12 @@ class Geometry(Materials):
         """
 
         temp_quench = self.calculate_critical_temperature(magnetic_field=magnetic_field)
-        temp_peak = self.factory.get_peak_initial_temperature()
-        temp_operating = self.factory.get_initial_temperature()
-        directional_quench_init_length = self.factory.get_quench_init_length()/2.0
+        temp_peak = self.factory.temperature_max_init_quenched_zone
+        temp_operating = self.factory.temperature_init
+        directional_quench_init_length = self.factory.quench_init_length/2.0
 
         log_n = math.log((temp_quench-temp_operating)/(temp_peak-temp_operating), math.e)
-        denominator = math.sqrt(-log_n)**(0.5)
+        denominator = math.sqrt(-log_n)**0.5
         alpha = directional_quench_init_length/denominator
         return alpha
 
@@ -336,9 +336,9 @@ class Geometry(Materials):
         """
 
         alpha = self.calculate_alpha(magnetic_field)
-        temp_peak = self.factory.get_peak_initial_temperature()
-        temp_operating = self.factory.get_initial_temperature()
-        quench_init_pos = self.factory.get_quench_init_pos()
+        temp_peak = self.factory.temperature_max_init_quenched_zone
+        temp_operating = self.factory.temperature_init
+        quench_init_pos = self.factory.quench_init_position
         node_temp = temp_operating + (temp_peak-temp_operating)*math.e**(-((position-quench_init_pos)/alpha)**2.0)
         return node_temp
 

@@ -19,6 +19,9 @@ class Materials(object):
     cu_dens = 8960.0      # kg/m3, room temperature of copper
     nb_ti_dens = 6000.0   # kg/m3
     g10_dens = 1948.0     # kg/m3
+    # cu_dens = 1.0      # kg/m3, room temperature of copper
+    # nb_ti_dens = 1.0   # kg/m3
+    # g10_dens = 1.0     # kg/m3
     f_cu_f_nbti = 2.2
 
     temp_min = 1  # [K]

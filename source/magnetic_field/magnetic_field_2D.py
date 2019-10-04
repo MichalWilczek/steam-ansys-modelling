@@ -12,7 +12,7 @@ class MagneticField2D(MagneticFieldMap, MagneticFieldConstant):
     def assign_magnetic_field_to_geometry(self):
         mag_field_dict = {}
         for i in range(self.factory.number_of_windings):
-            key_name = "winding" + str(i)
+            key_name = "winding" + str(i+1)
             mag_field_dict[key_name] = self.factory.constant_magnetic_field_value
         print(self.magnetic_field_to_string(mag_field_dict))
         return mag_field_dict

@@ -1,10 +1,10 @@
 
-from source.plots import Plots
-from source.quench_velocity.quench_velocity import QuenchFront
-from source.quench_detection import QuenchDetect
+from source.processor_post.plots import Plots
+from source.processor_post.quench_velocity.quench_velocity import QuenchFront
+from source.processor_post.quench_detection import QuenchDetect
 from source.magnetic_field.winding_remap import WindingRemap
 from source.factory import AnalysisBuilder
-from source.solver.model_input import ModelInput
+from source.solver.time_step import TimeStep
 from source.old_classes.factory_case import CaseFactory
 import numpy as np
 
@@ -41,9 +41,9 @@ max_coil_length = coil_geometry[len(coil_geometry)-1, 1]
 
 # user's time stepping vector
 if power_input:
-    time = ModelInput.power_input_time_stepping()
+    time = TimeStep.power_input_time_stepping()
 else:
-    time = ModelInput.linear_time_stepping()
+    time = TimeStep.linear_time_stepping()
 
 q_det = QuenchDetect(npoints, class_geometry=coil_geo)
 quench_fronts = []

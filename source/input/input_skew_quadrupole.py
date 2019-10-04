@@ -22,8 +22,8 @@ class InputSkewQuadrupole(object):
     # analysis constraints
     # specify how many windings should be analysed and which number should be counted as first in Python geometry
     winding_number_first_in_analysis = 233
-    winding_number_last_in_first_layer = 237
-    number_of_layers_in_analysis = 9
+    winding_number_last_in_first_layer = 234
+    number_of_layers_in_analysis = 2
 
 
 

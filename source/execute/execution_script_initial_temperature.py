@@ -1,10 +1,10 @@
 
 from source.factory import Factory
-from source.quench_velocity.quench_merge import QuenchMerge
-from source.quench_detection import QuenchDetect
+from source.processor_post.quench_velocity.quench_merge import QuenchMerge
+from source.processor_post.quench_detection import QuenchDetect
 from source.magnetic_field.winding_remap import WindingRemap
-from source.solver.model_input import ModelInput
-from source.plots import Plots
+from source.solver.time_step import TimeStep
+from source.processor_post.plots import Plots
 import numpy as np
 
 # define winding number domain as an input
@@ -13,7 +13,7 @@ import numpy as np
 # number_of_layers_in_analysis = 9
 
 # define time stepping vector as an input
-time = ModelInput.power_input_time_stepping()
+time = TimeStep.power_input_time_stepping()
 inp_data = Factory.get_input_data_class()
 
 # input Class instances

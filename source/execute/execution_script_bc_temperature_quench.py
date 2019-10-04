@@ -1,12 +1,12 @@
 
-from source.plots import Plots
-from source.quench_velocity.quench_merge import QuenchMerge
-from source.quench_detection import QuenchDetect
+from source.processor_post.plots import Plots
+from source.processor_post.quench_velocity.quench_merge import QuenchMerge
+from source.processor_post.quench_detection import QuenchDetect
 from source.magnetic_field.winding_remap import WindingRemap
 from source.factory import AnalysisBuilder
-from source.solver.model_input import ModelInput
+from source.solver.time_step import TimeStep
 from source.old_classes.factory_case import CaseFactory
-from source.initial_temperature.polynomial_fit import Polynomials
+from source.solver.initial_temperature.polynomial_fit import Polynomials
 import numpy as np
 
 # input Class instances
@@ -48,7 +48,7 @@ ans.terminate_analysis()
 q_det = QuenchDetect(npoints, class_geometry=coil_geo)
 
 # input user's time stepping vector
-time = ModelInput.power_input_time_stepping()
+time = TimeStep.power_input_time_stepping()
 temperature_bc_list = Polynomials.create_linear_interpolation_for_temp_vector(time)
 
 quench_fronts = []

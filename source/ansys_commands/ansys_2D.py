@@ -23,10 +23,6 @@ class Ansys2D(AnsysCommands):
         self.wait_for_process_to_finish(data)
         time.sleep(2)
 
-    def input_material_properties(self):
-        print("________________ \nMaterial properties are being uploaded...")
-        return self.input_file(filename='2D_Material_Properties_Superconducting', extension='inp', add_directory='Input_Files')
-
     def input_geometry(self):
         print("________________ \nAnsys geometry is being uploaded...")
         return self.input_file(filename='2D_Geometry', extension='inp', add_directory='Input_Files')

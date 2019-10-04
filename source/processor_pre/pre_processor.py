@@ -11,12 +11,6 @@ class PreProcessor(object):
         self.ansys_commands.create_variable_file()
         self.ansys_commands.input_file(filename='Variable_Input', extension='inp')
 
-    # @staticmethod
-    # def define_magnetic_map(mag_map):
-    #     magnetic_map = mag_map.im_short_mag_dict
-    #     print(magnetic_map)
-    #     return magnetic_map
-
     def define_material_properties(self, magnetic_map):
         self.ansys_commands.input_winding_non_quenched_material_properties(magnetic_map, class_mat=self.mat_props)
         if self.factory.insulation_analysis:
@@ -25,9 +19,8 @@ class PreProcessor(object):
     def define_geometry(self):
         self.ansys_commands.input_geometry()
 
+    def adjust_material_properties_in_analysis(self):
+        pass
 
-
-
-
-
-
+    def update_magnetic_field_map(self):
+        pass

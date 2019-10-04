@@ -2,7 +2,7 @@
 import unittest
 import numpy as np
 import os
-from source.quench_detection import QuenchDetect
+from source.processor_post.quench_detection import QuenchDetect
 from source.class_quench_velocity.quench_velocity import QuenchFront
 from source.class_geometry.geometry import Geometry
 

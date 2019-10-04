@@ -5,7 +5,7 @@ from source.material_properties.material_properties import Materials
 
 class QuenchDetect(Materials):
 
-    def __init__(self, input_data, class_geometry, npoints, directory=None, testunit=False):
+    def __init__(self, class_geometry, input_data, npoints, directory=None, testunit=False):
         """
         :param coil_length:
         :param directory: analysis_directory as string

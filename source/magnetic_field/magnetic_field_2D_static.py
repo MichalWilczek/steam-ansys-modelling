@@ -73,37 +73,3 @@ class MagneticField2DStatic(MagneticFieldMap, WindingRemap):
             new_mag_dict["winding"+str(i+1)] = short_mag_dict[real_wind_numbers[i]]
         return new_mag_dict
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # def __init__(self, input_data, windings_in_geometry):
-    #     MagneticFieldMap.__init__(self, input_data)
-    #     self.mag_map = self.load_magnetic_field_map(filename=MagneticField2DStatic.FILENAME,
-    #                                                 directory=MagneticField2DStatic.DIRECTORY)
-    #
-    #
-    #
-    #
-    #     self.mag_dict = self.assign_magnetic_field_to_windings()
-    #     self.real_wind_numbers = self.create_wind_real_number_list(winding_list=windings_in_geometry)
-    #     self.short_mag_dict = self.shorten_mag_map_dict(self.mag_dict, self.real_wind_numbers)
-    #     self.im_short_mag_dict = self.change_winding_number_to_fit_geometry()
-
-

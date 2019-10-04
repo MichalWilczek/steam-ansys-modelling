@@ -9,10 +9,58 @@ import os
 class Plots(GeneralFunctions):
 
     def __init__(self):
-        # self.factory = AnalysisBuilder()
-        # self.directory = AnalysisDirectory().get_directory(self.factory.get_dimensionality())
         self.voltage_plot_ansys = None
         self.voltage_plot_python = None
+
+    def plot_resistive_voltage_ansys(self, directory, total_time, voltage, time_step, iteration):
+        """
+        Plots resistive voltage as a function of time
+        :param voltage: voltage value as float
+        :param time_step: time step as float
+        :param iteration: iteration number as integer
+        """
+        additional_descr = "ansys"
+        os.chdir(directory)
+        if iteration == 0:
+            self.voltage_fig_ansys = None
+            self.voltage_fig_ansys = plt.figure()
+            self.voltage_plot_ansys = self.voltage_fig_ansys.add_subplot(111)
+            self.voltage_plot_ansys.set_xlabel('Time [s]')
+            self.voltage_plot_ansys.set_ylabel('Voltage [V]')
+            self.voltage_plot_ansys.set_xlim(0, total_time + 0.01)
+            self.voltage_plot_ansys.set_ylim(0, 0.5)
+            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
+            plt.grid(True)
+        else:
+            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
+        plt.show()
+        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
+        self.voltage_fig_ansys.savefig(filename)
+
+    def plot_resistive_voltage_python(self, directory, total_time, voltage, time_step, iteration):
+        """
+        Plots resistive voltage as a function of time
+        :param voltage: voltage value as float
+        :param time_step: time step as float
+        :param iteration: iteration number as integer
+        """
+        additional_descr = "python"
+        os.chdir(directory)
+        if iteration == 0:
+            self.voltage_fig_python = None
+            self.voltage_fig_python = plt.figure()
+            self.voltage_plot_python = self.voltage_fig_python.add_subplot(111)
+            self.voltage_plot_python.set_xlabel('Time [s]')
+            self.voltage_plot_python.set_ylabel('Voltage [V]')
+            self.voltage_plot_python.set_xlim(0, total_time + 0.01)
+            self.voltage_plot_python.set_ylim(0, 0.5)
+            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
+            plt.grid(True)
+        else:
+            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
+        plt.show()
+        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
+        self.voltage_fig_python.savefig(filename)
 
     @staticmethod
     def plot_quench_state(coil_length, quench_fronts, time_step):
@@ -58,12 +106,14 @@ class Plots(GeneralFunctions):
         plt.grid(True)
         return fig
 
-    def save_array(self, filename, array):
-        array_filename = self.directory + "\\" + filename
+    @staticmethod
+    def save_array(directory, filename, array):
+        array_filename = directory + "\\" + filename
         np.savetxt(array_filename, array)
 
-    def write_line_in_file(self, filename, mydata, newfile=True):
-        os.chdir(self.directory)
+    @staticmethod
+    def write_line_in_file(directory, filename, mydata, newfile=True):
+        os.chdir(directory)
         if newfile:
             with open(filename, "wb") as f:
                 np.savetxt(f, mydata, delimiter=' ')
@@ -82,7 +132,8 @@ class Plots(GeneralFunctions):
         fig.savefig(filename)
         return filename
 
-    def plot_and_save_quench_state(self, coil_length, quench_fronts, iteration, time_step):
+    @staticmethod
+    def plot_and_save_quench_state(directory, coil_length, quench_fronts, iteration, time_step):
         """
         Plots and saves quench state plot
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -91,7 +142,7 @@ class Plots(GeneralFunctions):
         :param fig: quench plot as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        os.chdir(self.directory)
+        os.chdir(directory)
         fig = Plots.plot_quench_state(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
         filename = Plots.save_quench_state_plot(fig=fig, iteration=iteration)
         return filename
@@ -165,56 +216,6 @@ class Plots(GeneralFunctions):
         Plots.delete_file(directory=directory, filename=filename)
         return fig
 
-    def plot_resistive_voltage_ansys(self, voltage, time_step, iteration):
-        """
-        Plots resistive voltage as a function of time
-        :param voltage: voltage value as float
-        :param time_step: time step as float
-        :param iteration: iteration number as integer
-        """
-        additional_descr = "ansys"
-        os.chdir(self.directory)
-        if iteration == 0:
-            self.voltage_fig_ansys = None
-            self.voltage_fig_ansys = plt.figure()
-            self.voltage_plot_ansys = self.voltage_fig_ansys.add_subplot(111)
-            self.voltage_plot_ansys.set_xlabel('Time [s]')
-            self.voltage_plot_ansys.set_ylabel('Voltage [V]')
-            self.voltage_plot_ansys.set_xlim(0, self.factory.get_total_time() + 0.01)
-            self.voltage_plot_ansys.set_ylim(0, 0.5)
-            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
-            plt.grid(True)
-        else:
-            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
-        plt.show()
-        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
-        self.voltage_fig_ansys.savefig(filename)
-
-    def plot_resistive_voltage_python(self, voltage, time_step, iteration):
-        """
-        Plots resistive voltage as a function of time
-        :param voltage: voltage value as float
-        :param time_step: time step as float
-        :param iteration: iteration number as integer
-        """
-        additional_descr = "python"
-        os.chdir(self.directory)
-        if iteration == 0:
-            self.voltage_fig_python = None
-            self.voltage_fig_python = plt.figure()
-            self.voltage_plot_python = self.voltage_fig_python.add_subplot(111)
-            self.voltage_plot_python.set_xlabel('Time [s]')
-            self.voltage_plot_python.set_ylabel('Voltage [V]')
-            self.voltage_plot_python.set_xlim(0, self.factory.get_total_time() + 0.01)
-            self.voltage_plot_python.set_ylim(0, 0.5)
-            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
-            plt.grid(True)
-        else:
-            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
-        plt.show()
-        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
-        self.voltage_fig_python.savefig(filename)
-
     @staticmethod
     def save_temperature_plot(fig, iteration):
         """
@@ -226,7 +227,9 @@ class Plots(GeneralFunctions):
         fig.savefig(filename)
         return filename
 
-    def plot_and_save_temperature(self, coil_length, temperature_profile_1d, iteration, time_step, filename="Temperature_Data.txt"):
+    @staticmethod
+    def plot_and_save_temperature(directory, coil_length, temperature_profile_1d,
+                                  iteration, time_step, filename="Temperature_Data.txt"):
         """
         Plots and saves temperature disitribution
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -236,8 +239,8 @@ class Plots(GeneralFunctions):
         :param fig: temperature distribution as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        os.chdir(self.directory)
-        fig = Plots.plot_temperature(coil_length, self.directory, temperature_profile_1d, time_step, filename)
+        os.chdir(directory)
+        fig = Plots.plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
 

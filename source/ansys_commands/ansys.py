@@ -1,7 +1,7 @@
 import os
 from ansys_corba import CORBA
 from source.ansys_commands.ansys_table import Table
-from source.initial_temperature.polynomial_fit import Polynomials
+from source.solver.initial_temperature.polynomial_fit import Polynomials
 from source.general_functions import GeneralFunctions
 import time
 
@@ -226,6 +226,9 @@ class AnsysCommands(GeneralFunctions):
     def set_dof(self, dof):
         print(self.mapdl.executeCommandToString("dof,{}".format(dof)))
 
+    def finish(self):
+        print(self.mapdl.executeCommandToString("finish"))
+
     # coupling commands
     def couple_nodes(self, dof):
         """
@@ -280,6 +283,9 @@ class AnsysCommands(GeneralFunctions):
 
     def enter_preprocessor(self):
         print(self.mapdl.executeCommandToString('/prep7'))
+
+    def enter_postprocessor(self):
+        print(self.mapdl.executeCommandToString('/post1'))
 
     def modify_material_type(self, element_number):
         print("Material type was modfied")
@@ -336,7 +342,7 @@ class AnsysCommands(GeneralFunctions):
         print(self.mapdl.executeCommandToString("d, all, {}, {}".format(dof, value)))
 
     def set_ansys_time_step_settings(self, init_time_step, min_time_step, max_time_step):
-        print(self.mapdl.executeCommandToString('deltim,{},{},{}').format(init_time_step, min_time_step, max_time_step))
+        print(self.mapdl.executeCommandToString('deltim,{},{},{}'.format(init_time_step, min_time_step, max_time_step)))
 
     def set_analysis_setting(self):
         print(self.mapdl.executeCommandToString('antype,4'))

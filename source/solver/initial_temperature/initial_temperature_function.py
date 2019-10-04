@@ -1,12 +1,12 @@
 
-from source.initial_temperature.initial_temperature import InitialTemperature
-from source.initial_temperature.polynomial_fit import Polynomials
-from source.quench_velocity.nodes_search import SearchNodes
+from source.solver.initial_temperature.initial_temperature import InitialTemperature
+from source.solver.initial_temperature.polynomial_fit import Polynomials
+from source.processor_post.quench_velocity.nodes_search import SearchNodes
 
 class InitialTemperatureFunction(InitialTemperature, Polynomials, SearchNodes):
 
-    def __init__(self, ansys_commands, class_geometry, input_data):
-        super.__init__(ansys_commands, class_geometry, input_data)
+    def __init__(self, ansys_commands, class_geometry, input_data, mat_props):
+        InitialTemperature.__init__(self, ansys_commands, class_geometry, input_data, mat_props)
         self.initial_node_quench = SearchNodes.search_init_node(position=self.factory.quench_init_position,
                                                                 coil_length=self.geometry.coil_geometry)
 
