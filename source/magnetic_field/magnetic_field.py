@@ -8,4 +8,5 @@ class MagneticField(object):
     @staticmethod
     def magnetic_field_to_string(mag_field_dict):
         return "------------------------------------------------------ \
-               \n Magnetic Field map in the created windings is: \n {} \n ------------------------------------------------------".format(mag_field_dict)
+               \n Magnetic Field map in the created windings is: \n {} \n" \
+               "------------------------------------------------------".format(mag_field_dict)

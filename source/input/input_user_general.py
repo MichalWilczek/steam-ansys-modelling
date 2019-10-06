@@ -35,11 +35,11 @@ class InputUserGeneral(object):
     v_quench_model = None
 
     # specify initial conditions for quench position
-    quench_init_position = 0.0      # [m]
+    quench_init_position = 0.5      # [m]
     quench_init_length = 0.1        # [m]
 
     # specify final length of the simulation
-    time_total_simulation = 0.15    # [s]
+    time_total_simulation = 0.04    # [s]
     time_step_cosimulation = 0.01   # [s] - coupling time between ANSYS and Python
     time_step_min_ansys = 1.0     # [ms]
     time_step_max_ansys = 10.0      # [ms]
@@ -47,11 +47,11 @@ class InputUserGeneral(object):
     # specify initial conditions for the simulation
     current_init = 100.0                                # [A]
     temperature_init = 1.9                              # [K]
-    temperature_max_init_quenched_zone = 20.0           # [K]
-    magnetic_field_initially_quenched_winding = 2.0   # [B]
+    temperature_max_init_quenched_zone = 10.0           # [K]
+    magnetic_field_initially_quenched_winding = 2.0    # [B]
 
     # specify initial temperature distribution in quenched zone ("uniform", "gaussian_distribution")
-    temperature_init_distr = "gaussian_distribution"
+    temperature_init_distr = "uniform"
 
     # specify material properties repository ("linear", "nonlinear")
     material_properties_type = "nonlinear"

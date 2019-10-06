@@ -21,7 +21,7 @@ class Plots(GeneralFunctions):
         """
         additional_descr = "ansys"
         os.chdir(directory)
-        if iteration == 0:
+        if iteration == 1:
             self.voltage_fig_ansys = None
             self.voltage_fig_ansys = plt.figure()
             self.voltage_plot_ansys = self.voltage_fig_ansys.add_subplot(111)
@@ -46,7 +46,7 @@ class Plots(GeneralFunctions):
         """
         additional_descr = "python"
         os.chdir(directory)
-        if iteration == 0:
+        if iteration == 1:
             self.voltage_fig_python = None
             self.voltage_fig_python = plt.figure()
             self.voltage_plot_python = self.voltage_fig_python.add_subplot(111)
@@ -208,12 +208,12 @@ class Plots(GeneralFunctions):
         ax = fig.add_subplot(111)
         ax.set_xlabel('Position [m]')
         ax.set_ylabel('Temperature [K]')
-        # ax.set_ylim(0, 10)
         plt.title("Time step: {} s".format(time_step))
         ax.plot(length_node_temp_array[:, 1], length_node_temp_array[:, 2])
         plt.grid(True)
         plt.show()
-        Plots.delete_file(directory=directory, filename=filename)
+        if os.path.isfile(filename):
+            Plots.delete_file(directory=directory, filename=filename)
         return fig
 
     @staticmethod
@@ -243,26 +243,3 @@ class Plots(GeneralFunctions):
         fig = Plots.plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
-
-    @staticmethod
-    def plot_gaussian_temperature_distribution(directory, temperature_distribution, coil_geometry):
-        """
-        Plots the initial temperature distribution set in ANSYS
-        :param temperature_distribution: temperature profile numpy array; 1st column: node number as integer,
-        2nd column: temperature as float
-        :param coil_geometry: 1D imaginary coil geometry as numpy array
-        :return: instance with a plot
-        """
-        os.chdir(directory)
-        temp_plot_array = np.column_stack((coil_geometry[:, 1], temperature_distribution[:, 1]))
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.set_xlabel('Position [m]')
-        ax.set_ylabel('Initial Temperature [K]')
-        plt.title("Initial temperature distribution")
-        ax.plot(temp_plot_array[:, 0], temp_plot_array[:, 1])
-        plt.grid(True)
-        plt.show()
-        filename = "initial_temperature_distribution.png"
-        fig.savefig(filename)
-        return fig

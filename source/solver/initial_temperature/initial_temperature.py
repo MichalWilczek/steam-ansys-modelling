@@ -1,11 +1,15 @@
 
-class InitialTemperature(object):
+from source.processor_post.plots import Plots
+
+class InitialTemperature(Plots):
 
     def __init__(self, ansys_commands, class_geometry, input_data, mat_props):
+        Plots.__init__(self)
         self.ansys_commands = ansys_commands
         self.geometry = class_geometry
         self.material_properties = mat_props
         self.factory = input_data
+        self.directory = self.geometry.directory
 
     def set_initial_temperature(self):
         self.ansys_commands.set_initial_temperature(temperature=self.factory.temperature_init)
@@ -16,8 +20,8 @@ class InitialTemperature(object):
     @staticmethod
     def initial_energy_deposition_to_string(energy_deposition):
         return "----------------------------------------------------------------------\
-               \n \n The initially stored energy inside the coil equals: {} [J] \n \n \
-                ----------------------------------------------------------------------".format(energy_deposition)
+                \n The initially stored energy inside the coil equals: {} [J] \n" \
+               "----------------------------------------------------------------------".format(energy_deposition)
 
     def calculate_energy_initially_deposited_inside_the_coil(self, node_down, node_up, temperature_init_distr,
                                                              magnetic_field_value):

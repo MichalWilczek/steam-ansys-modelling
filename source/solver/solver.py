@@ -6,6 +6,7 @@ class Solver(TimeStep, QuenchDetect):
 
     def __init__(self, ansys_commands, class_geometry, input_data, circuit, ic_temperature_class, mat_props, mag_map):
         self.temperature_ic = ic_temperature_class
+        self.temperature_ic_profile = None
         self.geometry = class_geometry
         self.ansys_commands = ansys_commands
         self.circuit = circuit
@@ -23,6 +24,9 @@ class Solver(TimeStep, QuenchDetect):
               \n iteration number: {} \n time step: {} \n \
                ------------------------------------------------------".
               format(self.iteration[0], self.time_step_vector[self.iteration[0]]))
+
+    def create_ic_temperature_profile(self):
+        self.temperature_ic_profile = self.temperature_ic.create_ic_temperature_profile()
 
     def set_circuit_bcs(self):
         self.circuit.set_circuit_bcs_in_analysis()
@@ -54,7 +58,9 @@ class Solver(TimeStep, QuenchDetect):
     def end_of_time_step(self):
         self.iteration[0] += 1
         if len(self.time_step_vector) <= self.iteration[0]:
-            self.t[0] = self.time_step_vector[self.iteration[0]]
+            self.t[0] = self.time_step_vector[self.iteration[0] - 2]
+        else:
+            self.t = [self.time_step_vector[self.iteration[0] - 1]]
 
     def restart_analysis(self):
         self.ansys_commands.restart_analysis()

@@ -1,48 +1,12 @@
 
 import os
-import math
 import numpy as np
-from source.processor_post.plots import Plots
-from source.material_properties.material_properties import Materials
 
-# methods for 1D analysis
-# def create_1d_coil_geometry(division, filename, directory):
-#     """
-#     Returns array with length of coil at each node starting from the 1st node
-#     :param division: number of elements as integer
-#     :param filename: filename as string
-#     :param directory: analysis directory as string
-#     """
-#     os.chdir(directory)
-#     npoints = division + 1
-#     length_array = np.zeros((npoints, 2))
-#     current_length = 0
-#     array = np.loadtxt(filename)
-#     for i in range(1, npoints):
-#         current_length += ((array[i, 1] - array[i - 1, 1]) ** 2 + (array[i, 2] - array[i - 1, 2]) ** 2 +
-#                            (array[i, 3] - array[i - 1, 3]) ** 2) ** 0.5
-#         length_array[i - 1, 0] = i
-#         length_array[i, 1] = current_length
-#     length_array[npoints - 1, 0] = npoints
-#     return length_array
-#
-# def file_length(filename, analysis_directory):
-#     """
-#     :param filename: filename with extension as string
-#     :param analysis_directory: string
-#     :return: number of rows in a file as integer
-#     """
-#     os.chdir(analysis_directory)
-#     with open(filename) as myfile:
-#         return int(len(myfile.readlines()))
-
-class Geometry(Materials):
+class Geometry(object):
 
     def __init__(self, input_data, analysis_directory):
         self.factory = input_data
         self.directory = analysis_directory
-        super().__init__(input_data)
-        # print("________________ \nGeometry is being uploaded...")
 
     @staticmethod
     def number_of_im_nodes_per_winding(dict_im_nodes):
@@ -308,51 +272,3 @@ class Geometry(Materials):
             item = float(item)
             final_list.append(item)
         return final_list[0]
-
-    # gaussian temperature distribution - not needed anymore
-    def calculate_alpha(self, magnetic_field):
-        """
-        Calculates gaussian distribution function coefficient as a function of magnetic field
-        :param magnetic_field: magnetic field as float
-        :return: coefficient as float
-        """
-
-        temp_quench = self.calculate_critical_temperature(magnetic_field=magnetic_field)
-        temp_peak = self.factory.temperature_max_init_quenched_zone
-        temp_operating = self.factory.temperature_init
-        directional_quench_init_length = self.factory.quench_init_length/2.0
-
-        log_n = math.log((temp_quench-temp_operating)/(temp_peak-temp_operating), math.e)
-        denominator = math.sqrt(-log_n)**0.5
-        alpha = directional_quench_init_length/denominator
-        return alpha
-
-    def calculate_node_gaussian_temperature(self, position, magnetic_field):
-        """
-        Calculates nodal initial temperature corresponding to gaussian distribution
-        :param position: position in metres as float
-        :param magnetic_field: magnetic field value at given node as float
-        :return: temperature at node as float
-        """
-
-        alpha = self.calculate_alpha(magnetic_field)
-        temp_peak = self.factory.temperature_max_init_quenched_zone
-        temp_operating = self.factory.temperature_init
-        quench_init_pos = self.factory.quench_init_position
-        node_temp = temp_operating + (temp_peak-temp_operating)*math.e**(-((position-quench_init_pos)/alpha)**2.0)
-        return node_temp
-
-    def define_gaussian_temperature_distribution_array(self, imaginary_1d_geometry, magnetic_field):
-        """
-        Defines imaginary IC gaussian distribution temeperature for imaginary 1D coil geometry
-        :param imaginary_1d_geometry: 2-column numpy array; 1-imaginary node number, 2-node position in meters
-        """
-        gaussian_distribution_array = np.zeros((len(imaginary_1d_geometry[:, 0]), 2))
-        for i in range(len(imaginary_1d_geometry[:, 0])):
-            position = imaginary_1d_geometry[i, 1]
-            temp = self.calculate_node_gaussian_temperature(position=position, magnetic_field=magnetic_field)
-            gaussian_distribution_array[i, 0] = imaginary_1d_geometry[i, 0]
-            gaussian_distribution_array[i, 1] = temp
-        Plots.plot_gaussian_temperature_distribution(self.directory, gaussian_distribution_array, imaginary_1d_geometry)
-        return gaussian_distribution_array
-

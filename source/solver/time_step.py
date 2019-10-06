@@ -14,6 +14,7 @@ class TimeStep(object):
         vector = []
         i = time_step
         time_step_digits = TimeStep.check_number_of_digits_behind_comma(time_step)
+        vector.append(0.0)
         while i < total_time:
             vector.append(round(i, time_step_digits))
             i += time_step

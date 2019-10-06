@@ -5,6 +5,7 @@ class PreProcessor(object):
         self.mat_props = mat_props
         self.ansys_commands = ansys_commands
         self.factory = input_data
+        self.geometry = None
 
     def create_ansys_input_variable_file(self):
         self.ansys_commands.delete_old_files()
@@ -12,15 +13,16 @@ class PreProcessor(object):
         self.ansys_commands.input_file(filename='Variable_Input', extension='inp')
 
     def define_material_properties(self, magnetic_map):
-        self.ansys_commands.input_winding_non_quenched_material_properties(magnetic_map, class_mat=self.mat_props)
-        if self.factory.insulation_analysis:
-            self.ansys_commands.input_insulation_material_properties(class_mat=self.mat_props)
+        pass
 
     def define_geometry(self):
         self.ansys_commands.input_geometry()
 
-    def adjust_material_properties_in_analysis(self):
+    def include_class_geometry_in_class_instance(self, class_geometry):
+        self.geometry = class_geometry
+
+    def adjust_material_properties_in_analysis(self, class_postprocessor):
         pass
 
-    def update_magnetic_field_map(self):
+    def update_magnetic_field_map(self, class_postprocessor):
         pass

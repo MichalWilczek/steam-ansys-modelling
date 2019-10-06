@@ -14,3 +14,4 @@ class MagneticField1D(MagneticFieldConstant):
         print(self.magnetic_field_to_string(mag_field_dict))
         return mag_field_dict
 
+
