@@ -50,7 +50,7 @@ Temperature distribution settings is composed of:
  magnetic_field_initially_quenched_winding | T | Magnetic field value in the winding where the initial quench is triggered. This value is only required for the initial gaussian distribution whose borders of the quenched zone are at critical temperature dependent on the magnetic field strength.
 
 ##### Analysis Type Settings
-Analysis type
+AHell
 ```json
 {"analysis_type": {
 	"type": "quench_velocity",
