@@ -31,7 +31,7 @@ time_step_max_ansys | ms | Maximum time step applied within the automatic ANSYS 
 current_init | A | Initial current set in the analysis.
 
 ##### Temperature Distribution Settings
-The user should decide what what type of temperature conditions will be applied in the analysis. There are two different types available: uniform and gaussian. 
+The user should decide what what type of temperature conditions will be applied in the analysis. 
 ```json
 {"temperature_init_distribution": {
 	"type": "gaussian",
@@ -41,6 +41,13 @@ The user should decide what what type of temperature conditions will be applied 
 		"magnetic_field_initially_quenched_winding": 2.0}	
 }}
 ```
+There are two different types available: uniform and gaussian. Each of them requires different input as described below: 
+
+ Type | Required Input 
+ ---- | --------------
+ gaussian | temperature_init, temperature_max_init_quenched_zone
+ uniform | temperature_init, temperature_max_init_quenched_zone, magnetic_field_initially_quenched_winding
+
 Temperature distribution settings is composed of:
 
  Argument | Units | Description 
@@ -49,29 +56,32 @@ Temperature distribution settings is composed of:
  temperature_max_init_quenched_zone | K | Maximum temperature set in the quenched zone.
  magnetic_field_initially_quenched_winding | T | Magnetic field value in the winding where the initial quench is triggered. This value is only required for the initial gaussian distribution whose borders of the quenched zone are at critical temperature dependent on the magnetic field strength.
 
-The temperature_init_distribution requires different input depending on its type as described below: 
-
- Type | Required Input 
- ---- | --------------
- gaussian | temperature_init, temperature_max_init_quenched_zone
- uniform | temperature_init, temperature_max_init_quenched_zone, magnetic_field_initially_quenched_winding
-
 ##### Analysis Type Settings
-The programme is written in order to perform one- and multidimensional analysis based on quench velocity algorithm as well
-as to conduct one-dimensional heat-balance equation-based analyses for mapping purposed. Therefore, the analysis type should be 
+The programme is written in order to perform one- and multi-dimensional analysis based on quench velocity algorithm. However, it is also possible 
+to conduct one-dimensional heat-balance equation-based analyses for mapping purposed. Therefore, the user should define the type
+of analysis to be carried out.
 specified as follows:
 ```json
 {"analysis_type": {
 	"type": "quench_velocity",
 	"input": {
-		"v_quench_model": "numerical", 
-		"electric_ansys_elements": true}
+		"v_quench_model": "numerical"}
 		}
 }
 ```
-Analysis type settings are composed of:
+There are two different types available: quench_velocity and heat_balance. Each of them requires different input as described below: 
 
+ Type | Required Input 
+ ---- | --------------
+ quench_velocity | v_quench_model
+ heat_balance | -
 
+The analysis type input settings is presented below:
+
+ v_quench_model argument  | Description 
+ --------  | ----------- 
+ constant | Applies constant quench velocity 
+ numerical | Initial temperature set outside of the initially quenched zone.
 
 The user the options for the analysis of the electric circuit
 ```json
@@ -88,8 +98,7 @@ The user should choose material properties
     "type": "nonlinear",
     "input": {
         "f_cu_f_nbti": 2.2, 
-        "rrr": 193.0, 
-        "material_properties_directory": "C:\\gitlab\\steam-ansys-modelling\\Material_Properties"}
+        "rrr": 193.0}
 	}
 }
 ```
@@ -103,7 +112,10 @@ The user magnetic field
 }
 ```
 
-The user should define geometry creation...
+##### Geometry Settings
+At the moment, the programme works for two types of geometries: skew quadrupole and so called "slab" which is a 1D cable 
+domain of a rectangular shape. Both geometries can consist of one winding (dimensionality: "1D") or multiple windings (dimensionality: "multiple_1D").
+The exemplary variable input for a multiple_1D skew quadrupole geometry is presented below.
 ```json
 {"geometry_settings": {
 	"geometry_type": {
