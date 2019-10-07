@@ -141,5 +141,37 @@ The exemplary variable input for a multiple_1D skew quadrupole geometry is prese
 	}
 }
 ```
+Common type_input for "slab" and "skew_quadrupole":
 
+ Argument, type_input | Units | Description 
+ -------------------- | ----- | ----------- 
+ strand_diameter | mm | 
+ winding_side | mm | 
+ 
+type_input only for "skew_quadrupole" geometry:
 
+ Argument, type_input | Units | Description 
+ -------------------- | ----- | ----------- 
+ coil_long_side | mm | 
+ coil_short_side | mm |
+ coil_initial_radius | mm |
+ number_turns_in_layer | - | 
+ number_layers | - |
+ winding_number_first_in_analysis | - |
+ winding_number_last_in_first_layer | - | 
+ number_of_layers_in_analysis | - | 
+ 
+type_input only for "slab" geometry:
+
+ Argument, type_input | Units | Description 
+ -------------------- | ----- | ----------- 
+ number_turns_in_layer | - |
+ number_layers | - | 
+ length_per_winding | m | 
+ 
+ Argument, mesh_input | Units | Description | type_input
+ -------------------- | ----- | ----------- | ----------
+ division_long_side | - | Number of elements along the longer side of skew quadrupole. | skew_quadrupole
+ division_short_side | - | Number of elements along the shorter side of the skew quadrupole. | skew_quadrupole
+ divisions_radius | - | Number of elements along the winding arc of the skew quadrupole. | skew_quadrupole
+ division_per_winding | - | Number of elements along the 1D slab cable | slab
