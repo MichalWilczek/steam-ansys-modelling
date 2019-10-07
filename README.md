@@ -1,6 +1,6 @@
 ## **STEAM** 
 #### ANSYS Quench Velocity Modelling
-(Copyright © 2017, CERN, Switzerland. All rights reserved.)
+(Copyright © 2019, CERN, Switzerland. All rights reserved.)
 
 ## Prerequisites
 In order to run the script, the user should have the installed version of ANSYS APDL
@@ -19,14 +19,9 @@ The first part of configuration corresponds to definition of basic simulation se
     }}
 ```
 Analysis settings definition is composed of:
-Argument | Description
--------- | -----------
-quench_init_position | Position of the centre of the initially quenched zone, [meters]
-quench_init_length | Length of the initially quenched zone, [meters]
-time_total_simulation | Total time of the analysis set in ANSYS, [seconds]
-time_step_cosimulation | Time step for the data extraction from ANSYS. For quench velocity modelling, it describes time slots for data exchange for co-simulation solvers
-time_step_min_ansys |
-time_step_max_ansys | 
+| Argument | Units | Description |
+| -------- | ----- | ----------- |
+
 
 
 
