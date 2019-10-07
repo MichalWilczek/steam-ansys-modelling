@@ -49,8 +49,17 @@ Temperature distribution settings is composed of:
  temperature_max_init_quenched_zone | K | Maximum temperature set in the quenched zone.
  magnetic_field_initially_quenched_winding | T | Magnetic field value in the winding where the initial quench is triggered. This value is only required for the initial gaussian distribution whose borders of the quenched zone are at critical temperature dependent on the magnetic field strength.
 
+The temperature_init_distribution requires different input depending on its type as described below: 
+
+ Type | Required Input 
+ ---- | --------------
+ gaussian | temperature_init, temperature_max_init_quenched_zone
+ uniform | temperature_init, temperature_max_init_quenched_zone, magnetic_field_initially_quenched_winding
+
 ##### Analysis Type Settings
-AHell
+The programme is written in order to perform one- and multidimensional analysis based on quench velocity algorithm as well
+as to conduct one-dimensional heat-balance equation-based analyses for mapping purposed. Therefore, the analysis type should be 
+specified as follows:
 ```json
 {"analysis_type": {
 	"type": "quench_velocity",
@@ -60,6 +69,9 @@ AHell
 		}
 }
 ```
+Analysis type settings are composed of:
+
+
 
 The user the options for the analysis of the electric circuit
 ```json
