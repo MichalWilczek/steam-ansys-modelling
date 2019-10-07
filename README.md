@@ -19,14 +19,17 @@ The first part of configuration corresponds to definition of basic simulation se
     }}
 ```
 Analysis settings definition is composed of:
-| Argument | Units | Description |
-| -------- | ----- | ----------- |
 
+ Argument | Units | Description 
+ -------- | ----- | ----------- 
+quench_init_position | m | Position of the centre of the initially quenched zone.
+quench_init_length | m | Length of the initially quenched zone.
+time_total_simulation | s | Total simulation time.
+time_step_cosimulation | s | Time step after each of which the data is extracted from ANSYS. It is also a time slot for data exchange between ANSYS and quench velocity algorithm.
+time_step_min_ansys | ms | Minimum time step applied within the automatic ANSYS time stepping algorithm. It must be smaller than the time_step_cosimulation.
+time_step_max_ansys | ms | Maximum time step applied within the automatic ANSYS time stepping algorithm. It must be smaller than the time_step_cosimulation.
+current_init | A | Initial current set in the analysis.
 
-
-
-
-	
 The user should also decide what what type of temperature conditions will be applied in the analysis.	
 ```json
 {"temperature_init_distribution": {
