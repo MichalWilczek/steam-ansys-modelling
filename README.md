@@ -30,7 +30,8 @@ time_step_min_ansys | ms | Minimum time step applied within the automatic ANSYS 
 time_step_max_ansys | ms | Maximum time step applied within the automatic ANSYS time stepping algorithm. It must be smaller than the time_step_cosimulation.
 current_init | A | Initial current set in the analysis.
 
-The user should also decide what what type of temperature conditions will be applied in the analysis.	
+##### Temperature Distribution Settings
+The user should decide what what type of temperature conditions will be applied in the analysis. There are two different types available: uniform and gaussian. 
 ```json
 {"temperature_init_distribution": {
 	"type": "gaussian",
@@ -40,7 +41,15 @@ The user should also decide what what type of temperature conditions will be app
 		"magnetic_field_initially_quenched_winding": 2.0}	
 }}
 ```
+Temperature distribution settings is composed of:
 
+ Argument | Units | Description 
+ -------- | ----- | ----------- 
+ temperature_init | K | Initial temperature set outside of the initially quenched zone.
+ temperature_max_init_quenched_zone | K | Maximum temperature set in the quenched zone.
+ magnetic_field_initially_quenched_winding | T | Magnetic field value in the winding where the initial quench is triggered. This value is only required for the initial gaussian distribution whose borders of the quenched zone are at critical temperature dependent on the magnetic field strength.
+
+##### Analysis Type Settings
 Analysis type
 ```json
 {"analysis_type": {
