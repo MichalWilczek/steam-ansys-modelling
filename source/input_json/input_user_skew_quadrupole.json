@@ -1,0 +1,17 @@
+
+{
+"strand_diameter": 0.7,
+"winding_side": 0.941,
+"coil_long_side": 413.21,
+"coil_short_side": 126.81,
+"coil_initial_radius": 9.15,
+"number_turns_in_layer": 29,
+"number_layers": 26,
+"division_long_side": 100,
+"division_short_side": 30,
+"division_radius": 5,
+"rrr": 193.0,
+"winding_number_first_in_analysis": 233,
+"winding_number_last_in_first_layer": 234,
+"number_of_layers_in_analysis": 2
+}

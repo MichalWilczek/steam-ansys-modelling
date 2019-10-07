@@ -53,8 +53,8 @@ class AnsysMultiple1DSlab(AnsysMultiple1D):
 
     def calculate_effective_insulation_area(self):
         # if self.factory.number_of_windings != 1:
-        #     eff_side = (self.factory.WINDING_SIDE + math.pi * self.factory.STRAND_DIAMETER/4.0)/2.0
-        #     winding_total_length = 2.0*self.factory.COIL_SHORT_SIDE + 2.0*self.factory.COIL_LONG_SIDE
+        #     eff_side = (self.factory.winding_side + math.pi * self.factory.strand_diameter/4.0)/2.0
+        #     winding_total_length = 2.0*self.factory.coil_short_side + 2.0*self.factory.coil_long_side
         #     total_insulation_area = eff_side * winding_total_length
         #     number_divisions_in_winding = (2.0 * self.factory.division_long_side + 2.0 * self.factory.division_short_side)
         #     elem_ins_area = total_insulation_area / (number_divisions_in_winding+1.0)

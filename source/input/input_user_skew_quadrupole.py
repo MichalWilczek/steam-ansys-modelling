@@ -1,14 +1,14 @@
 
-class InputSkewQuadrupole(object):
+class InputUserSkewQuadrupole(object):
 
     # geometrical constraints of given magnet
-    STRAND_DIAMETER = 0.7       # [mm]
-    WINDING_SIDE = 0.941        # [mm]
-    COIL_LONG_SIDE = 413.21     # [mm]
-    COIL_SHORT_SIDE = 126.81    # [mm]
-    COIL_INITIAL_RADIUS = 9.15  # [mm]
-    NUMBER_TURNS_IN_LAYER = 29  # [-]
-    NUMBER_LAYERS = 26          # [-]
+    strand_diameter = 0.7       # [mm]
+    winding_side = 0.941        # [mm]
+    coil_long_side = 413.21     # [mm]
+    coil_short_side = 126.81    # [mm]
+    coil_initial_radius = 9.15  # [mm]
+    number_turns_in_layer = 29  # [-]
+    number_layers = 26          # [-]
 
     # mesh specification
     # mesh of the winding

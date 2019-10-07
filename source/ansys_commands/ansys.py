@@ -1,7 +1,7 @@
 import os
 from ansys_corba import CORBA
 from source.ansys_commands.ansys_table import Table
-from source.solver.initial_temperature.polynomial_fit import Polynomials
+from source.solver.initial_temperature.polynomial_fit import PolynomialFit
 from source.general_functions import GeneralFunctions
 import time
 
@@ -66,7 +66,7 @@ class AnsysCommands(GeneralFunctions):
 
     def input_heat_flow_table(self, number_windings_heated=1.0, scaling_factor=1.0):
         self.enter_preprocessor()
-        heat_flow_array = Polynomials.extract_meas_power_function()
+        heat_flow_array = PolynomialFit.extract_meas_power_function()
         self.create_dim_table(dim_name="heat_flow", dim_type="table", size1=len(heat_flow_array), size2=1, size3=1, name1="time")
         self.fill_dim_table(dim_name="heat_flow", row=0, column=1, value=0.0)
         for i in range(len(heat_flow_array[:, 0])):

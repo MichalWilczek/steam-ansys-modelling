@@ -1,5 +1,5 @@
 
-class InputUserAnalysis2D(object):
+class InputUser2D(object):
 
     # total number of windings to be analysed
     number_of_windings = 1

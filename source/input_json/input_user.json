@@ -1,0 +1,41 @@
+
+{
+  "material_properties_directory": "C:\\gitlab\\steam-ansys-modelling\\Material_Properties",
+  "build_electric_circuit": false,
+  "transient_electric_analysis": false,
+  "electric_ansys_elements": false,
+  "magnetic_map_model": "2D_constant",
+  "constant_magnetic_field_value": 2.0,
+  "magnetic_field_map_plot": false,
+  "dimensionality": "multiple_1D",
+  "analysis_type": "heat_balance",
+  "v_quench_model": null,
+  "quench_init_position": 0.5,
+  "quench_init_length": 0.1,
+  "time_total_simulation": 0.4,
+  "time_step_cosimulation": 0.01,
+  "time_step_min_ansys": 1.0,
+  "time_step_max_ansys": 10.0,
+  "current_init": 100.0,
+  "temperature_init": 1.9,
+  "temperature_max_init_quenched_zone": 10.0,
+  "magnetic_field_initially_quenched_winding": 2.0,
+  "temperature_init_distr": "uniform",
+  "material_properties_type": "nonlinear",
+  "geometry_type": "slab",
+  "insulation_analysis": true,
+
+  "analysis_input": [
+    {
+    "type": "1D_slab",
+    "input": {
+
+    }},
+    {
+      "type": "1D_slab",
+    "input": {
+    }}]
+
+
+
+}

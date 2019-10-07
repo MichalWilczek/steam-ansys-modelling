@@ -1,12 +1,15 @@
 
 import os
+import json
+from collections import namedtuple
+from six import with_metaclass
 
-from source.input.input_user_general import InputUserGeneral
-from source.input.input_slab import InputSlab
-from source.input.input_skew_quadrupole import InputSkewQuadrupole
-from source.input.input_user_analysis_1D import InputUserAnalysis1D
-from source.input.input_user_analysis_multiple_1D import InputUserAnalysisMultiple1D
-from source.input.input_user_analysis_2D import InputUserAnalysis2D
+from source.input.input_user import InputUser
+# from source.input.input_slab import InputSlab
+# from source.input.input_user_skew_quadrupole import InputUserSkewQuadrupole
+# from source.input.input_user_1D import InputUser1D
+# from source.input.input_user_multiple_1D import InputUserMultiple1D
+# from source.input.input_user_2D import InputUser2D
 
 from source.geometry.geometry_1D1D1D import GeometryMulti1D
 from source.geometry.geometry_2D import Geometry2D
@@ -47,7 +50,7 @@ from source.processor_pre.pre_processor_heat_balance import PreProcessorHeatBala
 from source.processor_post.post_processor_heat_balance import PostProcessorHeatBalance
 from source.processor_post.post_processor_quench_velocity import PostProcessorQuenchVelocity
 
-class Factory(InputUserGeneral):
+class Factory(InputUser):
 
     @staticmethod
     def get_directory():
@@ -68,19 +71,19 @@ class Factory(InputUserGeneral):
     @staticmethod
     def directory_1d():
         source = Factory.define_main_path()
-        path = os.path.join(source, 'APDL', '1D')
+        path = os.path.join(source, 'apdl_scripts', '1D')
         return path
 
     @staticmethod
     def directory_multiple_1d():
         source = Factory.define_main_path()
-        path = os.path.join(source, 'APDL', '1D_1D_1D')
+        path = os.path.join(source, 'apdl_scripts', '1D_1D_1D')
         return path
 
     @staticmethod
     def directory_2d():
         source = Factory.define_main_path()
-        path = os.path.join(source, 'APDL', '2D')
+        path = os.path.join(source, 'apdl_scripts', '2D')
         return path
 
     @staticmethod
@@ -90,24 +93,80 @@ class Factory(InputUserGeneral):
         return CustomisedClass
 
     @staticmethod
-    def get_input_data_class():
-        if Factory.dimensionality == "1D":
-            if Factory.geometry_type == "slab":
-                return Factory.create_class(InputUserGeneral, InputUserAnalysis1D, InputSlab)
-            elif Factory.geometry_type == "skew_quadrupole":
-                return Factory.create_class(InputUserGeneral, InputUserAnalysis1D, InputSkewQuadrupole)
-        elif Factory.dimensionality == "multiple_1D":
-            if Factory.geometry_type == "slab":
-                return Factory.create_class(InputUserGeneral, InputUserAnalysisMultiple1D, InputSlab)
-            elif Factory.geometry_type == "skew_quadrupole":
-                return Factory.create_class(InputUserGeneral, InputUserAnalysisMultiple1D, InputSkewQuadrupole)
-        elif Factory.dimensionality == "2D":
-            if Factory.geometry_type == "slab":
-                return Factory.create_class(InputUserGeneral, InputUserAnalysis2D, InputSlab)
-            elif Factory.geometry_type == "skew_quadrupole":
-                return Factory.create_class(InputUserGeneral, InputUserAnalysis2D, InputSkewQuadrupole)
+    def convert_json_to_class_object(class_name, json_filename):
+        with open(json_filename) as json_file:
+            data = json.load(json_file, object_hook=lambda d: namedtuple(class_name, d.keys())(*d.values()))
+        return data
+
+    @staticmethod
+    def get_input_data_class(ansys_analysis_directory):
+
+        input_json_directory = os.path.join(ansys_analysis_directory, 'analysis_input', 'input_json')
+        os.chdir(input_json_directory)
+        inp_1 = Factory.convert_json_to_class_object(class_name="InputUser", json_filename='input_user.json')
+        inp_2 = Factory.convert_json_to_class_object(class_name="InputUserSkewQuadrupole", json_filename='input_user_skew_quadrupole.json')
+
+        # print(InputUser)
+        # print("----")
+        # print(inp_1)
+        # print("----")
+        # print(inp_2)
+
+        print(type(inp_1))
+        class_inp_2 = Factory.create_class(inp_1, inp_2)
+        print(inp_1.__dict__)
+
+        class_inp = Factory.create_class(type(inp_1).__doc__, type(inp_2).__doc__)
+        print(class_inp.magnetic_map_model)
+        # print(class_inp)
+
+        if InputUser.dimensionality == "1D":
+            InputUser1D = Factory.convert_json_to_class_object(class_name="InputUser1D", json_filename='input_user_1D.json')
+            if InputUser.geometry_type == "slab":
+                InputUserSlab = Factory.convert_json_to_class_object(class_name="InputUserSlab", json_filename='input_user_slab.json')
+                return Factory.create_class(InputUser, InputUser1D, InputUserSlab)
+            elif InputUser.geometry_type == "skew_quadrupole":
+                InputUserSkewQuadrupole = Factory.convert_json_to_class_object(class_name="InputUserSkewQuadrupole", json_filename='input_user_skew_quadrupole.json')
+                return Factory.create_class(InputUser, InputUser1D, InputUserSkewQuadrupole)
+
+        elif InputUser.dimensionality == "multiple_1D":
+            InputUserMultiple1D = Factory.convert_json_to_class_object(class_name="InputUserMultiple1D", json_filename='input_user_multiple_1D.json')
+            if InputUser.geometry_type == "slab":
+                InputUserSlab = Factory.convert_json_to_class_object(class_name="InputUserSlab", json_filename='input_user_slab.json')
+                return Factory.create_class(InputUser, InputUserMultiple1D, InputUserSlab)
+            elif InputUser.geometry_type == "skew_quadrupole":
+                InputUserSkewQuadrupole = Factory.convert_json_to_class_object(class_name="InputUserSkewQuadrupole", json_filename='input_user_skew_quadrupole.json')
+                return Factory.create_class(InputUser, InputUserMultiple1D, InputUserSkewQuadrupole)
+
+        elif InputUser.dimensionality == "2D":
+            InputUser2D = Factory.convert_json_to_class_object(class_name="InputUser2D", json_filename='input_user_2D.json')
+            if InputUser.geometry_type == "slab":
+                InputUserSlab = Factory.convert_json_to_class_object(class_name="InputUserSlab", json_filename='input_user_slab.json')
+                return Factory.create_class(InputUser, InputUser2D, InputUserSlab)
+            elif InputUser.geometry_type == "skew_quadrupole":
+                InputUserSkewQuadrupole = Factory.convert_json_to_class_object(class_name="InputUserSkewQuadrupole", json_filename='input_user_skew_quadrupole.json')
+                return Factory.create_class(InputUser, InputUser2D, InputUserSkewQuadrupole)
         else:
             raise ValueError("Input data are not sufficient to run the analysis")
+
+
+        # if Factory.dimensionality == "1D":
+        #     if Factory.geometry_type == "slab":
+        #         return Factory.create_class(InputUser, InputUser1D, InputSlab)
+        #     elif Factory.geometry_type == "skew_quadrupole":
+        #         return Factory.create_class(InputUser, InputUser1D, InputUserSkewQuadrupole)
+        # elif Factory.dimensionality == "multiple_1D":
+        #     if Factory.geometry_type == "slab":
+        #         return Factory.create_class(InputUser, InputUserMultiple1D, InputSlab)
+        #     elif Factory.geometry_type == "skew_quadrupole":
+        #         return Factory.create_class(InputUser, InputUserMultiple1D, InputUserSkewQuadrupole)
+        # elif Factory.dimensionality == "2D":
+        #     if Factory.geometry_type == "slab":
+        #         return Factory.create_class(InputUser, InputUser2D, InputSlab)
+        #     elif Factory.geometry_type == "skew_quadrupole":
+        #         return Factory.create_class(InputUser, InputUser2D, InputUserSkewQuadrupole)
+        # else:
+        #     raise ValueError("Input data are not sufficient to run the analysis")
 
     @staticmethod
     def get_geometry_class():

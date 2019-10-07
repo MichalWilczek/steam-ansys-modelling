@@ -22,7 +22,6 @@ class Materials(object):
     # cu_dens = 1.0      # kg/m3, room temperature of copper
     # nb_ti_dens = 1.0   # kg/m3
     # g10_dens = 1.0     # kg/m3
-    f_cu_f_nbti = 2.2
 
     temp_min = 1  # [K]
     temp_max = 300  # [K}
@@ -34,6 +33,7 @@ class Materials(object):
         :param plotting: string, default as "no"
         """
         self.factory = input_data
+        self.f_cu_f_nbti = self.factory.f_cu_f_nbti
         self.plt = plt
         self.plot = plotting
         self.f_nbti = self.ratio_nbti()

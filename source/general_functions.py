@@ -4,6 +4,15 @@ import os
 class GeneralFunctions(object):
 
     @staticmethod
+    def define_analysis_path(*args):
+        cwd = os.path.dirname(__file__)
+        # disc = disc + " "
+        path = os.path.join(*args)
+        path1 = os.getcwd()
+        print("The analysis path is: {}".format(path))
+        return path
+
+    @staticmethod
     def file_length(filename, analysis_directory):
         """
         :param filename: filename with extension as string
@@ -34,7 +43,7 @@ class GeneralFunctions(object):
         else:
             return 0
 
-
+# GeneralFunctions.define_analysis_path("C:", "gitlab", "analysis")
 
 
 

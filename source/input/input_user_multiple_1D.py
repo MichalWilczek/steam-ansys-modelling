@@ -1,5 +1,5 @@
 
-class InputUserAnalysisMultiple1D(object):
+class InputUserMultiple1D(object):
 
     # total number of windings to be analysed
     number_of_windings = 1

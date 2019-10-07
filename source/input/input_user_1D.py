@@ -1,5 +1,5 @@
 
-class InputUserAnalysis1D(object):
+class InputUser1D(object):
     pass
     # # geometric constraints
     # length_per_winding = 1.0        # [m]

@@ -1,11 +1,12 @@
 
 from source.factory import Factory
+ansys_analysis_directory = "C:\\gitlab\\analysis"
 
 ######################################################
 # DEFINITION OF INITIAL INSTANCES TO RUN THE PROGRAMME
 ######################################################
 
-inp_data = Factory.get_input_data_class()
+inp_data = Factory.get_input_data_class(ansys_analysis_directory)
 ans = Factory.get_ansys_class()
 mat = Factory.get_material_properties_class()
 mag = Factory.get_magnetic_map_class()

@@ -1,12 +1,8 @@
 
-class InputUserGeneral(object):
+class InputUser(object):
 
     # directory for initial material properties
-    material_properties_directory = "C:\\gitlab\\steam-ansys-modelling\\Material_Properties"
-
-    # names of files used in Python data analysis extrapolated from ANSYS
-    filename_nodal_position = "Node_Position.txt"
-    filename_nodal_temperature = "Temperature_Data.txt",
+    material_properties_directory = "C:\\gitlab\\steam-ansys-modelling\\material_properties"
 
     # specify the co-simulation criteria
     build_electric_circuit = False
@@ -48,7 +44,7 @@ class InputUserGeneral(object):
     current_init = 100.0                                # [A]
     temperature_init = 1.9                              # [K]
     temperature_max_init_quenched_zone = 10.0           # [K]
-    magnetic_field_initially_quenched_winding = 2.0    # [B]
+    magnetic_field_initially_quenched_winding = 2.0     # [B]
 
     # specify initial temperature distribution in quenched zone ("uniform", "gaussian_distribution")
     temperature_init_distr = "uniform"

@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class Polynomials(object):
+class PolynomialFit(object):
 
     FILENAME = "Power_Data.txt"
     FILENAME_TEMP_INSULATION = "Nodal_Temperature_Last_node.txt"
@@ -12,7 +12,7 @@ class Polynomials(object):
 
     @staticmethod
     def create_linear_interpolation_for_temp_vector(time_vector):
-        temp_array = Polynomials.load_data(directory=Polynomials.DIRECTORY, filename=Polynomials.FILENAME_TEMP_INSULATION)
+        temp_array = PolynomialFit.load_data(directory=PolynomialFit.DIRECTORY, filename=PolynomialFit.FILENAME_TEMP_INSULATION)
         temperature_vector = np.interp(x=time_vector, xp=temp_array[:, 0], fp=temp_array[:, 1])
         return temperature_vector
 
@@ -22,10 +22,10 @@ class Polynomials(object):
         Creates array with power deposition fuction with respect to time
         :return: numpy array; column1: time, column2: power [W]
         """
-        power = Polynomials.load_data(directory=Polynomials.DIRECTORY, filename=Polynomials.FILENAME)
-        time = Polynomials.create_time_vector()
-        Polynomials.plot_data(power, time)
-        return Polynomials.create_polyfit_array(time, power)
+        power = PolynomialFit.load_data(directory=PolynomialFit.DIRECTORY, filename=PolynomialFit.FILENAME)
+        time = PolynomialFit.create_time_vector()
+        PolynomialFit.plot_data(power, time)
+        return PolynomialFit.create_polyfit_array(time, power)
 
     @staticmethod
     def extract_polynomial_function():
@@ -33,11 +33,11 @@ class Polynomials(object):
         Created array with interpolation fuction corresponding to power deposition with respect to time
         :return: numpy array; column1: time, column2: power interpolation function [W]
         """
-        power = Polynomials.load_data(directory=Polynomials.DIRECTORY, filename=Polynomials.FILENAME)
-        time = Polynomials.create_time_vector()
-        f_polyfit = Polynomials.create_polyfit(power, time)
-        Polynomials().plot_data(power, time, f_fit=f_polyfit)
-        return Polynomials.create_polyfit_array(time, f_polyfit)
+        power = PolynomialFit.load_data(directory=PolynomialFit.DIRECTORY, filename=PolynomialFit.FILENAME)
+        time = PolynomialFit.create_time_vector()
+        f_polyfit = PolynomialFit.create_polyfit(power, time)
+        PolynomialFit().plot_data(power, time, f_fit=f_polyfit)
+        return PolynomialFit.create_polyfit_array(time, f_polyfit)
 
     @staticmethod
     def load_data(directory, filename):
