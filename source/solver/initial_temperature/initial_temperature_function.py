@@ -1,7 +1,7 @@
 
 from source.solver.initial_temperature.initial_temperature import InitialTemperature
 from source.solver.initial_temperature.polynomial_fit import PolynomialFit
-from source.processor_post.quench_velocity.nodes_search import SearchNodes
+from source.post_processor.quench_velocity.nodes_search import SearchNodes
 
 class InitialTemperatureFunction(InitialTemperature, PolynomialFit, SearchNodes):
 

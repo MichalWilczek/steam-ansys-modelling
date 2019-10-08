@@ -1,7 +1,7 @@
 import time
-from source.ansys_commands.ansys import AnsysCommands
+from source.ansys.ansys import Ansys
 
-class Ansys2D(AnsysCommands):
+class Ansys2D(Ansys):
 
     # TO BE MODIFED !!!
     def create_variable_file(self):
@@ -47,5 +47,5 @@ class Ansys2D(AnsysCommands):
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
     def get_temperature_profile(self, class_geometry, npoints):
-        temperature_profile_1d = class_geometry.load_temperature_and_map_onto_1d_cable(directory=self.factory.get_directory(), npoints=npoints)
+        temperature_profile_1d = class_geometry.load_temperature_and_map_onto_1d_cable(directory=self.factory.get_ansys_scripts_directory(), npoints=npoints)
         return temperature_profile_1d

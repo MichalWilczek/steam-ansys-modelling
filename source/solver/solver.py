@@ -1,6 +1,6 @@
 
 from source.solver.time_step import TimeStep
-from source.processor_post.quench_detection import QuenchDetect
+from source.post_processor.quench_detection import QuenchDetect
 
 class Solver(TimeStep, QuenchDetect):
 

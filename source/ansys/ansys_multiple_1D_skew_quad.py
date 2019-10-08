@@ -1,5 +1,5 @@
 
-from source.ansys_commands.ansys_multiple_1D import AnsysMultiple1D
+from source.ansys.ansys_multiple_1D import AnsysMultiple1D
 import time
 import math
 

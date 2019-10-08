@@ -1,5 +1,5 @@
 
-from source.general_functions import GeneralFunctions
+from source.factory.general_functions import GeneralFunctions
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio

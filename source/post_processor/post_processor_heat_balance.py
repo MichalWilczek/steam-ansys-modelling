@@ -1,5 +1,5 @@
 
-from source.processor_post.post_processor import PostProcessor
+from source.post_processor.post_processor import PostProcessor
 import numpy as np
 
 class PostProcessorHeatBalance(PostProcessor):

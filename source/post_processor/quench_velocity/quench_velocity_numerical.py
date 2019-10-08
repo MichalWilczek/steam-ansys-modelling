@@ -1,6 +1,6 @@
 
-from source.processor_post.quench_velocity.quench_velocity import QuenchFront
-from source.processor_post.quench_velocity.quench_velocity_map import QuenchVelocityMap
+from source.post_processor.quench_velocity.quench_velocity import QuenchFront
+from source.post_processor.quench_velocity.quench_velocity_map import QuenchVelocityMap
 import numpy as np
 import scipy.integrate
 

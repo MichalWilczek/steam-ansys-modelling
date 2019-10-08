@@ -1,8 +1,8 @@
 
 import time
 import math
-# from source.ansys_commands.ansys import AnsysCommands
-from source.ansys_commands.ansys_net import AnsysNetwork
+# from source.ansys.ansys import Ansys
+from source.ansys.ansys_net import AnsysNetwork
 
 class Ansys1D(AnsysNetwork):
 

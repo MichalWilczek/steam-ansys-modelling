@@ -1,5 +1,5 @@
 
-from source.processor_post.plots import Plots
+from source.post_processor.plots import Plots
 
 class InitialTemperature(Plots):
 

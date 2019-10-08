@@ -1,6 +1,6 @@
 
-from source.processor_post.plots import Plots
-from source.processor_post.quench_detection import QuenchDetect
+from source.post_processor.plots import Plots
+from source.post_processor.quench_detection import QuenchDetect
 
 class PostProcessor(Plots, QuenchDetect):
 

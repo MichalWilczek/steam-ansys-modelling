@@ -1,9 +1,9 @@
 ## **STEAM** 
-#### ANSYS Quench Velocity Modelling
+#### 3D Quench Velocity Modelling in ANSYS
 (Copyright © 2019, CERN, Switzerland. All rights reserved.)
 
 ## Prerequisites
-In order to run the script, the user should have the installed version of ANSYS APDL
+In order to run the script, the user should have the installed version of ANSYS APDL.
 
 ##### Initial Simulation Settings
 The first part of configuration corresponds to definition of basic simulation settings. 
@@ -80,10 +80,10 @@ The analysis type input settings is presented below:
 
  v_quench_model argument  | Description 
  --------  | ----------- 
- constant | Applies constant quench velocity 
+ constant | Applies constant quench velocity.
  numerical | Initial temperature set outside of the initially quenched zone.
 
-The user the options for the analysis of the electric circuit
+The user options for the analysis of the electric circuit
 ```json
 {"circuit_settings": {
     "build_electric_circuit": false,
@@ -147,6 +147,8 @@ Common type_input for "slab" and "skew_quadrupole":
  -------------------- | ----- | ----------- 
  strand_diameter | mm | 
  winding_side | mm | 
+ number_turns_in_layer | - | 
+ number_layers | - |
  
 type_input only for "skew_quadrupole" geometry:
 
@@ -155,8 +157,6 @@ type_input only for "skew_quadrupole" geometry:
  coil_long_side | mm | 
  coil_short_side | mm |
  coil_initial_radius | mm |
- number_turns_in_layer | - | 
- number_layers | - |
  winding_number_first_in_analysis | - |
  winding_number_last_in_first_layer | - | 
  number_of_layers_in_analysis | - | 
@@ -165,8 +165,6 @@ type_input only for "slab" geometry:
 
  Argument, type_input | Units | Description 
  -------------------- | ----- | ----------- 
- number_turns_in_layer | - |
- number_layers | - | 
  length_per_winding | m | 
  
  Argument, mesh_input | Units | Description | type_input

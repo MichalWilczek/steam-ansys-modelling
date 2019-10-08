@@ -1,6 +1,6 @@
 
-from source.processor_post.post_processor import PostProcessor
-from source.processor_post.quench_velocity.quench_merge import QuenchMerge
+from source.post_processor.post_processor import PostProcessor
+from source.post_processor.quench_velocity.quench_merge import QuenchMerge
 import numpy as np
 
 class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):

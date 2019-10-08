@@ -1,6 +1,6 @@
 
 from source.solver.initial_temperature.initial_temperature import InitialTemperature
-from source.processor_post.quench_velocity.nodes_search import SearchNodes
+from source.post_processor.quench_velocity.nodes_search import SearchNodes
 import numpy as np
 
 class InitialTemperatureUniform(InitialTemperature):

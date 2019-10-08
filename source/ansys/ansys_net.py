@@ -1,8 +1,8 @@
 
 import math
-from source.ansys_commands.ansys import AnsysCommands
+from source.ansys.ansys import Ansys
 
-class AnsysNetwork(AnsysCommands):
+class AnsysNetwork(Ansys):
 
     def input_winding_non_quenched_material_properties(self, magnetic_field_map, class_mat, element_name="link68"):
         """

@@ -1,6 +1,6 @@
 
 import math
-from source.ansys_commands.ansys_net import AnsysNetwork
+from source.ansys.ansys_net import AnsysNetwork
 
 class AnsysMultiple1D(AnsysNetwork):
 

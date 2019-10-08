@@ -1,6 +1,6 @@
 
 from source.solver.solver import Solver
-from source.processor_post.plots import Plots
+from source.post_processor.plots import Plots
 
 class SolverHeatBalance(Solver, Plots):
 

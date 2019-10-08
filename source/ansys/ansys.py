@@ -1,15 +1,16 @@
 import os
 from ansys_corba import CORBA
-from source.ansys_commands.ansys_table import Table
+from source.ansys.ansys_table import Table
 from source.solver.initial_temperature.polynomial_fit import PolynomialFit
-from source.general_functions import GeneralFunctions
+from source.factory.general_functions import GeneralFunctions
 import time
 
-class AnsysCommands(GeneralFunctions):
+class Ansys(GeneralFunctions):
 
-    def __init__(self, input_data, analysis_directory):
+    def __init__(self, input_data, analysis_directory, ansys_input_directory):
         self.factory = input_data
         self.analysis_directory = analysis_directory
+        self.ansys_input_directory = ansys_input_directory
         os.chdir(self.analysis_directory)
         with open('aaS_MapdlID.txt', 'r') as f:
             aasMapdlKey = f.read()
@@ -210,12 +211,11 @@ class AnsysCommands(GeneralFunctions):
         print(self.mapdl.executeCommandToString("allsel,below,{}".format(domain)))
 
     def input_file(self, filename, extension, add_directory=" "):
-        print(self.mapdl.executeCommandToString(
-            "/input,{},{},{}\\{}".format(filename, extension, self.analysis_directory, add_directory)))
+        print(self.mapdl.executeCommandToString("/input,{},{},{}\\{}".format(filename, extension, self.analysis_directory, add_directory)))
         self.wait_python(filename='Process_Finished.txt', directory=self.analysis_directory)
         time.sleep(1)
         self.delete_file(filename='Process_Finished.txt', directory=self.analysis_directory)
-        print("File uploaded... \n________________")
+        print("File uploaded... \n-----------------")
 
     def terminate_analysis(self):
         self.mapdl.terminate()

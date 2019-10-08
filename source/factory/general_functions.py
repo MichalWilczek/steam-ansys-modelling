@@ -4,15 +4,6 @@ import os
 class GeneralFunctions(object):
 
     @staticmethod
-    def define_analysis_path(*args):
-        cwd = os.path.dirname(__file__)
-        # disc = disc + " "
-        path = os.path.join(*args)
-        path1 = os.getcwd()
-        print("The analysis path is: {}".format(path))
-        return path
-
-    @staticmethod
     def file_length(filename, analysis_directory):
         """
         :param filename: filename with extension as string
@@ -38,12 +29,27 @@ class GeneralFunctions(object):
 
     @staticmethod
     def change_boolean_into_integer(boolean):
+        """
+        Changes boolean Python values to APDL language
+        :param boolean: True or False
+        :return: 1 or 0
+        """
         if boolean:
             return 1
         else:
             return 0
 
-# GeneralFunctions.define_analysis_path("C:", "gitlab", "analysis")
-
+    @staticmethod
+    def check_if_string_is_float(name):
+        """
+        Checks whether the string is a hidden float number
+        :param name: as string
+        :return: boolean
+        """
+        try:
+            float(name)
+            return True
+        except ValueError:
+            return False
 
 
