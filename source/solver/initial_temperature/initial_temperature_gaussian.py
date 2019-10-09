@@ -13,6 +13,8 @@ class InitialTemperatureGaussian(InitialTemperature):
         self.initial_temperature_profile = self.define_gaussian_temperature_distribution_array(
             self.geometry.coil_geometry,
             magnetic_field=self.input_data.temperature_settings.input.magnetic_field_initially_quenched_winding)
+        self.save_array(self.plots.output_directory_temperature,
+                        "Initial_temperature_profile.txt", self.initial_temperature_profile)
         return self.initial_temperature_profile
 
     def set_initial_temperature(self):

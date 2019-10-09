@@ -21,8 +21,8 @@ class AnsysMultiple1DSlab(AnsysMultiple1D):
         data.write_text('transverse_dimension_winding =' + str(self.calculate_insulation_length()))
         data.write_text('length_per_winding = ' + str(self.input_data.geometry_settings.type_input.length_per_winding))
 
-        data.write_text('transverse_division_insulation =' + str(self.input_data.mesh_settings.transverse_division_insulation))
-        data.write_text('division_per_winding = ' + str(self.input_data.mesh_settings.division_per_winding))
+        data.write_text('transverse_division_insulation =' + str(self.input_data.geometry_settings.type_input.type_insulation_settings.insulation_analysis_input.transverse_division_insulation))
+        data.write_text('division_per_winding = ' + str(self.input_data.geometry_settings.type_mesh_settings.division_per_winding))
 
         self.create_apdl_commands_for_python_waiting_process(data)
         time.sleep(2)

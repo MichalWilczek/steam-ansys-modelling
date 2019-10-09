@@ -26,6 +26,8 @@ class InitialTemperatureUniform(InitialTemperature):
             self.input_data.temperature_settings.input.temperature_max_init_quenched_zone
         self.plots.plot_and_save_temperature(self.output_directory, self.geometry.coil_geometry, self.initial_temperature_profile,
                                        iteration=0, time_step=0.0)
+        self.save_array(self.plots.output_directory_temperature,
+                        "Initial_temperature_profile.txt", self.initial_temperature_profile)
         return self.initial_temperature_profile
 
     @staticmethod

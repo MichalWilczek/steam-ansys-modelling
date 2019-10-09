@@ -5,6 +5,15 @@ import numpy as np
 class GeneralFunctions(object):
 
     @staticmethod
+    def check_if_object_exists(instance):
+        try:
+            instance
+        except NameError:
+            return False
+        else:
+            return True
+
+    @staticmethod
     def file_length(filename, analysis_directory):
         """
         :param filename: filename with extension as string
@@ -116,8 +125,8 @@ class GeneralFunctions(object):
         :param filename: filename to be created as string
         :param array: array to be saved
         """
-        array_filename = directory + "\\" + filename
-        np.savetxt(array_filename, array)
+        path = os.path.join(directory, filename)
+        np.savetxt(path, array)
 
     @staticmethod
     def load_file(directory, npoints, filename):
@@ -151,3 +160,9 @@ class GeneralFunctions(object):
         os.mkdir(foldername)
         return os.path.join(directory, foldername)
 
+    @staticmethod
+    def write_line_to_file(directory, filename, input_value):
+        path = os.path.join(directory, filename)
+        os.chdir(directory)
+        with open(path, "w") as file:
+            file.write(input_value)

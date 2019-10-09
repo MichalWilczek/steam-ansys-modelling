@@ -2,6 +2,7 @@
 import os
 import shutil
 import json
+import time
 from collections import namedtuple
 from source.factory.general_functions import GeneralFunctions
 
@@ -69,10 +70,10 @@ class AnalysisLauncher(GeneralFunctions):
         return path_final
 
     def copy_ansys_analysis_files_to_output_directory(self):
+        time.sleep(2)
         list_files = os.listdir(self.directory)
         list_files.remove("input")
         list_files.remove("output")
-
         os.chdir(self.directory)
         for file in list_files:
             shutil.copy(file, self.output_directory)

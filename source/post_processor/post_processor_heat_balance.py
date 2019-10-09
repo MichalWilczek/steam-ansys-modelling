@@ -14,13 +14,12 @@ class PostProcessorHeatBalance(PostProcessor):
         quench_front_new = self.q_det.detect_quench(quench_fronts, self.temperature_profile,
                                                     magnetic_field_map=self.magnetic_map.im_short_mag_dict)
         if self.iteration[0] > 0:
-            time_step = [self.time_step_vector[self.iteration[0]]][0]
             q_v_time_array = np.zeros((1, 3))
             if len(quench_front_new) > 0:
                 pos_x_down = quench_front_new[0][0]
                 pos_x_up = quench_front_new[0][1]
-                q_length_up = abs(pos_x_up - self.factory.quench_init_position)
-                q_length_down = abs(pos_x_down - self.factory.quench_init_position)
+                q_length_up = abs(pos_x_up - self.input_data.analysis_settings.quench_init_position)
+                q_length_down = abs(pos_x_down - self.input_data.analysis_settings.quench_init_position)
                 q_vel = ((q_length_up + q_length_down) / 2.0) / time_step
                 q_v_time_array[0, 0] = time_step
                 q_v_time_array[0, 1] = q_length_down + q_length_up
@@ -32,9 +31,11 @@ class PostProcessorHeatBalance(PostProcessor):
 
         # write down quench velocity
         if self.iteration[0] == 1:
-            self.write_line_in_file(directory=self.directory, filename="Q_V_array.txt", mydata=q_v_time_array)
+            self.write_line_in_file(directory=self.plots.output_directory_quench_state,
+                                    filename="Q_V_array.txt", mydata=q_v_time_array)
         elif self.iteration[0] > 1:
-            self.write_line_in_file(directory=self.directory, filename="Q_V_array.txt", mydata=q_v_time_array,
+            self.write_line_in_file(directory=self.plots.output_directory_quench_state,
+                                    filename="Q_V_array.txt", mydata=q_v_time_array,
                                     newfile=False)
         for qf in quench_front_new:
             self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label,
@@ -64,16 +65,17 @@ class PostProcessorHeatBalance(PostProcessor):
                 qf_resistance = self.mat_props.calculate_qf_resistance(
                     qf_down=n_down, qf_up=n_up, im_temp_profile=self.temperature_profile,
                     im_coil_geom=self.geometry.coil_geometry, mag_field=mag_field,
-                    wire_diameter=self.factory.STRAND_DIAMETER)
+                    wire_diameter=self.input_data.geometry_settings.type_input.strand_diameter)
             coil_resistance += qf_resistance
         return coil_resistance
 
     def plot_resistive_voltage(self, coil_resistance):
         time_step = [self.time_step_vector[self.iteration[0]]][0]
         res_voltage = self.circuit.return_current_in_time_step() * coil_resistance
-        self.plot_resistive_voltage_python(voltage=res_voltage,
-                                           total_time=self.factory.time_total_simulation, time_step=time_step,
-                                           iteration=self.iteration[0])
+        self.plots.plot_resistive_voltage_python(voltage=res_voltage,
+                                                 total_time=self.input_data.analysis_settings.time_total_simulation,
+                                                 time_step=time_step,
+                                                 iteration=self.iteration[0])
         res_voltage_array = np.zeros((1, 2))
         res_voltage_array[0, 0] = self.t[0]
         res_voltage_array[0, 1] = res_voltage

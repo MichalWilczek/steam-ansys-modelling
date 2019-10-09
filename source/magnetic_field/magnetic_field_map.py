@@ -46,7 +46,7 @@ class MagneticFieldMap(MagneticField):
         return new_mag_map
 
     @staticmethod
-    def plot_winding_vector_arrangement(x_pos_windings, y_pos_windings, transverse_lines=False):
+    def plot_winding_vector_arrangement(x_pos_windings, y_pos_windings, directory, transverse_lines=False):
         """
         Plots winding arrangement in a half quadrant of a quadrupole
         :param transverse_lines: transverse vector lines plotting as boolean, default as False
@@ -87,8 +87,8 @@ class MagneticFieldMap(MagneticField):
         plt.ylabel("y-direction [mm]")
         plt.grid(True)
         filename = "Winding_Scheme.png"
+        os.chdir(directory)
         plt.savefig(filename, dpi=200)
-        plt.show()
 
     @staticmethod
     def load_magnetic_field_map(directory, filename):
@@ -125,7 +125,7 @@ class MagneticFieldMap(MagneticField):
         return matrix_interpol
 
     @staticmethod
-    def plot_interpolated_function(mag_map, winding_side, number_layers, number_turns_in_layer):
+    def plot_interpolated_function(mag_map, winding_side, number_layers, number_turns_in_layer, directory):
         """
         Plots a 3D plot with magnetic field interpolation function over an x, y - coordinates
         """
@@ -150,8 +150,8 @@ class MagneticFieldMap(MagneticField):
         ax.view_init(elev=30, azim=40)
         ax.dist = 10
         filename = "Quadrupole_Magnetic_Field_Interpolation_plot.png"
+        os.chdir(directory)
         plt.savefig(filename, dpi=200)
-        plt.show()
 
     @staticmethod
     def winding_y_pos_list(winding_side, number_turns_in_layer):
@@ -174,7 +174,7 @@ class MagneticFieldMap(MagneticField):
         return array
 
     @staticmethod
-    def make_magnetic_contour_plot(mag_map):
+    def make_magnetic_contour_plot(mag_map, directory):
         """
         Creates contour map of magnetic field distribution in the magnet cross-section
         :return: plot instance
@@ -185,19 +185,17 @@ class MagneticFieldMap(MagneticField):
         x = x_axis.reshape(20, 20)
         y = y_axis.reshape(20, 20)
         z = b_field.reshape(20, 20)
-        quad_mag_field_contour = plt.contour(x, y, z, 12)
-        plt.clabel(quad_mag_field_contour, inline=1, fontsize=10)
+        plt.clabel(plt.contour(x, y, z, 12), inline=1, fontsize=10)
         plt.axis('equal')
         plt.xlabel("x-direction [mm]")
         plt.ylabel("y-direction [mm]")
         plt.grid(True)
         filename = "Quadrupole_Magnetic_Contour_plot.png"
+        os.chdir(directory)
         plt.savefig(filename, dpi=200)
-        plt.show()
-        return quad_mag_field_contour
 
     @staticmethod
-    def make_magnetic_colour_plot(mag_map):
+    def make_magnetic_colour_plot(mag_map, directory):
         """
         Creates colour map of magnetic field distribution in the magnet cross-section
         :return: plot instance
@@ -208,49 +206,18 @@ class MagneticFieldMap(MagneticField):
         x = x_axis.reshape(20, 20)
         y = y_axis.reshape(20, 20)
         z = b_field.reshape(20, 20)
-        quad_mag_field_colour = plt.contourf(x, y, z, 20)
+        plt.contourf(x, y, z, 20)
         plt.axis('equal')
         plt.xlabel("x-direction [mm]")
         plt.ylabel("y-direction [mm]")
         filename = "Quadrupole_Magnetic_Colour_plot.png"
         plt.grid(True)
         plt.colorbar(label='Magnetic Field [T]')
+        os.chdir(directory)
         plt.savefig(filename, dpi=200)
-        plt.show()
-        return quad_mag_field_colour
 
     @staticmethod
-    def plot_error_between_meas_and_interpolation(mag_map, interpolation_f):
-        """
-        Creates colour map with relative error between interpolation function and measurements from analysis
-        :return: plot instance
-        """
-        x_axis = mag_map[:, 0] - mag_map[:, 0].min()
-        y_axis = mag_map[:, 1] - mag_map[:, 1].min()
-        b_field = mag_map[:, 5]
-        x = x_axis.reshape(20, 20)
-        y = y_axis.reshape(20, 20)
-        z = b_field.reshape(20, 20)
-
-        interpolation_matrix = np.zeros((len(z[:, 0]), len(z[0, :])))
-        for i in range(len(z[:, 0])):
-            for j in range(len(z[0, :])):
-                x_value = x[i, j]
-                y_value = y[i, j]
-                interpolation_matrix[i, j] = interpolation_f.__call__(y_value, x_value)[0]
-        error_matrix = (z - interpolation_matrix)/z*100.0
-        quad_mag_error_colour = plt.contourf(x, y, error_matrix, 20)
-        plt.axis('equal')
-        plt.xlabel("x-direction [mm]")
-        plt.ylabel("y-direction [mm]")
-        filename = "Quadrupole_Magnetic_Field_Interpolation_Error_plot.png"
-        plt.colorbar(label='Relative Error [%]')
-        plt.savefig(filename, dpi=200)
-        plt.show()
-        return quad_mag_error_colour
-
-    @staticmethod
-    def make_winding_pos_map(pos_x_winding, pos_y_winding):
+    def make_winding_pos_map(pos_x_winding, pos_y_winding, directory):
         """
         Plots winding positions in x-y Cartesian coordinate system
         :return: plot instance
@@ -267,9 +234,8 @@ class MagneticFieldMap(MagneticField):
         plot.plot(pos_x, pos_y, 'o', markersize=4, color="b")
         plt.grid(True)
         filename = "Quadrupole_Winding_Map_plot.png"
+        os.chdir(directory)
         plt.savefig(filename, dpi=200)
-        plt.show()
-        return plot
 
     @staticmethod
     def make_winding_pos_x(winding_side, number_turns_in_layer, number_layers):

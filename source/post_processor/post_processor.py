@@ -43,7 +43,7 @@ class PostProcessor(Plots, QuenchDetect):
             directory=self.directory, coil_length=self.geometry.coil_geometry,
             temperature_profile_1d=self.temperature_profile, iteration=self.iteration[0], time_step=time_step)
         plot_name = "Temperature_Profile_" + str(self.iteration[0]) + ".txt"
-        Plots.save_array(directory=self.directory, filename=plot_name, array=self.temperature_profile)
+        Plots.save_array(directory=self.plots.output_directory_temperature, filename=plot_name, array=self.temperature_profile)
         self.quench_temperature_plots.append(temperature_plot)
 
     def check_quench_state(self):

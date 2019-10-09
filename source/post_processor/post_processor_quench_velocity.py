@@ -13,8 +13,9 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
         quench_front_new = self.q_det.detect_quench(self.quench_fronts, temperature_profile,
                                                     magnetic_field_map=self.magnetic_map.im_short_mag_dict)
         for qf in quench_front_new:
-            self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label, factory=self.factory,
-                                  class_geometry=self.geometry)]
+            self.quench_fronts.append(self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label, factory=self.factory,
+                                      class_geometry=self.geometry))
+            self.quench_label += 1
 
     def estimate_coil_resistance(self):
         self.plot_resistive_voltage()
@@ -66,22 +67,6 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
                                     filename="Res_Voltage.txt", mydata=res_voltage_array,
                                     newfile=False)
 
-    def estimate_initial_quench_velocity(self):
-
-        min_coil_length = self.geometry.coil_geometry[0, 1]
-        max_coil_length = self.geometry.coil_geometry[len(self.geometry.coil_geometry) - 1, 1]
-        magnetic_map = self.magnetic_map.im_short_mag_dict
-
-        # calculate quench propagation
-        for qf in self.quench_fronts:
-            qf.return_quench_front_position(
-                initial_time=self.time_step_vector[self.iteration[0]-1],
-                final_time=self.time_step_vector[self.iteration[0]]/2.0,
-                min_length=min_coil_length, max_length=max_coil_length, mag_field_map=magnetic_map)
-
-        # what if quench fronts meet
-        self.quench_fronts = QuenchMerge.quench_merge(self.quench_fronts)
-
     def estimate_quench_velocity(self):
 
         min_coil_length = self.geometry.coil_geometry[0, 1]
@@ -91,8 +76,8 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
         # calculate quench propagation
         for qf in self.quench_fronts:
             qf.return_quench_front_position(
-                initial_time=(self.time_step_vector[self.iteration[0] - 1] - self.time_step_vector[self.iteration[0] - 2]) / 2.0,
-                final_time=self.time_step_vector[self.iteration[0]] - (self.time_step_vector[self.iteration[0]] - self.time_step_vector[self.iteration[0] - 1]) / 2.0,
+                initial_time=self.time_step_vector[self.iteration[0]-1],
+                final_time=self.time_step_vector[self.iteration[0]],
                 min_length=min_coil_length, max_length=max_coil_length, mag_field_map=magnetic_map)
 
         # what if quench fronts meet

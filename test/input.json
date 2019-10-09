@@ -1,22 +1,22 @@
 
 {
 	"analysis_type": {
-			"type": "quench_velocity",
-			"input": {"v_quench_model": "numerical", "numerical_map_filename": "q_v_array.txt"}
+			"type": "heat_balance",
+			"input": {}
 		},
 
 	"analysis_settings": {
 		"quench_init_position": 0.5,
 		"quench_init_length": 0.1,
-		"time_total_simulation": 0.4,
+		"time_total_simulation": 0.1,
 		"time_step_cosimulation": 0.01,
 		"time_step_min_ansys": 1.0,
 		"time_step_max_ansys": 10.0
 	},
 
 	"circuit_settings": {
-		"electric_ansys_elements": true,
-		"electric_ansys_elements_input": {"current_init": 100.0},
+		"electric_ansys_elements": false,
+		"electric_ansys_element_input": {"current_init": 100.0},
 
 		"build_electric_circuit": false,
 		"build_electric_circuit_input": {},
@@ -31,8 +31,8 @@
 	},
 
 	"magnetic_field_settings": {
-		"type": "2D_static",
-		"input": {"magnetic_field_map_plot_output": false, "magnetic_field_map_filename": "static_B_map.txt"}
+		"type": "constant",
+		"input": {"magnetic_field_value": 2.0}
 	},
 
 	"temperature_settings": {
@@ -44,31 +44,24 @@
 		},
 
 	"geometry_settings": {
-		"type": "skew_quadrupole",
+		"type": "slab",
 		"dimensionality": "multiple_1D",
 		"type_input": {
 			"strand_diameter": 0.7,
 			"winding_side": 0.941,
-			"coil_long_side": 413.21,
-			"coil_short_side": 126.81,
-			"coil_initial_radius": 9.15,
-			"number_turns_in_layer": 29,
-			"number_layers": 26,
-			"number_of_windings": 4,
-			"winding_number_first_in_analysis": 233,
-			"winding_number_last_in_first_layer": 234,
-			"number_of_layers_in_analysis": 2,
+			"number_of_windings": 1,
+			"length_per_winding": 1,
+			"number_of_windings_in_layer": 1,
 			"type_insulation_settings": {
-				"insulation_analysis": true,
+				"insulation_analysis": false,
 				"insulation_analysis_input": {
 					"transverse_division_insulation": 2
 				}
-			},
-			"type_mesh_settings": {
-				"division_long_side": 100,
-				"division_short_side": 30,
-				"division_radius": 5
+			}
+		},
+		"type_mesh_settings": {
+			"division_per_winding": 100
 			}
 		}
 	}
-}
+

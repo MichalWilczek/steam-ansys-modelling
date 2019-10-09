@@ -2,7 +2,7 @@
 from source.factory.factory import Factory
 
 # creation of analysis directories
-analysis_directory = "C:\\gitlab\\analysis_test"
+analysis_directory = "C:\\gitlab\\quench_modelling_analyses"
 factory = Factory(analysis_directory)
 
 ######################################################
@@ -91,7 +91,7 @@ for i in range(2, len(solver.time_step_vector)):
 ####################################
     ans.enter_postprocessor()
     postprocessor.get_temperature_profile()    # write down temperature profile
-    postprocessor.estimate_coil_resistance()  # estimate resistance in ansys and python, plot resistance
+    postprocessor.estimate_coil_resistance()   # estimate resistance in ansys and python, plot resistance
     postprocessor.estimate_quench_velocity()
     postprocessor.check_quench_state()         # estimate_quench_velocity, write_down_quench_velocity, plot_quench_state
     postprocessor.plot_quench_state_in_analysis()

@@ -3,8 +3,10 @@ import math
 import numpy as np
 import os
 from source.material_properties.material_properties import Materials
+from source.factory.unit_conversion import UnitConversion
+from source.factory.general_functions import GeneralFunctions
 
-class MaterialsNonLinear(Materials):
+class MaterialsNonLinear(Materials, GeneralFunctions):
 
     def __init__(self, input_data, plot_curves="no", plotting="no"):
         Materials.__init__(self, input_data, plotting)
@@ -26,7 +28,7 @@ class MaterialsNonLinear(Materials):
             t_elem = (t_1+t_2)/2.0
             rho_elem = self.cu_rho_nist(magnetic_field=mag_field, rrr=self.rrr, temperature=t_elem)
             elem_length = abs(im_coil_geom[i, 1] - im_coil_geom[i-1, 1])
-            elem_res = rho_elem*elem_length/self.reduced_wire_area(wire_diameter*0.001)
+            elem_res = rho_elem*elem_length/self.reduced_wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
             qf_resistance += elem_res
         return qf_resistance
 
@@ -38,7 +40,7 @@ class MaterialsNonLinear(Materials):
             t_elem = (t_1+t_2)/2.0
             cp_elem = self.winding_eq_cp(magnetic_field=mag_field, temperature=t_elem)
             elem_length = abs(im_coil_geom[i, 1] - im_coil_geom[i-1, 1])
-            elem_area = self.reduced_wire_area(wire_diameter*0.001)
+            elem_area = self.reduced_wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
             elem_mass = elem_area*elem_length*self.cu_dens
             elem_energy = elem_mass * cp_elem * (t_elem-ref_temperature)
             qf_energy += elem_energy
@@ -435,7 +437,7 @@ class MaterialsNonLinear(Materials):
     def calculate_joule_heating(self, magnetic_field, wire_diameter, current, temperature):
         temp_critic = self.calculate_critical_temperature(magnetic_field)
         temp_cs = self.calculate_temperature_cs(temp_critic, current, magnetic_field)
-        reduced_area = self.reduced_wire_area(wire_diameter)*0.000001
+        reduced_area = self.reduced_wire_area(wire_diameter)*UnitConversion.milimeters2_to_meters2
         ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
         cu_rho = self.cu_rho_nist(magnetic_field, temperature, rrr=self.rrr)
 
@@ -452,7 +454,9 @@ class MaterialsNonLinear(Materials):
         for i in range(len(temperature_profile)):
             heat_gen_array[i, 0] = temperature_profile[i]
             heat_gen_array[i, 1] = self.calculate_joule_heating(magnetic_field, wire_diameter, current, temperature=temperature_profile[i])
-        fig = self.plot_properties(heat_gen_array, "Heat Generation, " + r"\frac{\text{W}}{[text{m}^3}]")
+        GeneralFunctions.save_array(self.output_directory_materials, "heat_generation_profile.txt", heat_gen_array)
+        fig = self.plot_properties(heat_gen_array, "Heat Generation, [W/m^3]")
         filename = "Heat_Generation_Curve_B_{}.png".format(magnetic_field)
+        os.chdir(self.output_directory_materials)
         fig.savefig(filename, dpi=200)
         return heat_gen_array

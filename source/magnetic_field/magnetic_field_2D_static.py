@@ -34,18 +34,17 @@ class MagneticField2DStatic(MagneticFieldMap, WindingRemap):
         return im_short_mag_dict
 
     def plot_magnetic_map_figures(self):
-        if self.input_data.magnetic_field_settings.input.magnetic_field_map_plot_output:
-            self.make_magnetic_contour_plot(self.mag_map)
-            self.make_magnetic_colour_plot(self.mag_map)
-            self.plot_winding_vector_arrangement(x_pos_windings=self.winding_x_pos_list(
-                self.winding_side, self.number_layers), y_pos_windings=
-                self.winding_y_pos_list(self.winding_side, self.number_turns_in_layer))
+        self.make_magnetic_contour_plot(self.mag_map, directory=self.output_directory_magnetic_field)
+        self.make_magnetic_colour_plot(self.mag_map, directory=self.output_directory_magnetic_field)
+        self.plot_winding_vector_arrangement(x_pos_windings=self.winding_x_pos_list(
+            self.winding_side, self.number_layers), y_pos_windings=
+            self.winding_y_pos_list(self.winding_side, self.number_turns_in_layer), directory=self.output_directory_magnetic_field)
 
-            self.make_winding_pos_map(pos_x_winding=self.pos_x_winding, pos_y_winding=self.pos_y_winding)
-            self.plot_interpolated_function(mag_map=self.mag_map, winding_side=self.winding_side,
-                                            number_layers=self.number_layers,
-                                            number_turns_in_layer=self.number_turns_in_layer)
-            self.plot_error_between_meas_and_interpolation(mag_map=self.mag_map, interpolation_f=self.interpolation_f)
+        self.make_winding_pos_map(pos_x_winding=self.pos_x_winding, pos_y_winding=self.pos_y_winding, directory=self.output_directory_magnetic_field)
+        self.plot_interpolated_function(mag_map=self.mag_map, winding_side=self.winding_side,
+                                        number_layers=self.number_layers,
+                                        number_turns_in_layer=self.number_turns_in_layer,
+                                        directory=self.output_directory_magnetic_field)
 
     def assign_magnetic_field_to_windings(self):
         """

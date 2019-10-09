@@ -1,5 +1,6 @@
 
 import os
+from source.factory.general_functions import GeneralFunctions
 from source.factory.analysis_launcher import AnalysisLauncher
 
 import source
@@ -42,7 +43,7 @@ from source.pre_processor.pre_processor_heat_balance import PreProcessorHeatBala
 from source.post_processor.post_processor_heat_balance import PostProcessorHeatBalance
 from source.post_processor.post_processor_quench_velocity import PostProcessorQuenchVelocity
 
-class Factory(AnalysisLauncher):
+class Factory(AnalysisLauncher, GeneralFunctions):
 
     def __init__(self, directory):
         AnalysisLauncher.__init__(self, directory)
@@ -109,14 +110,16 @@ class Factory(AnalysisLauncher):
         Chooses between QuenchFront classes calculating quench velocity in different manners
         :return: Class QuenchFront
         """
-        if self.input_data.analysis_type.input.v_quench_model == "constant":
-            return QuenchFrontConst
-        elif self.input_data.analysis_type.input.v_quench_model == "numerical":
-            return QuenchFrontNum
-        elif self.input_data.analysis_type.input.v_quench_model is None:
-            return QuenchFront
+        quench_model_exists = hasattr(self.input_data.analysis_type.input, "v_quench_model")
+        if quench_model_exists:
+            if self.input_data.analysis_type.input.v_quench_model == "constant":
+                return QuenchFrontConst
+            elif self.input_data.analysis_type.input.v_quench_model == "numerical":
+                return QuenchFrontNum
+            else:
+                raise ValueError("Class QuenchFront does not exist")
         else:
-            raise ValueError("Class QuenchFront does not exist")
+            return QuenchFront
 
     def get_magnetic_map_class(self, factory):
         """

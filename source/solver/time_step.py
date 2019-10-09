@@ -1,5 +1,7 @@
 
-class TimeStep(object):
+from source.factory.general_functions import GeneralFunctions
+
+class TimeStep(GeneralFunctions):
 
     @staticmethod
     def linear_time_stepping(time_step, total_time):
@@ -20,6 +22,7 @@ class TimeStep(object):
             i += time_step
             if i >= total_time:
                 vector.append(total_time)
+        vector = GeneralFunctions.remove_repetitive_values_from_list(vector)
         print(TimeStep.time_step_vector_to_string(vector))
         return vector
 
@@ -32,20 +35,3 @@ class TimeStep(object):
     @staticmethod
     def time_step_vector_to_string(time_step_vector):
         return "The current time step vector is: {}".format(time_step_vector)
-
-    # @staticmethod
-    # def power_input_time_stepping(time_division, total_time, power_input_time=0.01, power_time_step=10.0):
-    #     """
-    #     Returns at time vector with initial time_step for power input
-    #     :return:
-    #     """
-    #     linear_vector = TimeStep.linear_time_stepping(time_division, total_time)
-    #     power_input_time_vector = []
-    #     power_input_time_step = power_input_time/power_time_step
-    #     for i in range(1, int(power_time_step)+1):
-    #         power_input_time_vector.append(i*power_input_time_step)
-    #     for j in range(len(linear_vector)):
-    #         power_input_time_vector.append(power_input_time+linear_vector[j])
-    #     return power_input_time_vector
-
-
