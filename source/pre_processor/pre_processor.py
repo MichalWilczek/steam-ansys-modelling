@@ -1,16 +1,17 @@
 
 class PreProcessor(object):
 
-    def __init__(self, mat_props, ansys_commands, input_data):
+    def __init__(self, mat_props, ansys_commands, factory):
         self.mat_props = mat_props
         self.ansys_commands = ansys_commands
-        self.factory = input_data
+        self.input_data = factory.input_data
+        self.directory = factory.directory
         self.geometry = None
 
     def create_ansys_input_variable_file(self):
-        self.ansys_commands.delete_old_files()
+        self.ansys_commands.delete_old_ansys_analysis_files()
         self.ansys_commands.create_variable_file()
-        self.ansys_commands.input_file(filename='Variable_Input', extension='inp')
+        self.ansys_commands.input_file(filename='Variable_Input', extension='inp', directory=self.directory)
 
     def define_material_properties(self, magnetic_map):
         pass

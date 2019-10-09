@@ -7,9 +7,9 @@ from source.material_properties.material_properties import Materials
 class MaterialsNonLinear(Materials):
 
     def __init__(self, input_data, plot_curves="no", plotting="no"):
-        super().__init__(input_data, plotting)
-        os.chdir(self.factory.material_properties_directory)
-        self.rrr = self.factory.rrr
+        Materials.__init__(self, input_data, plotting)
+        os.chdir(self.output_directory_materials)
+        self.rrr = self.input_data.material_settings.input.rrr
         self.plot_curves = plot_curves
         if self.plot_curves == "yes":
             self.plot_cu_resistivity(rrr=100.0)
@@ -24,17 +24,17 @@ class MaterialsNonLinear(Materials):
             t_1 = im_temp_profile[i-1, 1]
             t_2 = im_temp_profile[i, 1]
             t_elem = (t_1+t_2)/2.0
-            rho_elem = self.cu_rho_nist(magnetic_field=mag_field, rrr=self.factory.rrr, temperature=t_elem)
+            rho_elem = self.cu_rho_nist(magnetic_field=mag_field, rrr=self.rrr, temperature=t_elem)
             elem_length = abs(im_coil_geom[i, 1] - im_coil_geom[i-1, 1])
             elem_res = rho_elem*elem_length/self.reduced_wire_area(wire_diameter*0.001)
             qf_resistance += elem_res
         return qf_resistance
 
-    def calculate_energy(self, n_down, n_up, im_temp_profile, im_coil_geom, mag_field, wire_diameter, ref_temperature):
+    def calculate_energy(self, im_temp_profile, im_coil_geom, mag_field, wire_diameter, ref_temperature):
         qf_energy = 0.0
-        for i in range(int(n_down), int(n_up)):
-            t_1 = im_temp_profile[i-1, 1]
-            t_2 = im_temp_profile[i, 1]
+        for i in range(len(im_temp_profile)-1):
+            t_1 = im_temp_profile[i, 1]
+            t_2 = im_temp_profile[i+1, 1]
             t_elem = (t_1+t_2)/2.0
             cp_elem = self.winding_eq_cp(magnetic_field=mag_field, temperature=t_elem)
             elem_length = abs(im_coil_geom[i, 1] - im_coil_geom[i-1, 1])
@@ -415,7 +415,7 @@ class MaterialsNonLinear(Materials):
         return g10_cp
 
     # here I need to add comments as soon as I finish analyses!!!
-    def calculate_current_in_copper_matrix(self, temperature, magnetic_field, current, init_temperature):
+    def calculate_current_in_copper_matrix(self, temperature, magnetic_field, current):
         temp_critic = self.calculate_critical_temperature(magnetic_field)
         temp_cs = self.calculate_temperature_cs(temp_critic, current, magnetic_field)
         ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
@@ -437,7 +437,7 @@ class MaterialsNonLinear(Materials):
         temp_cs = self.calculate_temperature_cs(temp_critic, current, magnetic_field)
         reduced_area = self.reduced_wire_area(wire_diameter)*0.000001
         ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
-        cu_rho = self.cu_rho_nist(magnetic_field, temperature, rrr=self.factory.rrr)
+        cu_rho = self.cu_rho_nist(magnetic_field, temperature, rrr=self.rrr)
 
         if temperature < temp_cs:
             return 0.0
@@ -456,8 +456,3 @@ class MaterialsNonLinear(Materials):
         filename = "Heat_Generation_Curve_B_{}.png".format(magnetic_field)
         fig.savefig(filename, dpi=200)
         return heat_gen_array
-
-# mat = MaterialsNonLinear(plotting="yes")
-#
-# mat.calculate_strand_thermal_diffusivity(magnetic_field=1.92, rrr=mat.rrr)
-# mat.calculate_g10_thermal_diffusivty()

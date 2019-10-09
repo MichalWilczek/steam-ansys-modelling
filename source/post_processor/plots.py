@@ -8,11 +8,20 @@ import os
 
 class Plots(GeneralFunctions):
 
-    def __init__(self):
+    def __init__(self, factory):
+        self.output_directory = factory.output_directory
+        self.output_directory_quench_state = GeneralFunctions.create_folder_in_directory(
+            self.output_directory, "quench_state_output")
+        self.output_directory_resistive_voltage = GeneralFunctions.create_folder_in_directory(
+            self.output_directory, "resistive_voltage_output")
+        self.output_directory_temperature = GeneralFunctions.create_folder_in_directory(
+            self.output_directory, "temperature_profile_output")
+
         self.voltage_plot_ansys = None
+        self.voltage_fig_ansys = plt.figure()
         self.voltage_plot_python = None
 
-    def plot_resistive_voltage_ansys(self, directory, total_time, voltage, time_step, iteration):
+    def plot_resistive_voltage_ansys(self, total_time, voltage, time_step, iteration):
         """
         Plots resistive voltage as a function of time
         :param voltage: voltage value as float
@@ -20,9 +29,8 @@ class Plots(GeneralFunctions):
         :param iteration: iteration number as integer
         """
         additional_descr = "ansys"
-        os.chdir(directory)
+        os.chdir(self.output_directory_resistive_voltage)
         if iteration == 1:
-            self.voltage_fig_ansys = None
             self.voltage_fig_ansys = plt.figure()
             self.voltage_plot_ansys = self.voltage_fig_ansys.add_subplot(111)
             self.voltage_plot_ansys.set_xlabel('Time [s]')
@@ -37,7 +45,7 @@ class Plots(GeneralFunctions):
         filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
         self.voltage_fig_ansys.savefig(filename)
 
-    def plot_resistive_voltage_python(self, directory, total_time, voltage, time_step, iteration):
+    def plot_resistive_voltage_python(self, total_time, voltage, time_step, iteration):
         """
         Plots resistive voltage as a function of time
         :param voltage: voltage value as float
@@ -45,7 +53,7 @@ class Plots(GeneralFunctions):
         :param iteration: iteration number as integer
         """
         additional_descr = "python"
-        os.chdir(directory)
+        os.chdir(self.output_directory_resistive_voltage)
         if iteration == 1:
             self.voltage_fig_python = None
             self.voltage_fig_python = plt.figure()
@@ -107,11 +115,6 @@ class Plots(GeneralFunctions):
         return fig
 
     @staticmethod
-    def save_array(directory, filename, array):
-        array_filename = directory + "\\" + filename
-        np.savetxt(array_filename, array)
-
-    @staticmethod
     def write_line_in_file(directory, filename, mydata, newfile=True):
         os.chdir(directory)
         if newfile:
@@ -132,73 +135,39 @@ class Plots(GeneralFunctions):
         fig.savefig(filename)
         return filename
 
-    @staticmethod
-    def plot_and_save_quench_state(directory, coil_length, quench_fronts, iteration, time_step):
+    def plot_and_save_quench_state(self, coil_length, quench_fronts, iteration, time_step):
         """
         Plots and saves quench state plot
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
         :param quench_fronts: list of QuenchFront objects
         :param time_step: time step as float
-        :param fig: quench plot as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        os.chdir(directory)
-        fig = Plots.plot_quench_state(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
+        os.chdir(self.output_directory_quench_state)
+        fig = self.plot_quench_state(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
         filename = Plots.save_quench_state_plot(fig=fig, iteration=iteration)
         return filename
 
     @staticmethod
-    def create_gif(plot_array, filename, duration=0.2):
+    def create_gif(directory, plot_array, filename, duration=0.2):
         """
         Creates gif from series of plots
         :param plot_array: list of plots as plt.figure()
         :param filename: filename as string
         :param duration: time of each plot frame as float (optional)
         """
+        os.chdir(directory)
         with imageio.get_writer(filename, duration=duration) as writer:
             for filename in plot_array:
                 image = imageio.imread(filename)
                 writer.append_data(image)
 
     @staticmethod
-    def load_file(directory, npoints, filename='Temperature_Data.txt'):
-        """
-        Loads file as numpy array if its number of rows corresponds to number of nodes in geometry
-        :param directory: analysis directory as string
-        :param npoints: number of nodes in defined geometry
-        :param filename: filename as string, 'Temperature_Data.txt' set as default
-        """
-        temp_distr = None
-        exists = False
-        while exists is False:
-            exists = os.path.isfile(directory+"\\."+filename)
-            if exists and GeneralFunctions.file_length(filename, analysis_directory=directory) == npoints:
-                os.chdir(directory)
-                temp_distr = np.loadtxt(directory+"\\."+filename)
-            else:
-                exists = False
-        return temp_distr
-
-    @staticmethod
-    def delete_file(directory, filename='Temperature_Data'):
-        """
-        Deletes file with temperature profile
-        :param directory: analysis directory as string
-        :param filename: filename as string, 'Temperature_Data' set as default
-        """
-        full_filename = "{}.".format(filename)
-        full_path = "{}\\{}".format(directory, full_filename)
-        if os.path.isfile(full_path):
-            os.remove(full_path)
-        else:
-            print("Error: {} file not found".format(full_filename))
-
-    @staticmethod
     def plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename):
         """
         Plots temperature distribution
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
-        :param directory: analysis directory as string
+        :param directory: analysis output_directory as string
         :param filename: filename as string
         :param time_step: time step as float
         """
@@ -223,23 +192,21 @@ class Plots(GeneralFunctions):
         :param fig: temperature distribution as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        filename = "temperature_distrirbution_{}.png".format(iteration)
+        filename = "temperature_distribution_{}.png".format(iteration)
         fig.savefig(filename)
         return filename
 
-    @staticmethod
-    def plot_and_save_temperature(directory, coil_length, temperature_profile_1d,
+    def plot_and_save_temperature(self, directory, coil_length, temperature_profile_1d,
                                   iteration, time_step, filename="Temperature_Data.txt"):
         """
-        Plots and saves temperature disitribution
+        Plots and saves temperature distribution
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
-        :param directory: analysis directory as string
+        :param directory: analysis output_directory as string
         :param filename: filename as string
         :param time_step: time step as float
-        :param fig: temperature distribution as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        os.chdir(directory)
+        os.chdir(self.output_directory_temperature)
         fig = Plots.plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file

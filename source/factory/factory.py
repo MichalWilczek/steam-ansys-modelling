@@ -19,8 +19,7 @@ from source.post_processor.quench_velocity.quench_velocity import QuenchFront
 from source.post_processor.quench_velocity.quench_velocity_constant import QuenchFrontConst
 from source.post_processor.quench_velocity.quench_velocity_numerical import QuenchFrontNum
 
-from source.magnetic_field.magnetic_field_1D import MagneticField1D
-from source.magnetic_field.magnetic_field_2D import MagneticField2D
+from source.magnetic_field.magnetic_field_constant import MagneticFieldConstant
 from source.magnetic_field.magnetic_field_2D_static import MagneticField2DStatic
 from source.magnetic_field.magnetic_field_2D_transient import MagneticField2DTransient
 
@@ -70,41 +69,44 @@ class Factory(AnalysisLauncher):
         else:
             raise ValueError("Directory does not exist")
 
-    def get_geometry_class(self):
-        if self.input_data.geometry_settings.dimensionality == "1D" or self.input_data.geometry_settings.dimensionality == "multiple_1D":
-            return GeometryMulti1D(input_data=self.input_data, analysis_directory=self.get_ansys_scripts_directory())
+    def get_geometry_class(self, factory):
+        if self.input_data.geometry_settings.dimensionality == "1D" or \
+                self.input_data.geometry_settings.dimensionality == "multiple_1D":
+            return GeometryMulti1D(factory)
         elif self.input_data.geometry_settings.dimensionality == "2D":
-            return Geometry2D(input_data=self.input_data, analysis_directory=self.get_ansys_scripts_directory())
+            return Geometry2D(factory)
         else:
             raise ValueError("Class Geometry does not exist")
 
-    def get_ansys_class(self):
+    def get_ansys_class(self, factory):
         if self.input_data.geometry_settings.dimensionality == "1D":
-            return Ansys1D(input_data=self.input_data, analysis_directory=self.get_ansys_scripts_directory())
-        elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and self.input_data.geometry_settings.type == "skew_quadrupole":
-            return AnsysMultiple1DSkewQuad(input_data=self.input_data, analysis_directory=self.get_ansys_scripts_directory())
-        elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and self.input_data.geometry_settings.type == "slab":
-            return AnsysMultiple1DSlab(input_data=self.input_data, analysis_directory=self.get_ansys_scripts_directory())
+                return Ansys1D(factory, ansys_input_directory=self.get_ansys_scripts_directory())
+        elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
+                self.input_data.geometry_settings.type == "skew_quadrupole":
+            return AnsysMultiple1DSkewQuad(factory, ansys_input_directory=self.get_ansys_scripts_directory())
+        elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
+                self.input_data.geometry_settings.type == "slab":
+            return AnsysMultiple1DSlab(factory, ansys_input_directory=self.get_ansys_scripts_directory())
         elif self.input_data.geometry_settings.dimensionality == "2D":
-            return Ansys2D(input_data=self.input_data, analysis_directory=self.get_ansys_scripts_directory())
+            return Ansys2D(factory, ansys_input_directory=self.get_ansys_scripts_directory())
         else:
             raise ValueError("The specified geometry type and dimensionality do not exist at the same time")
 
-    def get_material_properties_class(self):
+    def get_material_properties_class(self, factory):
         """
         Chooses between linear and nonlinear material properties set in json file
         :return: Class with material properties
         """
         if self.input_data.material_settings.type == "linear":
-            return MaterialsLinear(input_data=self.input_data)
+            return MaterialsLinear(factory)
         elif self.input_data.material_settings.type == "nonlinear":
-            return MaterialsNonLinear(input_data=self.input_data)
+            return MaterialsNonLinear(factory)
         else:
             raise ValueError("Class MaterialProperties does not exist")
 
     def get_quench_velocity_class(self):
         """
-        Chooses between QuenchFront classes calculating qv in different manners
+        Chooses between QuenchFront classes calculating quench velocity in different manners
         :return: Class QuenchFront
         """
         if self.input_data.analysis_type.input.v_quench_model == "constant":
@@ -116,69 +118,70 @@ class Factory(AnalysisLauncher):
         else:
             raise ValueError("Class QuenchFront does not exist")
 
-    def get_magnetic_map_class(self):
+    def get_magnetic_map_class(self, factory):
         """
         Chooses between Classes with constant and non-constant magnetic field map
         :return: Class MagneticField
         """
-        if self.input_data.magnetic_field_settings.type == "1D_constant":
-            return MagneticField1D(input_data=self.input_data)
-        elif self.input_data.magnetic_field_settings.type == "2D_constant":
-            return MagneticField2D(input_data=self.input_data)
+        if self.input_data.magnetic_field_settings.type == "constant":
+            return MagneticFieldConstant(factory)
         elif self.input_data.magnetic_field_settings.type == "2D_static":
-            return MagneticField2DStatic(input_data=self.input_data)
+            return MagneticField2DStatic(factory)
         elif self.input_data.magnetic_field_settings.type == "2D_transient":
-            return MagneticField2DTransient(input_data=self.input_data)
+            return MagneticField2DTransient(factory)
         else:
             raise ValueError("Class MagneticField does not exist")
 
-    def get_solver_type(self, ansys_commands, class_geometry, circuit, ic_temperature_class, mat_props, mag_map):
-        if self.input_data.analysis_type.type == "v_quench_model":
+    def get_solver_type(self, factory, ansys_commands, class_geometry, circuit,
+                        ic_temperature_class, mat_props, mag_map):
+        if self.input_data.analysis_type.type == "quench_velocity":
             return SolverQuenchVelocity(ansys_commands=ansys_commands, class_geometry=class_geometry,
-                                        input_data=self.input_data, circuit=circuit,
+                                        circuit=circuit, factory=factory,
                                         ic_temperature_class=ic_temperature_class, mag_map=mag_map, mat_props=mat_props)
         elif self.input_data.analysis_type.type == "heat_balance":
             return SolverHeatBalance(ansys_commands=ansys_commands, class_geometry=class_geometry,
-                                     input_data=self.input_data, circuit=circuit,
+                                     factory=factory, circuit=circuit,
                                      ic_temperature_class=ic_temperature_class, mag_map=mag_map, mat_props=mat_props)
         else:
             raise ValueError("Class Solver does not exist")
 
-    def get_circuit_class(self, ansys_commands, class_geometry):
-        if not Factory.electric_ansys_elements:
-            return CircuitThermalAnalysisNoCircuit(ansys_commands, class_geometry, input_data=self.input_data)
+    def get_circuit_class(self, factory, ansys_commands, class_geometry):
+        if not self.input_data.circuit_settings.electric_ansys_elements:
+            return CircuitThermalAnalysisNoCircuit(ansys_commands, class_geometry, factory)
         else:
-            if not Factory.build_electric_circuit:
-                return CircuitElectricAnalysisNoCircuit(ansys_commands, class_geometry, input_data=self.input_data)
+            if not self.input_data.circuit_settings.build_electric_circuit:
+                return CircuitElectricAnalysisNoCircuit(ansys_commands, class_geometry, factory)
             else:
-                if not Factory.transient_electric_analysis:
-                    return CircuitElectricAnalysisWithCircuitStatic(ansys_commands, class_geometry, input_data=self.input_data)
+                if not self.input_data.circuit_settings.transient_electric_analysis:
+                    return CircuitElectricAnalysisWithCircuitStatic(ansys_commands, class_geometry, factory)
                 else:
-                    return CircuitElectricAnalysisWithCircuitTransient(ansys_commands, class_geometry, input_data=self.input_data)
+                    return CircuitElectricAnalysisWithCircuitTransient(ansys_commands, class_geometry, factory)
 
-    def get_initial_temperature_class(self, ansys_commands, class_geometry, mat_props):
-        if self.input_data.temperature_init_distribution.type == "gaussian_distribution":
-            return InitialTemperatureGaussian(ansys_commands, class_geometry, input_data=self.input_data, mat_props=mat_props)
-        elif self.input_data.temperature_init_distribution.type == "uniform":
-            return InitialTemperatureUniform(ansys_commands, class_geometry, input_data=self.input_data, mat_props=mat_props)
-        elif self.input_data.temperature_init_distribution.type == "power_input":
-            return InitialTemperaturePowerInput(ansys_commands, class_geometry, input_data=self.input_data, mat_props=mat_props)
-        elif self.input_data.temperature_init_distribution.type == "temperature_function":
-            return InitialTemperatureFunction(ansys_commands, class_geometry, input_data=self.input_data, mat_props=mat_props)
+    def get_initial_temperature_class(self, factory, ansys_commands, class_geometry, mat_props):
+        if self.input_data.temperature_settings.type == "gaussian":
+            return InitialTemperatureGaussian(ansys_commands, class_geometry, factory=factory, mat_props=mat_props)
+        elif self.input_data.temperature_settings.type == "uniform":
+            return InitialTemperatureUniform(ansys_commands, class_geometry, factory=factory, mat_props=mat_props)
+        elif self.input_data.temperature_settings.type == "power_input":
+            return InitialTemperaturePowerInput(ansys_commands, class_geometry, factory=factory, mat_props=mat_props)
+        elif self.input_data.temperature_settings.type == "temperature_function":
+            return InitialTemperatureFunction(ansys_commands, class_geometry, factory=factory, mat_props=mat_props)
         else:
             raise ValueError("The initial temperature distribution - is not well-defined. "
                              "\n Please check the user input file carefully.")
 
-    def get_preprocessor_class(self, mat_props, ansys_commands):
-        if self.input_data.analysis_type.type == "v_quench_model":
-            return PreProcessorQuenchVelocity(mat_props, ansys_commands, self.input_data)
+    def get_preprocessor_class(self, factory, mat_props, ansys_commands):
+        if self.input_data.analysis_type.type == "quench_velocity":
+            return PreProcessorQuenchVelocity(mat_props, ansys_commands, factory)
         elif self.input_data.analysis_type.type == "heat_balance":
-            return PreProcessorHeatBalance(mat_props, ansys_commands, self.input_data)
+            return PreProcessorHeatBalance(mat_props, ansys_commands, factory)
+        else:
+            raise ValueError("Please, type 'quench_velocity' or 'heat_balance' in analysis type.")
 
-    def get_postprocessor_class(self, class_geometry, ansys_commands, v_quench, solver):
-        if self.input_data.analysis_type.type == "v_quench_model":
-            return PostProcessorQuenchVelocity(class_geometry, ansys_commands, v_quench, solver, input_data=self.input_data)
+    def get_postprocessor_class(self, factory, class_geometry, ansys_commands, v_quench, solver):
+        if self.input_data.analysis_type.type == "quench_velocity":
+            return PostProcessorQuenchVelocity(class_geometry, ansys_commands, v_quench, solver, factory)
         elif self.input_data.analysis_type.type == "heat_balance":
-            return PostProcessorHeatBalance(class_geometry, ansys_commands, v_quench, solver, input_data=self.input_data)
+            return PostProcessorHeatBalance(class_geometry, ansys_commands, v_quench, solver, factory)
         else:
             raise ValueError("Class PostProcessor was not properly defined - change the name of 'analysis type'")

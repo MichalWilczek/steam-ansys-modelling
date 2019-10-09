@@ -2,24 +2,24 @@
 from source.magnetic_field.magnetic_field_map import MagneticFieldMap
 from source.magnetic_field.winding_remap import WindingRemap
 
-
 class MagneticField2DStatic(MagneticFieldMap, WindingRemap):
 
-    FILENAME = "steady_state_B_map.txt"
-    DIRECTORY = "C:\\gitlab\\steam-ansys-modelling\\quadrupole_experimental_results\\field_data"
+    def __init__(self, factory):
+        MagneticFieldMap.__init__(self, factory)
+        WindingRemap.__init__(self, factory)
+        self.magnetic_field_map_filename = self.input_data.magnetic_field_settings.input.magnetic_field_map_filename
+        self.winding_side = self.input_data.geometry_settings.type_input.winding_side
+        self.number_turns_in_layer = self.input_data.geometry_settings.type_input.number_turns_in_layer
+        self.number_layers = self.input_data.geometry_settings.type_input.number_layers
 
-    def __init__(self, input_data):
-        WindingRemap.__init__(self, input_data=input_data)
-        self.factory = input_data
-
-        self.mag_map = self.load_magnetic_field_map(directory=MagneticField2DStatic.DIRECTORY,
-                                                    filename=MagneticField2DStatic.FILENAME)
-        self.pos_x_winding = self.make_winding_pos_x(winding_side=self.factory.WINDING_SIDE,
-                                                     number_turns_in_layer=self.factory.NUMBER_TURNS_IN_LAYER,
-                                                     number_layers=self.factory.NUMBER_LAYERS)
-        self.pos_y_winding = self.make_winding_pos_y(winding_side=self.factory.WINDING_SIDE,
-                                                     number_turns_in_layer=self.factory.NUMBER_TURNS_IN_LAYER,
-                                                     number_layers=self.factory.NUMBER_LAYERS)
+        self.mag_map = self.load_magnetic_field_map(directory=self.input_directory,
+                                                    filename=self.magnetic_field_map_filename)
+        self.pos_x_winding = self.make_winding_pos_x(winding_side=self.winding_side,
+                                                     number_turns_in_layer=self.number_turns_in_layer,
+                                                     number_layers=self.number_layers)
+        self.pos_y_winding = self.make_winding_pos_y(winding_side=self.winding_side,
+                                                     number_turns_in_layer=self.number_turns_in_layer,
+                                                     number_layers=self.number_layers)
         self.interpolation_f = self.create_interpolation_f_magnetic_field(self.mag_map)
 
         self.mag_dict = self.assign_magnetic_field_to_windings()
@@ -34,16 +34,17 @@ class MagneticField2DStatic(MagneticFieldMap, WindingRemap):
         return im_short_mag_dict
 
     def plot_magnetic_map_figures(self):
-        if self.factory.magnetic_field_map_plot:
+        if self.input_data.magnetic_field_settings.input.magnetic_field_map_plot_output:
             self.make_magnetic_contour_plot(self.mag_map)
             self.make_magnetic_colour_plot(self.mag_map)
             self.plot_winding_vector_arrangement(x_pos_windings=self.winding_x_pos_list(
-                self.factory.WINDING_SIDE, self.factory.NUMBER_LAYERS), y_pos_windings=
-                self.winding_y_pos_list(self.factory.WINDING_SIDE, self.factory.NUMBER_TURNS_IN_LAYER))
+                self.winding_side, self.number_layers), y_pos_windings=
+                self.winding_y_pos_list(self.winding_side, self.number_turns_in_layer))
+
             self.make_winding_pos_map(pos_x_winding=self.pos_x_winding, pos_y_winding=self.pos_y_winding)
-            self.plot_interpolated_function(mag_map=self.mag_map, winding_side=self.factory.WINDING_SIDE,
-                                            number_layers=self.factory.NUMBER_LAYERS,
-                                            number_turns_in_layer=self.factory.NUMBER_TURNS_IN_LAYER)
+            self.plot_interpolated_function(mag_map=self.mag_map, winding_side=self.winding_side,
+                                            number_layers=self.number_layers,
+                                            number_turns_in_layer=self.number_turns_in_layer)
             self.plot_error_between_meas_and_interpolation(mag_map=self.mag_map, interpolation_f=self.interpolation_f)
 
     def assign_magnetic_field_to_windings(self):

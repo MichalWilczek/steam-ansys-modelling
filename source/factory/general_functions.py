@@ -1,5 +1,6 @@
 
 import os
+import numpy as np
 
 class GeneralFunctions(object):
 
@@ -28,6 +29,15 @@ class GeneralFunctions(object):
         return flat_list
 
     @staticmethod
+    def remove_repetitive_values_from_list(mylist):
+        """
+        Removes repetitve values from list
+        :param mylist: list
+        :return: list without repetitions
+        """
+        return list(dict.fromkeys(mylist))
+
+    @staticmethod
     def change_boolean_into_integer(boolean):
         """
         Changes boolean Python values to APDL language
@@ -52,4 +62,92 @@ class GeneralFunctions(object):
         except ValueError:
             return False
 
+    @staticmethod
+    def delete_file(filename, directory):
+        """
+        Deletes file in output_directory
+        :param directory: analysis output_directory as string
+        :param filename: filename to delete as string
+        """
+        path = os.path.join(directory, filename)
+        if os.path.isfile(path):
+            os.remove(path)
+        else:
+            print("Error: {} file not found".format(path))
+
+    @staticmethod
+    def make_python_wait_until_ansys_finishes(filename, directory, file_length=1):
+        """
+        Makes Python wait until process in ANSYS is finished
+        :param directory:
+        :param filename: filename as string given by ANSYS when it finishes processing
+        :param file_length: number of rows in filename as integer
+        """
+        exists = False
+        path = os.path.join(directory, filename)
+        while exists is False:
+            exists = os.path.isfile(path)
+            if exists and GeneralFunctions.file_length(filename, analysis_directory=directory) == file_length:
+                os.chdir(directory)
+                with open('Process_Finished.txt', 'r') as f:
+                    file_input = int(float(f.read()))
+                if file_input == 1:
+                    f.close()
+                    break
+                else:
+                    exists = False
+            else:
+                exists = False
+
+    @staticmethod
+    def calculate_average_from_list(float_objects_in_list):
+        """
+        Returns the average of values given in the list
+        :param float_objects_in_list: list of float values
+        :return: average of input values
+        """
+        return sum(float_objects_in_list) / len(float_objects_in_list)
+
+    @staticmethod
+    def save_array(directory, filename, array):
+        """
+        Saves array as txt file
+        :param directory: output_directory to save file as string
+        :param filename: filename to be created as string
+        :param array: array to be saved
+        """
+        array_filename = directory + "\\" + filename
+        np.savetxt(array_filename, array)
+
+    @staticmethod
+    def load_file(directory, npoints, filename):
+        """
+        Loads file as numpy array if its number of rows corresponds to number of nodes in geometry
+        :param directory: analysis output_directory as string
+        :param npoints: number of nodes in defined geometry
+        :param filename: filename as string, 'Temperature_Data.txt' set as default
+        """
+        loaded_file = None
+        exists = False
+        path = os.path.join(directory, filename)
+        while exists is False:
+            exists = os.path.isfile(path)
+            if exists and GeneralFunctions.file_length(filename, analysis_directory=directory) == npoints:
+                os.chdir(directory)
+                loaded_file = np.loadtxt(path)
+            else:
+                exists = False
+        return loaded_file
+
+    @staticmethod
+    def create_folder_in_directory(directory, foldername):
+        """
+        Creates a folder in the specified output_directory
+        :param directory: output_directory as string
+        :param foldername: folder to be created as string
+        :return: final output_directory as string
+        """
+        os.chdir(directory)
+        os.mkdir(foldername)
+        return os.path.join(directory, foldername)
 

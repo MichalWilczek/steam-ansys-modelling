@@ -1,10 +1,10 @@
 
 class Circuit(object):
 
-    def __init__(self, ansys_commands, class_geometry, input_data):
+    def __init__(self, ansys_commands, class_geometry, factory):
         self.ansys_commands = ansys_commands
         self.geometry = class_geometry
-        self.factory = input_data
+        self.input_data = factory.input_data
 
     def set_circuit_bcs_in_analysis(self):
         pass
@@ -18,7 +18,7 @@ class Circuit(object):
             self.ansys_commands.couple_nodes(dof="volt")
 
     def return_current_in_time_step(self):
-        return self.factory.current_init
+        return self.input_data.circuit_settings.electric_ansys_element_input.current_init
 
 
 

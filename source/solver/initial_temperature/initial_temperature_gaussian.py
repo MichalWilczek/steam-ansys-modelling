@@ -5,24 +5,27 @@ import math
 
 class InitialTemperatureGaussian(InitialTemperature):
 
-    def __init__(self, ansys_commands, class_geometry, input_data, mat_props):
-        InitialTemperature.__init__(self, ansys_commands, class_geometry, input_data, mat_props)
+    def __init__(self, ansys_commands, class_geometry, mat_props, factory):
+        InitialTemperature.__init__(self, ansys_commands, class_geometry, mat_props, factory)
         self.initial_temperature_profile = None
 
     def create_ic_temperature_profile(self):
-        self.initial_temperature_profile = self.geometry.define_gaussian_temperature_distribution_array(
-            self.geometry.coil_geometry, magnetic_field=self.factory.magnetic_field_initially_quenched_winding)
+        self.initial_temperature_profile = self.define_gaussian_temperature_distribution_array(
+            self.geometry.coil_geometry,
+            magnetic_field=self.input_data.temperature_settings.input.magnetic_field_initially_quenched_winding)
         return self.initial_temperature_profile
 
     def set_initial_temperature(self):
-        self.ansys_commands.set_initial_temperature(temperature=self.factory.temperature_init)
+        self.ansys_commands.set_initial_temperature(
+            temperature=self.input_data.temperature_settings.input.temperature_init)
         gaussian_array = InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(
-            self.initial_temperature_profile, ambient_temperature=self.factory.temperature_init)
+            self.initial_temperature_profile,
+            ambient_temperature=self.input_data.temperature_settings.input.temperature_init)
         self.ansys_commands.set_gaussian_initial_temperature_distribution(gaussian_array)
 
         self.calculate_energy_initially_deposited_inside_the_coil(
-            node_down=gaussian_array[0, 0], node_up=gaussian_array[len(gaussian_array)-1, 0],
-            magnetic_field_value=self.factory.constant_magnetic_field_value, temperature_init_distr=gaussian_array)
+            magnetic_field_value=self.input_data.temperature_settings.input.magnetic_field_initially_quenched_winding,
+            temperature_init_distr=gaussian_array)
 
     @staticmethod
     def refine_gaussian_array_input_above_t_critical(gaussian_distribution_array, ambient_temperature):
@@ -36,9 +39,9 @@ class InitialTemperatureGaussian(InitialTemperature):
         :return: coefficient as float
         """
         temp_quench = self.material_properties.calculate_critical_temperature(magnetic_field=magnetic_field)
-        temp_peak = self.factory.temperature_max_init_quenched_zone
-        temp_operating = self.factory.temperature_init
-        directional_quench_init_length = self.factory.quench_init_length/2.0
+        temp_peak = self.input_data.temperature_settings.input.temperature_max_init_quenched_zone
+        temp_operating = self.input_data.temperature_settings.input.temperature_init
+        directional_quench_init_length = self.input_data.analysis_settings.quench_init_length / 2.0
 
         log_n = math.log((temp_quench-temp_operating)/(temp_peak-temp_operating), math.e)
         denominator = math.sqrt(-log_n)**0.5
@@ -54,9 +57,9 @@ class InitialTemperatureGaussian(InitialTemperature):
         """
 
         alpha = self.calculate_alpha(magnetic_field)
-        temp_peak = self.factory.temperature_max_init_quenched_zone
-        temp_operating = self.factory.temperature_init
-        quench_init_pos = self.factory.quench_init_position
+        temp_peak = self.input_data.temperature_settings.input.temperature_max_init_quenched_zone
+        temp_operating = self.input_data.temperature_settings.input.temperature_init
+        quench_init_pos = self.input_data.analysis_settings.quench_init_position
         node_temp = temp_operating + (temp_peak-temp_operating)*math.e**(-((position-quench_init_pos)/alpha)**2.0)
         return node_temp
 
@@ -71,6 +74,6 @@ class InitialTemperatureGaussian(InitialTemperature):
             temp = self.calculate_node_gaussian_temperature(position=position, magnetic_field=magnetic_field)
             gaussian_distribution_array[i, 0] = imaginary_1d_geometry[i, 0]
             gaussian_distribution_array[i, 1] = temp
-        self.plot_and_save_temperature(self.directory, self.geometry.coil_geometry, self.initial_temperature_profile,
+        self.plots.plot_and_save_temperature(self.output_directory, self.geometry.coil_geometry, gaussian_distribution_array,
                                        iteration=0, time_step=0.0)
         return gaussian_distribution_array

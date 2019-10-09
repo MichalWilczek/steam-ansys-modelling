@@ -38,7 +38,7 @@ class PostProcessorHeatBalance(PostProcessor):
                                     newfile=False)
         for qf in quench_front_new:
             self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label,
-                                          coil_geometry=self.geometry.coil_geometry, coil_data=self.geometry.coil_data)]
+                                          class_geometry=self.geometry)]
 
     def estimate_coil_resistance(self):
         self.plot_resistive_voltage(self.calculate_coil_resistance())
@@ -61,7 +61,7 @@ class PostProcessorHeatBalance(PostProcessor):
                 mag_field = self.magnetic_map.im_short_mag_dict["winding" + str(winding_number)]
                 n_down = quench_dict["winding" + str(winding_number)][0]
                 n_up = quench_dict["winding" + str(winding_number)][1]
-                qf_resistance = self.material_properties.calculate_qf_resistance(
+                qf_resistance = self.mat_props.calculate_qf_resistance(
                     qf_down=n_down, qf_up=n_up, im_temp_profile=self.temperature_profile,
                     im_coil_geom=self.geometry.coil_geometry, mag_field=mag_field,
                     wire_diameter=self.factory.STRAND_DIAMETER)
@@ -71,17 +71,20 @@ class PostProcessorHeatBalance(PostProcessor):
     def plot_resistive_voltage(self, coil_resistance):
         time_step = [self.time_step_vector[self.iteration[0]]][0]
         res_voltage = self.circuit.return_current_in_time_step() * coil_resistance
-        self.plot_resistive_voltage_python(voltage=res_voltage, directory=self.directory,
+        self.plot_resistive_voltage_python(voltage=res_voltage,
                                            total_time=self.factory.time_total_simulation, time_step=time_step,
                                            iteration=self.iteration[0])
         res_voltage_array = np.zeros((1, 2))
         res_voltage_array[0, 0] = self.t[0]
         res_voltage_array[0, 1] = res_voltage
         if self.iteration[0] == 1:
-            self.write_line_in_file(directory=self.directory, filename="Res_Voltage.txt", mydata=res_voltage_array)
+            self.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
+                                    filename="Res_Voltage.txt", mydata=res_voltage_array)
         else:
-            self.write_line_in_file(directory=self.directory, filename="Res_Voltage.txt", mydata=res_voltage_array,
+            self.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
+                                    filename="Res_Voltage.txt", mydata=res_voltage_array,
                                     newfile=False)
 
     def make_gif(self):
-        self.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif')
+        self.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif',
+                        directory=self.plots.output_directory_temperature)

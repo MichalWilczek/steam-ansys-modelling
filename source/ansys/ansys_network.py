@@ -1,8 +1,12 @@
 
 import math
 from source.ansys.ansys import Ansys
+from source.factory.unit_conversion import UnitConversion
 
-class AnsysNetwork(Ansys):
+class AnsysNetwork(Ansys, UnitConversion):
+
+    def __init__(self, factory, ansys_input_directory):
+        Ansys.__init__(self, factory, ansys_input_directory)
 
     def input_winding_non_quenched_material_properties(self, magnetic_field_map, class_mat, element_name="link68"):
         """
@@ -10,17 +14,14 @@ class AnsysNetwork(Ansys):
         :param magnetic_field_map: dictionary; key: winding+%number%, value: magnetic value as float
         :param element_name: ansys 1D element name to be input
         """
+        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
+        
         self.enter_preprocessor()
         for i in range(len(magnetic_field_map.keys())):
             magnetic_field = magnetic_field_map["winding"+str(i+1)]
-            equivalent_winding_area = class_mat.reduced_wire_area(self.factory.STRAND_DIAMETER * 0.001)
-            if element_name == "fluid116":
-                self.define_element_type_with_keyopt(element_number=i + 1, element_name=element_name, keyopt=1)
-                equivalent_winding_diameter = class_mat.reduced_wire_diameter(wire_diameter=self.factory.STRAND_DIAMETER * 0.001)
-                self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_diameter)
-            elif element_name == "link33" or element_name == "link68":
-                self.define_element_type(element_number=i + 1, element_name=element_name)
-                self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
+            equivalent_winding_area = class_mat.reduced_wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
+            self.define_element_type(element_number=i + 1, element_name=element_name)
+            self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
             self.define_element_density(element_number=i+1, value=class_mat.cu_dens)
             cu_rho = 1.0e-16
             cu_therm_cond = class_mat.calculate_cu_thermal_cond(magnetic_field=magnetic_field, rrr=class_mat.rrr)
@@ -34,11 +35,14 @@ class AnsysNetwork(Ansys):
                     self.define_element_resistivity(element_number=i + 1, value=cu_rho)
 
     def input_hot_spot_insulation_material_properties(self, class_mat, number_of_initially_quenched_windings=1):
-        self.enter_preprocessor()
-        element_number = 2 * self.factory.number_of_windings + 3
+        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
+        number_of_windings = self.input_data.geometry_settings.type_input.number_of_windings
+        winding_side = self.input_data.geometry_settings.type_input.winding_side
+
+        element_number = 2 * number_of_windings + 3
         self.define_element_type(element_number=element_number, element_name="link33")
 
-        eff_side = (self.factory.WINDING_SIDE + math.pi * self.factory.STRAND_DIAMETER / 4.0) / 2.0
+        eff_side = (winding_side + math.pi * strand_diameter / 4.0) / 2.0
         hot_spot_length = 0.002  # m
         eff_area = (eff_side*0.001) * hot_spot_length * float(number_of_initially_quenched_windings)
 
@@ -60,11 +64,13 @@ class AnsysNetwork(Ansys):
         :param magnetic_field_map: dictionary; key: winding+%number%, value: magnetic value as float
         :param element_name: ansys 1D element name to be input
         """
-        self.enter_preprocessor()
+        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
+        number_of_windings = self.input_data.geometry_settings.type_input.number_of_windings
+
         magnetic_field = magnetic_field_map["winding"+str(winding_number)]
-        element_number = self.factory.number_of_windings + winding_number
+        element_number = number_of_windings + winding_number
         self.define_element_type(element_number=element_number, element_name=element_name)
-        equivalent_winding_area = class_mat.reduced_wire_area(self.factory.STRAND_DIAMETER * 0.001)
+        equivalent_winding_area = class_mat.reduced_wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
         self.define_element_constant(element_number=element_number, element_constant=equivalent_winding_area)  # need to calculate the area
         self.define_element_density(element_number=element_number, value=class_mat.cu_dens)
         cu_rho = class_mat.calculate_cu_rho(magnetic_field=magnetic_field, rrr=class_mat.rrr)
@@ -78,10 +84,14 @@ class AnsysNetwork(Ansys):
                 self.define_element_resistivity(element_number=element_number, value=cu_rho[j, 1])
 
     def calculate_insulation_length(self):
-        l_eq = 0.5*(self.factory.WINDING_SIDE**2.0-0.25*math.pi*0.7**2.0)/(self.factory.WINDING_SIDE+math.pi*self.factory.STRAND_DIAMETER/4.0)*0.001
-        return l_eq*2.0
+        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
+        winding_side = self.input_data.geometry_settings.type_input.winding_side
+
+        numerator = 0.5*(winding_side**2.0-0.25*math.pi*strand_diameter**2.0)
+        denominator = (winding_side+math.pi*strand_diameter/4.0)
+        return 2*0.001 * numerator/denominator
 
     def get_temperature_profile(self, class_geometry, npoints):
         temperature_profile_1d = class_geometry.load_temperature_and_map_onto_1d_cable(
-            directory=self.analysis_directory, npoints=npoints)
+            directory=self.directory, npoints=npoints)
         return temperature_profile_1d

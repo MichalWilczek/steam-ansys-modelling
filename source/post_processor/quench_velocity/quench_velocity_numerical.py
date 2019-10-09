@@ -5,20 +5,17 @@ import numpy as np
 import scipy.integrate
 
 
-class QuenchFrontNum(QuenchFront):
+class QuenchFrontNum(QuenchFront, QuenchVelocityMap):
 
-    def __init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=False):
+    def __init__(self, x_down, x_up, label, class_geometry, factory, testunit=False):
+        self.factory = factory
         self.testunit = testunit
-        QuenchFront.__init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=self.testunit)
-        if testunit:
-            pass
-        else:
-            qv_map = QuenchVelocityMap()
-            self.f_q_v = qv_map.f_interpolation
-
+        self.class_geometry = class_geometry
+        QuenchFront.__init__(self, x_down, x_up, label, class_geometry, testunit=self.testunit)
+        if not testunit:
+            QuenchVelocityMap.__init__(self, factory)
             self.quench_velocity_up = None
             self.quench_velocity_down = None
-
             self.q_length_up = None
             self.q_length_down = None
 
@@ -30,7 +27,7 @@ class QuenchFrontNum(QuenchFront):
         x_down_new = min(self.x_down, qf.x_down)
         x_up_new = max(self.x_up, qf.x_up)
         return QuenchFrontNum(x_down_new, x_up_new, str(self.label) + "_" + str(qf.label),
-                              self.coil_geometry, self.coil_data, testunit=testunit)
+                              self.class_geometry, testunit=testunit, factory=self.factory)
 
     def q_v_to_string(self):
         return "QUENCH FRONT NO {}; instantaneous quench_velocity [m/s]: up = {}, down = {}\n".format(
@@ -90,7 +87,7 @@ class QuenchFrontNum(QuenchFront):
         time_vector = np.linspace(initial_time, final_time, f_division)
         q_v_vector = []
         for i in range(len(time_vector)):
-            q_v_vector.append(self.f_q_v(time_vector[i], mag_field)[0][0])
+            q_v_vector.append(self.f_interpolation(time_vector[i], mag_field)[0][0])
         if side == "up":
             self.quench_velocity_up = q_v_vector[-1]
         elif side == "down":

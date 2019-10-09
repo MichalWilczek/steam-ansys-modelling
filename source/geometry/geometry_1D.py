@@ -4,8 +4,8 @@ from source.geometry.geometry import Geometry
 
 class Geometry1D(Geometry):
 
-    def __init__(self, input_data, analysis_directory):
-        Geometry.__init__(self, input_data, analysis_directory)
+    def __init__(self, factory):
+        Geometry.__init__(self, factory)
         self.coil_geometry = self.create_1d_coil_geometry()
         print("Geometry uploaded... \n________________")
 
@@ -15,7 +15,7 @@ class Geometry1D(Geometry):
         Returns array with length of coil at each node starting from the 1st node
         :param division: number of elements as integer
         :param filename: filename as string
-        :param directory: analysis directory as string
+        :param output_directory: analysis output_directory as string
         """
         division = self.factory.get_division_in_full_coil()
         filename = self.factory.filename_nodal_position()

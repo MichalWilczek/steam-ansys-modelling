@@ -1,23 +1,19 @@
 
 import numpy as np
-from source.material_properties.material_properties import Materials
 
 
-class QuenchDetect(Materials):
+class QuenchDetect(object):
 
-    def __init__(self, class_geometry, input_data, npoints, directory=None, testunit=False):
+    def __init__(self, class_geometry, npoints, mat_props, testunit=False):
         """
         :param coil_length:
         :param directory: analysis_directory as string
         :param npoints: number of nodes in geometry as integer
         """
-        Materials.__init__(self, input_data)
-        self.factory = input_data
-
         self.testunit = testunit
+        self.mat_props = mat_props
         self.geo = class_geometry
         self.coil_length = self.geo.coil_geometry
-
         self.npoints = npoints
 
     def detect_quench(self, input_quench_front_vector, temperature_profile, magnetic_field_map):
@@ -113,7 +109,7 @@ class QuenchDetect(Materials):
             for key in item:
                 array = item[key]
                 mag_field = magnetic_map_dict[key]
-                critic_temp = self.calculate_critical_temperature(magnetic_field=mag_field)
+                critic_temp = self.mat_props.calculate_critical_temperature(magnetic_field=mag_field)
                 temporary_quenched_nodes = array[np.where(array[:, 1] >= critic_temp)]
                 if len(temporary_quenched_nodes) != 0:
                     quenched_nodes.append(temporary_quenched_nodes)

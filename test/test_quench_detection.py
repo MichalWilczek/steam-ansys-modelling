@@ -18,7 +18,7 @@ class VirtualGeometry(object):
         Returns array with length of coil at each node starting from the 1st node
         :param division: number of elements as integer
         :param filename: filename as string
-        :param directory: analysis directory as string
+        :param directory: analysis output_directory as string
         """
         os.chdir(directory)
         npoints = division + 1

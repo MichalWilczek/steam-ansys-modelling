@@ -1,38 +1,20 @@
 
 import os
 import numpy as np
+from source.factory.general_functions import GeneralFunctions
 
-class Geometry(object):
+class Geometry(GeneralFunctions):
 
-    def __init__(self, input_data, analysis_directory):
-        self.factory = input_data
-        self.directory = analysis_directory
+    def __init__(self, factory):
+        self.input_data = factory.input_data
+        self.directory = factory.directory
+        self.output_directory = factory.output_directory
+        self.output_directory_geometry = GeneralFunctions.create_folder_in_directory(self.output_directory,
+                                                                                     "geometry_output")
 
     @staticmethod
     def number_of_im_nodes_per_winding(dict_im_nodes):
         return len(dict_im_nodes["winding1"])
-
-    @staticmethod
-    def make_one_list_from_list_of_lists(list_of_lists):
-        """
-        Creates one single list out of lists of lists
-        :param list_of_lists: list of lists
-        :return: one list
-        """
-        flat_list = []
-        for list in list_of_lists:
-            for item in list:
-                flat_list.append(item)
-        return flat_list
-
-    @staticmethod
-    def remove_repetitive_values_from_list(mylist):
-        """
-        Removes repetitve values from list
-        :param mylist: list
-        :return: list without repetitions
-        """
-        return list(dict.fromkeys(mylist))
 
     @staticmethod
     def retrieve_quenched_winding_numbers_from_quench_fronts(coil_data, x_down_node, x_up_node):
@@ -63,9 +45,9 @@ class Geometry(object):
 
     # functions for objects creation inside of Class
     @staticmethod
-    def search_files_names_in_directory(directory):
+    def make_list_of_filenames_in_directory(directory):
         """
-        :param directory: full analysis directory as string
+        :param directory: full analysis output_directory as string
         :return: list of file names as strings
         """
         list_files = os.listdir(directory)
@@ -88,7 +70,7 @@ class Geometry(object):
         """
         Assigns a node number matrix (n x m in which n-plane number and m-node numbers in each winding)to each winding
         :param winding_files: list of files with windings' nodes numbers as integers
-        :param directory: full analysis directory as string
+        :param directory: full analysis output_directory as string
         :return: dictionary which assigns nodes to each winding
         """
         os.chdir(directory)
@@ -104,22 +86,13 @@ class Geometry(object):
     def load_file_with_winding_nodes_position(directory, filename):
         """
         Loads the files with x,y,z position of each node in Cartesian coordinate system
-        :param directory: full analysis directory as string
+        :param directory: full analysis output_directory as string
         :param filename: filename with nodes positions as string
         :return: numpy array with 4 columns; 1-node number as float, 2-position x, 3-position y, 4- position z
         """
         os.chdir(directory)
         position_array = np.loadtxt(filename, dtype=float)
         return position_array
-
-    @staticmethod
-    def calculate_average(float_objects_in_list):
-        """
-        Returns the average of values given in the list
-        :param float_objects_in_list: list of float values
-        :return: average of input values
-        """
-        return sum(float_objects_in_list) / len(float_objects_in_list)
 
     @staticmethod
     def calculate_coil_length_data(windings_lengths, number_of_windings):
@@ -172,7 +145,7 @@ class Geometry(object):
         return coil_data
 
     @staticmethod
-    def unique_rows(array):
+    def delete_repetitive_rows(array):
         """
         Deletes repetitive rows with respect to one column
         :param array: numpy array
@@ -182,7 +155,8 @@ class Geometry(object):
         unique_a = np.unique(array.view([('', array.dtype)] * array.shape[1]))
         return unique_a.view(array.dtype).reshape((unique_a.shape[0], array.shape[1]))
 
-    def retrieve_1d_imaginary_coil(self, coil_data):
+    @staticmethod
+    def retrieve_1d_imaginary_coil(directory, coil_data):
         """
         Retrieves two last columns from coil_data numpy array
         :param coil_data: 4-column numpy array
@@ -190,31 +164,20 @@ class Geometry(object):
                  1-ordered plane number along 1D coil length as float, 2-imaginary 1D coil length as float
         """
         coil_length_1d = coil_data[:, 2:4]
-        coil_length_1d = Geometry.unique_rows(coil_length_1d)
+        coil_length_1d = Geometry.delete_repetitive_rows(coil_length_1d)
         coil_length_1d_sorted = coil_length_1d[coil_length_1d[:, 0].argsort()]
-        self.save_array(directory=self.directory, filename="Im_Coil_Length.txt", array=coil_length_1d_sorted)
+        GeneralFunctions.save_array(directory=directory, filename="Im_Coil_Length.txt", array=coil_length_1d_sorted)
         return coil_length_1d_sorted
 
     @staticmethod
     def load_1d_temperature(directory, npoints, filename="Temperature_Data.txt"):
         """
         Loads file with nodal temperature results
-        :param directory: directory of the file as string
+        :param directory: output_directory of the file as string
         :param npoints: number of nodes in geometry as integer
         :param filename: filename as string; default: "Temperature_Data.txt"
         """
-        return Geometry.load_file(analysis_directory=directory, npoints=npoints, filename=filename, file_lines_length=npoints)
-
-    @staticmethod
-    def save_array(directory, filename, array):
-        """
-        Saves array as txt file
-        :param directory: directory to save file as string
-        :param filename: filename to be created as string
-        :param array: array to be saved
-        """
-        array_filename = directory + "\\" + filename
-        np.savetxt(array_filename, array)
+        return GeneralFunctions.load_file(directory=directory, npoints=npoints, filename=filename)
 
     @staticmethod
     def prepare_ansys_nodes_selection_list(real_nodes_list):
@@ -236,36 +199,15 @@ class Geometry(object):
         return nodes_selection_list
 
     @staticmethod
-    def load_file(filename, file_lines_length, analysis_directory, npoints):
-        """
-        Works if number of rows in the file corresponds to number of nodes in geometry
-        :param filename: filename with extension as string
-        :param file_lines_length: number of rows in the file as integer
-        :param analysis_directory: string
-        :param npoints: number of nodes in geometry as integer
-        :return: temperature profile as numpy array
-        """
-        loaded_file = None
-        os.chdir(analysis_directory)
-        exists = False
-        while exists is False:
-            exists = os.path.isfile(filename)
-            if exists and file_lines_length == npoints:
-                loaded_file = np.loadtxt(filename)
-            else:
-                exists = False
-        return loaded_file
-
-    def load_parameter(self, filename):
+    def load_ansys_output_one_line_txt_file(directory, filename):
         """
         Returns the 1st row of txt file
-        :param directory: full analysis directory as string
+        :param directory: full analysis output_directory as string
         :param filename: filename as string
         :return: parameter as float
         """
-        full_filename = "{}".format(filename)
-        full_path = "{}\\{}".format(self.directory, full_filename)
-        text_file = open(full_path, "r")
+        path = os.path.join(directory, filename)
+        text_file = open(path, "r")
         list1 = text_file.readlines()
         final_list = []
         for item in list1:

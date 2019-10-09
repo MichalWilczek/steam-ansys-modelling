@@ -3,6 +3,9 @@ from source.ansys.ansys import Ansys
 
 class Ansys2D(Ansys):
 
+    def __init__(self, factory, ansys_input_directory):
+        Ansys.__init__(self, factory, ansys_input_directory)
+
     # TO BE MODIFED !!!
     def create_variable_file(self):
         """
@@ -20,15 +23,14 @@ class Ansys2D(Ansys):
         data.write_text('transverse_dimension_insulation =' + str(self.factory.transverse_dimension_insulation))
         data.write_text('transverse_division_winding =' + str(self.factory.transverse_division_winding))
         data.write_text('transverse_division_insulation =' + str(self.factory.transverse_division_insulation))
-        self.wait_for_process_to_finish(data)
+        self.create_apdl_commands_for_python_waiting_process(data)
         time.sleep(2)
 
     def input_geometry(self):
-        print("________________ \nAnsys geometry is being uploaded...")
-        return self.input_file(filename='2D_Geometry', extension='inp', add_directory='Input_Files')
+        return self.input_file(filename='2D_Geometry', extension='inp', directory=self.ansys_input_directory)
 
     def input_solver(self):
-        self.input_file(filename='2D_Solve_Get_Temp', extension='inp', add_directory='input_files')
+        self.input_file(filename='2D_Solve_Get_Temp', extension='inp', directory=self.ansys_input_directory)
 
     def set_ground_in_analysis(self, class_geometry):
         nodes_for_ground = class_geometry.create_node_list_for_ground()

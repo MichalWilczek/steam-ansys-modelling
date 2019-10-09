@@ -1,14 +1,17 @@
 
 import math
-from source.ansys.ansys_net import AnsysNetwork
+from source.ansys.ansys_network import AnsysNetwork
 
 class AnsysMultiple1D(AnsysNetwork):
+
+    def __init__(self, factory, ansys_input_directory):
+        AnsysNetwork.__init__(self, factory, ansys_input_directory)
 
     def input_solver(self):
         """
         Inputs prepared file with APDL solver
         """
-        self.input_file(filename='1D_1D_1D_Solve_Get_Temp', extension='inp', add_directory='input_files')
+        self.input_file(filename='1D_1D_1D_Solve_Get_Temp', extension='inp', directory=self.ansys_input_directory)
 
     def set_ground_in_analysis(self, class_geometry):
         nodes_for_ground = class_geometry.create_node_list_for_ground()
@@ -27,11 +30,12 @@ class AnsysMultiple1D(AnsysNetwork):
         nodes_to_select_ansys = class_geometry.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_to_select)
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
-    def select_nodes_for_current(self, class_geometry):
+    def select_nodes_for_current(self, **kwargs):
         nodes_to_select_ansys = [[1, 1]]
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
     def calculate_insulation_area_1d_1d_1d(self):
+
         if self.factory.number_of_windings() != 1:
             strand_area = math.pi / 4.0 * self.STRAND_DIAMETER ** 2.0
             winding_area = self.WINDING_SIDE ** 2.0

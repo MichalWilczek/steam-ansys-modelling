@@ -3,8 +3,8 @@ from source.circuit.circuit import Circuit
 
 class CircuitThermalAnalysisNoCircuit(Circuit):
 
-    def __init__(self, ansys_commands, class_geometry, input_data):
-        Circuit.__init__(self, ansys_commands, class_geometry, input_data)
+    def __init__(self, ansys_commands, class_geometry, factory):
+        Circuit.__init__(self, ansys_commands, class_geometry, factory)
 
     def set_circuit_bcs_in_analysis(self):
         self.couple_nodes_in_analysis()

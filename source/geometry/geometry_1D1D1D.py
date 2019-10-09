@@ -3,8 +3,8 @@ from source.geometry.geometry import Geometry
 
 class GeometryMulti1D(Geometry):
 
-    def __init__(self, input_data, analysis_directory):
-        Geometry.__init__(self, input_data, analysis_directory)
+    def __init__(self, factory):
+        Geometry.__init__(self, factory)
         self.create_1d_coil_geometry()
         self.winding_node_dict = self.create_node_dict_for_each_winding()
         self.coil_geometry = self.coil_length_1d
@@ -15,15 +15,16 @@ class GeometryMulti1D(Geometry):
         """
         Creates imaginary 1D coil length based on files: "Winding[number)" and "Node_Position"
         """
-        files_in_directory = Geometry.search_files_names_in_directory(directory=self.directory)
+        number_of_windings = self.input_data.geometry_settings.type_input.number_of_windings
+        files_in_directory = Geometry.make_list_of_filenames_in_directory(directory=self.directory)
         list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
         self.dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=self.directory)
         self.file_node_position = Geometry.load_file_with_winding_nodes_position(directory=self.directory, filename="Node_Position.txt")
         self.center_plane_position = self.calculate_windings_lengths(position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
-        self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position, number_of_windings=self.factory.number_of_windings)
-        self.coil_length_1d = self.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
+        self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position, number_of_windings=number_of_windings)
+        self.coil_length_1d = self.retrieve_1d_imaginary_coil(directory=self.output_directory_geometry, coil_data=self.coil_data)
         self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
-        self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes(windings_lengths=self.center_plane_position, number_of_windings=self.factory.number_of_windings)
+        self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes(windings_lengths=self.center_plane_position, number_of_windings=number_of_windings)
         self.im_nodes_per_winding = Geometry.number_of_im_nodes_per_winding(self.dict_imaginary_nodes)
 
     def retrieve_winding_numbers_and_quenched_nodes(self, x_down_node, x_up_node):
@@ -218,12 +219,12 @@ class GeometryMulti1D(Geometry):
     def load_temperature_and_map_onto_1d_cable(self, directory, npoints, filename="Temperature_Data.txt"):
         """
         Loads temperature file with real nodes and maps it onto 1D cable length
-        :param directory: full analysis directory as string
+        :param directory: full analysis output_directory as string
         :param npoints: number of nodes as integer in meshed ANSYS geometry
         :param filename: filename as string with temperature profile
         :returns: 2-column numpy array; 1-imaginary node number as float, 2-node temperature as float
         """
-        temperature_profile = Geometry.load_file(analysis_directory=directory, npoints=npoints, filename=filename, file_lines_length=npoints)
+        temperature_profile = self.load_file(directory=directory, npoints=npoints, filename=filename)
         coil_temperature_1d = self.map_temperature_into_1d_cable(temperature_profile=temperature_profile)
         return coil_temperature_1d
 

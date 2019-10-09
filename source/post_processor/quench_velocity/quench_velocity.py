@@ -5,7 +5,7 @@ import numpy as np
 
 class QuenchFront(SearchNodes):
 
-    def __init__(self, x_down, x_up, label, coil_geometry, coil_data, testunit=False):
+    def __init__(self, x_down, x_up, label, class_geometry, testunit=False):
         """
         :param x_down: bottom position of quench front in [m]
         :param x_up: top position of quench front in [m]
@@ -15,8 +15,8 @@ class QuenchFront(SearchNodes):
         self.x_up = x_up
         self.x_centre = (x_up+x_down)/2.0
         self.label = label
-        self.coil_geometry = coil_geometry
-        self.coil_data = coil_data
+        self.coil_geometry = class_geometry.coil_geometry
+        self.coil_data = class_geometry.coil_data
         if not testunit:
             self.x_down_node = self.front_down_to_node(self.coil_geometry, initial_search=True)
             self.x_up_node = self.front_up_to_node(self.coil_geometry, initial_search=True)

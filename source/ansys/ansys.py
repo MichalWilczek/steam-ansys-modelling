@@ -1,17 +1,19 @@
-import os
+
 from ansys_corba import CORBA
 from source.ansys.ansys_table import Table
 from source.solver.initial_temperature.polynomial_fit import PolynomialFit
 from source.factory.general_functions import GeneralFunctions
 import time
+import os
 
 class Ansys(GeneralFunctions):
 
-    def __init__(self, input_data, analysis_directory, ansys_input_directory):
-        self.factory = input_data
-        self.analysis_directory = analysis_directory
+    def __init__(self, factory, ansys_input_directory):
+        self.input_data = factory.input_data
+        self.directory = factory.directory
+        self.output_directory = factory.output_directory
         self.ansys_input_directory = ansys_input_directory
-        os.chdir(self.analysis_directory)
+        os.chdir(self.directory)
         with open('aaS_MapdlID.txt', 'r') as f:
             aasMapdlKey = f.read()
         self.mapdl = CORBA.ORB_init().string_to_object(aasMapdlKey)
@@ -38,7 +40,7 @@ class Ansys(GeneralFunctions):
         hgen = Table(filename_path, ext='.inp')
         hgen.load('hgen_table', heat_gen_array[:, 1], [heat_gen_array[:, 0]])
         hgen.write(['HGEN'])
-        self.wait_for_process_to_finish(hgen)
+        self.create_apdl_commands_for_python_waiting_process(hgen)
         hgen.close()
         self.input_file(filename=filename, extension="inp")
 
@@ -75,13 +77,13 @@ class Ansys(GeneralFunctions):
             self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=(heat_flow_array[i, 1]/number_windings_heated)*scaling_factor)
 
     # functions responsible for deleting unnecessary ansys files
-    def delete_old_files(self):
+    def delete_old_ansys_analysis_files(self):
         """
         Deletes unnecessary files saved during previous analyses
         """
-        self.delete_file(directory=self.analysis_directory, filename='Variable_Input.inp')
-        self.delete_file(directory=self.analysis_directory, filename='File_Position.txt')
-        self.delete_file(directory=self.analysis_directory, filename='Process_Finished.txt')
+        self.delete_file(directory=self.directory, filename='Variable_Input.inp')
+        self.delete_file(directory=self.directory, filename='File_Position.txt')
+        self.delete_file(directory=self.directory, filename='Process_Finished.txt')
 
     @staticmethod
     def create_variable_table_method(directory):
@@ -96,7 +98,7 @@ class Ansys(GeneralFunctions):
         return Table(filename, ext=('.' + extension))
 
     @staticmethod
-    def wait_for_process_to_finish(data):
+    def create_apdl_commands_for_python_waiting_process(data):
         """
         Writes down in the opened file the APDL commands to create the file named "Process_Finished.txt"
         :param data: Class object to create APDL commands .txt file
@@ -112,49 +114,13 @@ class Ansys(GeneralFunctions):
         Creates an input file with parameters used by ANSYS
         """
         data.write_text('/clear')
-        data.write_text('/title,Quench_Analysis_' + self.factory.dimensionality)
+        data.write_text('/title,Quench_Analysis_' + self.input_data.geometry_settings.dimensionality)
         data.write_text('/prep7')
         data.write_text('/nerr,999999999999')
         data.write_text('/graphics,power')
         data.write_text('/show,png')
-        data.write_text('electric_analysis={}'.format(self.change_boolean_into_integer(self.factory.electric_ansys_elements)))
-
-    @staticmethod
-    def wait_python(filename, directory, file_length=1):
-        """
-        Makes Python wait until process in ANSYS is finished
-        :param directory:
-        :param filename: filename as string given by ANSYS when it finishes processing
-        :param file_length: number of rows in filename as integer
-        """
-        exists = False
-        while exists is False:
-            exists = os.path.isfile(directory+"\\"+filename)
-            if exists and GeneralFunctions.file_length(filename, analysis_directory=directory) == file_length:
-                os.chdir(directory)
-                with open('Process_Finished.txt', 'r') as f:
-                    file_input = int(float(f.read()))
-                if file_input == 1:
-                    f.close()
-                    break
-                else:
-                    exists = False
-            else:
-                exists = False
-
-    @staticmethod
-    def delete_file(filename, directory):
-        """
-        Deletes file in directory
-        :param directory: analysis directory as string
-        :param filename: filename to delete as string
-        """
-        full_filename = "{}.".format(filename)
-        full_path = "{}\\{}".format(directory, full_filename)
-        if os.path.isfile(full_path):
-            os.remove(full_path)
-        else:
-            print("Error: {} file not found".format(full_filename))
+        data.write_text('electric_analysis={}'.format(GeneralFunctions.change_boolean_into_integer(
+            self.input_data.circuit_settings.electric_ansys_elements)))
 
     def select_nodes_list(self, nodes_list):
         """
@@ -210,12 +176,12 @@ class Ansys(GeneralFunctions):
     def allsel_below(self, domain):
         print(self.mapdl.executeCommandToString("allsel,below,{}".format(domain)))
 
-    def input_file(self, filename, extension, add_directory=" "):
-        print(self.mapdl.executeCommandToString("/input,{},{},{}\\{}".format(filename, extension, self.analysis_directory, add_directory)))
-        self.wait_python(filename='Process_Finished.txt', directory=self.analysis_directory)
+    def input_file(self, filename, extension, directory):
+        print(self.mapdl.executeCommandToString("/input,{},{},{}".format(filename, extension, directory)))
+        self.make_python_wait_until_ansys_finishes(filename='Process_Finished.txt', directory=self.directory)
         time.sleep(1)
-        self.delete_file(filename='Process_Finished.txt', directory=self.analysis_directory)
-        print("File uploaded... \n-----------------")
+        self.delete_file(filename='Process_Finished.txt', directory=self.directory)
+        print("File uploaded... \n---------------")
 
     def terminate_analysis(self):
         self.mapdl.terminate()

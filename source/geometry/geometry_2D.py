@@ -3,8 +3,8 @@ from source.geometry.geometry import Geometry
 
 class Geometry2D(Geometry):
 
-    def __init__(self, input_data, analysis_directory):
-        Geometry.__init__(self, input_data, analysis_directory)
+    def __init__(self, factory):
+        Geometry.__init__(self, factory)
         self.create_1d_coil_geometry()
         self.winding_node_dict = self.create_node_dict_for_each_winding()
         self.coil_geometry = self.coil_length_1d
@@ -14,13 +14,13 @@ class Geometry2D(Geometry):
         """
         Creates imaginary 1D coil length based on files: "Winding[number)" and "Node_Position"
         """
-        files_in_directory = Geometry.search_files_names_in_directory(directory=self.directory)
+        files_in_directory = Geometry.make_list_of_filenames_in_directory(directory=self.directory)
         list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
         self.dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=self.directory)
         self.file_node_position = Geometry.load_file_with_winding_nodes_position(directory=self.directory, filename="Node_Position.txt")
         self.center_plane_position = self.calculate_windings_lengths(position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
         self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position)
-        self.coil_length_1d = Geometry.retrieve_1d_imaginary_coil(coil_data=self.coil_data)
+        self.coil_length_1d = Geometry.retrieve_1d_imaginary_coil(directory=self.directory, coil_data=self.coil_data)
         self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
 
     @staticmethod
@@ -49,9 +49,9 @@ class Geometry2D(Geometry):
                         n_pos_x_list.append(n_pos_x)
                         n_pos_y_list.append(n_pos_y)
                         n_pos_z_list.append(n_pos_z)
-                mean_pos_x = Geometry.calculate_average(n_pos_x_list)
-                mean_pos_y = Geometry.calculate_average(n_pos_y_list)
-                mean_pos_z = Geometry.calculate_average(n_pos_z_list)
+                mean_pos_x = Geometry.calculate_average_from_list(n_pos_x_list)
+                mean_pos_y = Geometry.calculate_average_from_list(n_pos_y_list)
+                mean_pos_z = Geometry.calculate_average_from_list(n_pos_z_list)
                 winding_mean_pos_list[i, 0] = i+1
                 winding_mean_pos_list[i, 1] = mean_pos_x
                 winding_mean_pos_list[i, 2] = mean_pos_y
@@ -162,7 +162,7 @@ class Geometry2D(Geometry):
     def load_temperature_and_map_onto_1d_cable(self, directory, npoints, filename="Temperature_Data.txt"):
         """
         Loads temperature file with real nodes and maps it onto 1D cable length
-        :param directory: full analysis directory as string
+        :param directory: full analysis output_directory as string
         :param npoints: number of nodes as integer in meshed ANSYS geometry
         :param filename: filename as string with temperature profile
         :returns: 2-column numpy array; 1-imaginary node number as float, 2-node temperature as float

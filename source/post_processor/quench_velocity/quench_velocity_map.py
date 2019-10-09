@@ -8,23 +8,21 @@ import os
 
 class QuenchVelocityMap(object):
 
-    CWD = os.path.dirname(__file__)
-    DIRECTORY = os.path.join(CWD, 'APDL', '1D_1D_1D', 'Quench_Velocity_Mapping', 'Quench_Velocity')
-
-    def __init__(self, plot=False):
+    def __init__(self, factory, plot=False):
+        self.input_directory = factory.input_directory
+        self.quench_velocity_map_filename = factory.input_data.analysis_type.input.numerical_map_filename
         self.time_axis = self.load_q_v_array()[:, 0]
         self.q_v_array = self.load_q_v_array()[:, 1:]
         self.f_interpolation = self.create_interpolation_f_qv()
         if plot:
             self.plot_interpolated_function(self.f_interpolation)
 
-    def load_q_v_array(self, filename="Q_V_array.txt"):
+    def load_q_v_array(self):
         """
         Loads Quench velocity array from file
-        :param filename: filename as string (default: Q_V_array.txt)
         :return: numpy array
         """
-        filename = os.path.join(self.DIRECTORY, filename)
+        filename = os.path.join(self.input_directory, self.quench_velocity_map_filename)
         array = np.loadtxt(fname=filename, skiprows=1)
         return array
 

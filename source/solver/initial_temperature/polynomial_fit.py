@@ -3,26 +3,27 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+# TO BE MODIFIED !!! CAUSE IT IS NOT WORKING AT THE MOMENT
 
 class PolynomialFit(object):
 
-    FILENAME = "Power_Data.txt"
-    FILENAME_TEMP_INSULATION = "Nodal_Temperature_Last_node.txt"
-    DIRECTORY = "C:\\gitlab\\steam-ansys-modelling\\quadrupole_experimental_results"
+    def __init__(self, factory, input_filename):
+        self.input_data = factory.input_data
+        self.input_directory = factory.input_directory
+        self.time_function_filename = input_filename
 
-    @staticmethod
-    def create_linear_interpolation_for_temp_vector(time_vector):
-        temp_array = PolynomialFit.load_data(directory=PolynomialFit.DIRECTORY, filename=PolynomialFit.FILENAME_TEMP_INSULATION)
-        temperature_vector = np.interp(x=time_vector, xp=temp_array[:, 0], fp=temp_array[:, 1])
-        return temperature_vector
+    def create_linear_interpolation_array(self):
+        os.chdir(self.input_directory)
+        array = np.loadtxt(self.time_function_filename)
+        interpolation_vector = np.interp(x=array[:, 0], xp=array[:, 1], fp=array[:, 1])
+        return interpolation_vector
 
-    @staticmethod
-    def extract_meas_power_function():
+    def extract_meas_power_function(self):
         """
         Creates array with power deposition fuction with respect to time
         :return: numpy array; column1: time, column2: power [W]
         """
-        power = PolynomialFit.load_data(directory=PolynomialFit.DIRECTORY, filename=PolynomialFit.FILENAME)
+        power = PolynomialFit.load_data(directory=self.input_directory, filename=PolynomialFit.FILENAME)
         time = PolynomialFit.create_time_vector()
         PolynomialFit.plot_data(power, time)
         return PolynomialFit.create_polyfit_array(time, power)
@@ -40,34 +41,15 @@ class PolynomialFit(object):
         return PolynomialFit.create_polyfit_array(time, f_polyfit)
 
     @staticmethod
-    def load_data(directory, filename):
-        """
-        Loads file with power data from file
-        :return: numpy array 1D, column1: power [W]
-        """
-        os.chdir(directory)
-        power_meas = np.loadtxt(filename)
-        return power_meas
-
-    @staticmethod
-    def create_time_vector():
-        """
-        Creates time vector
-        :return: 1D numpy array
-        """
-        return np.arange(0.0, 0.0102, 0.0002)
-
-    @staticmethod
-    def create_polyfit(power, time):
+    def create_polyfit(function, time):
         """
         Creates polynomial interpolation function
         :param power: power 1D numpy vector
         :param time: time 1D numpy vector
         :return: polynomial function instance
         """
-        p = np.polyfit(time, power, deg=8)
-        print("Polynomial parameters: ")
-        print(p)
+        p = np.polyfit(time, function, deg=8)
+        print("Polynomial parameters: \n {}".format(p))
         f_fit = np.zeros((len(time)))
         for i in range(len(time)):
             f_fit[i] = p[0] * time[i] ** 8.0 + p[1] * time[i] ** 7.0 + p[2] * time[i] ** 6.0 + \
@@ -111,3 +93,4 @@ class PolynomialFit(object):
         filename = "Polynomial_Power_Fit.png"
         plt.savefig(filename, dpi=200)
         plt.show()
+

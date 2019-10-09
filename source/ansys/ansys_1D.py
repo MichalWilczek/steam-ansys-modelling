@@ -1,10 +1,12 @@
 
 import time
 import math
-# from source.ansys.ansys import Ansys
-from source.ansys.ansys_net import AnsysNetwork
+from source.ansys.ansys_network import AnsysNetwork
 
 class Ansys1D(AnsysNetwork):
+
+    def __init__(self, factory, ansys_input_directory):
+        AnsysNetwork.__init__(self, factory, ansys_input_directory)
 
     def create_variable_file(self):
         """
@@ -19,15 +21,14 @@ class Ansys1D(AnsysNetwork):
         data.write_text('division_per_winding = ' + str(self.factory.division_per_winding))
         data.write_text('length_per_winding = ' + str(self.factory.length_per_winding))
 
-        self.wait_for_process_to_finish(data)
+        self.create_apdl_commands_for_python_waiting_process(data)
         time.sleep(2)
 
     def input_geometry(self):
-        print("________________ \nAnsys geometry is being uploaded...")
-        return self.input_file(filename='1D_Geometry', extension='inp', add_directory='Input_Files')
+        return self.input_file(filename='1D_Geometry', extension='inp', directory=self.ansys_input_directory)
 
     def input_solver(self):
-        self.input_file(filename='1D_Solve_Get_Temp', extension='inp', add_directory='Input_Files')
+        self.input_file(filename='1D_Solve_Get_Temp', extension='inp', directory=self.ansys_input_directory)
 
     # TO BE MODIFIED
     def set_ground_in_analysis(self, class_geometry):

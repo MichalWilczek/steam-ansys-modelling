@@ -1,10 +1,12 @@
 
+from source.factory.general_functions import GeneralFunctions
 import matplotlib.pyplot as plt
 from matplotlib import rc
 import math
+import os
 
 
-class Materials(object):
+class Materials(GeneralFunctions):
 
     a0 = 1.7
     a1 = 2.33 * 10.0 ** 9.0
@@ -27,13 +29,15 @@ class Materials(object):
     temp_max = 300  # [K}
     temp_step = 3.5  # [K]
 
-    def __init__(self, input_data, plotting="no"):
+    def __init__(self, factory, plotting="no"):
         """
         Initialises plot creation if plotting is set to "yes"
         :param plotting: string, default as "no"
         """
-        self.factory = input_data
-        self.f_cu_f_nbti = self.factory.f_cu_f_nbti
+        self.output_directory = factory.output_directory
+        self.output_directory_materials = GeneralFunctions.create_folder_in_directory(self.output_directory, "mat_props")
+        self.input_data = factory.input_data
+        self.f_cu_f_nbti = self.input_data.material_settings.input.f_cu_f_nbti
         self.plt = plt
         self.plot = plotting
         self.f_nbti = self.ratio_nbti()

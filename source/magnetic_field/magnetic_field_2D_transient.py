@@ -5,8 +5,8 @@ from source.magnetic_field.winding_remap import WindingRemap
 
 class MagneticField2DTransient(MagneticFieldMap, WindingRemap):
 
-    def __init__(self, input_data):
-        WindingRemap.__init__(self, input_data=input_data)
+    def __init__(self, factory):
+        WindingRemap.__init__(self, factory=factory)
 
 
 

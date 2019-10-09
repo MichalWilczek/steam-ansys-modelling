@@ -1,22 +1,30 @@
 
 from source.solver.time_step import TimeStep
+from source.factory.unit_conversion import UnitConversion
 from source.post_processor.quench_detection import QuenchDetect
 
-class Solver(TimeStep, QuenchDetect):
+class Solver(TimeStep, QuenchDetect, UnitConversion):
 
-    def __init__(self, ansys_commands, class_geometry, input_data, circuit, ic_temperature_class, mat_props, mag_map):
+    def __init__(self, factory, ansys_commands, class_geometry, circuit, ic_temperature_class, mat_props, mag_map):
+
+        self.factory = factory
+        self.input_data = factory.input_data
+        self.directory = factory.directory
+        self.output_directory = factory.output_directory
+
         self.temperature_ic = ic_temperature_class
+        self.plots = ic_temperature_class.plots
         self.temperature_ic_profile = None
         self.geometry = class_geometry
         self.ansys_commands = ansys_commands
         self.circuit = circuit
-        self.factory = input_data
-        self.material_properties = mat_props
+        self.mat_props = mat_props
         self.magnetic_map = mag_map
 
         self.iteration = [0]
-        self.time_step_vector = TimeStep.linear_time_stepping(time_step=self.factory.time_step_cosimulation,
-                                                              total_time=self.factory.time_total_simulation)
+        self.time_step_vector = TimeStep.linear_time_stepping(
+            time_step=self.input_data.analysis_settings.time_step_cosimulation,
+            total_time=self.input_data.analysis_settings.time_total_simulation)
         self.t = [self.time_step_vector[self.iteration[0]]]
 
     def time_to_string(self):
@@ -36,12 +44,14 @@ class Solver(TimeStep, QuenchDetect):
         self.time_to_string()
         self.ansys_commands.set_analysis_setting()
 
-        self.ansys_commands.set_ansys_time_step_settings(min_time_step=self.factory.time_step_min_ansys/1000.0,
-                                                         max_time_step=self.factory.time_step_max_ansys/1000.0,
-                                                         init_time_step=self.factory.time_step_min_ansys/1000.0)
+        self.ansys_commands.set_ansys_time_step_settings(
+            min_time_step=self.input_data.analysis_settings.time_step_min_ansys * UnitConversion.miliseconds_to_seconds,
+            max_time_step=self.input_data.analysis_settings.time_step_max_ansys * UnitConversion.miliseconds_to_seconds,
+            init_time_step=self.input_data.analysis_settings.time_step_min_ansys * UnitConversion.miliseconds_to_seconds)
 
     def set_time_step(self):
-        self.ansys_commands.set_time_step(time_step=self.time_step_vector[self.iteration[0]], iteration=self.iteration[0])
+        self.ansys_commands.set_time_step(
+            time_step=self.time_step_vector[self.iteration[0]], iteration=self.iteration[0])
 
     def set_initial_temperature(self):
         self.temperature_ic.set_initial_temperature()

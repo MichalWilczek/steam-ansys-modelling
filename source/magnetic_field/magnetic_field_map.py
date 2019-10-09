@@ -7,6 +7,9 @@ from scipy import interpolate
 
 class MagneticFieldMap(MagneticField):
 
+    def __init__(self, factory):
+        MagneticField.__init__(self, factory)
+
     @staticmethod
     def create_wind_real_number_list(winding_list):
         """

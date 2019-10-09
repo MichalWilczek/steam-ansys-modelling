@@ -9,15 +9,16 @@ class AnalysisLauncher(GeneralFunctions):
 
     def __init__(self, directory):
         self.directory = directory
+        self.input_directory = os.path.join(directory, "input")
         self.output_directory = self.get_analysis_directory(directory)
-        self.copy_input_files_to_output_directory()
+        self.copy_input_folder_to_output_directory()
 
     @staticmethod
     def get_analysis_directory(analysis_directory):
         """
-        Creates analysis directory where output files will be stored
+        Creates analysis output_directory where output files will be stored
         :param analysis_directory: as string
-        :return: output analysis data directory as string
+        :return: output analysis data output_directory as string
         """
         output_directory = AnalysisLauncher.create_analysis_directories(analysis_directory)
         return output_directory
@@ -36,11 +37,11 @@ class AnalysisLauncher(GeneralFunctions):
                 data = json.load(json_file, object_hook=lambda d : namedtuple(class_name, d.keys())(*d.values()))
                 return data
         else:
-            raise ValueError("Please, create input .json file in input directory.")
+            raise ValueError("Please, create input .json file in input output_directory.")
 
-    def copy_input_files_to_output_directory(self, output_copy_foldername="input_copy"):
+    def copy_input_folder_to_output_directory(self, output_copy_foldername="input_copy"):
         """
-        Copies all input files used in the analysis to the output directory
+        Copies all input files used in the analysis to the output output_directory
         :param output_copy_foldername: copied input folder name as string
         """
         os.chdir(self.output_directory)
@@ -51,14 +52,14 @@ class AnalysisLauncher(GeneralFunctions):
     @staticmethod
     def create_analysis_directories(analysis_directory, output_foldername="output", input_foldername="input"):
         """
-        Creates the directory for the output files in the folder 'output'
-        :param analysis_directory: analysis directory as string
+        Creates the output_directory for the output files in the folder 'output'
+        :param analysis_directory: analysis output_directory as string
         :param output_foldername: as string
         :param input_foldername: as string
-        :return: directory for the output files as string
+        :return: output_directory for the output files as string
         """
         if not AnalysisLauncher.check_if_object_exists_in_directory(analysis_directory, input_foldername):
-            raise ValueError("Please, create 'input' folder in specified analysis directory.")
+            raise ValueError("Please, create 'input' folder in specified analysis output_directory.")
         if not AnalysisLauncher.check_if_object_exists_in_directory(analysis_directory, output_foldername):
             AnalysisLauncher.create_folder_in_directory(analysis_directory, output_foldername)
         path = os.path.join(analysis_directory, output_foldername)
@@ -67,10 +68,21 @@ class AnalysisLauncher(GeneralFunctions):
         path_final = os.path.join(path, str(last_analysis_folder+1))
         return path_final
 
+    def copy_ansys_analysis_files_to_output_directory(self):
+        list_files = os.listdir(self.directory)
+        list_files.remove("input")
+        list_files.remove("output")
+
+        os.chdir(self.directory)
+        for file in list_files:
+            shutil.copy(file, self.output_directory)
+        for file in list_files:
+            GeneralFunctions.delete_file(file, self.directory)
+
     @staticmethod
     def copy_object_to_another_object(directory_to_copy, directory_destination):
         """
-        Copies the folder with its files to the specified directory
+        Copies the folder with its files to the specified output_directory
         :param directory_to_copy: as string
         :param directory_destination: as string
         """
@@ -79,8 +91,8 @@ class AnalysisLauncher(GeneralFunctions):
     @staticmethod
     def check_if_object_exists_in_directory(directory, filename):
         """
-        Checks whether the specified filename exists in the directory
-        :param directory: directory as string
+        Checks whether the specified filename exists in the output_directory
+        :param directory: output_directory as string
         :param filename: filename as string
         :return: boolean
         """
@@ -94,8 +106,8 @@ class AnalysisLauncher(GeneralFunctions):
     @staticmethod
     def count_number_of_analysis_folders_in_directory(directory):
         """
-        Returns the maximum folder number with hidden analyses in the analysis directory
-        :param directory: directory as string
+        Returns the maximum folder number with hidden analyses in the analysis output_directory
+        :param directory: output_directory as string
         :return: folder number as integer
         """
         os.chdir(directory)
@@ -110,13 +122,3 @@ class AnalysisLauncher(GeneralFunctions):
             return 0
         else:
             return list_folders[-1]
-
-    @staticmethod
-    def create_folder_in_directory(directory, foldername):
-        """
-        Creates a folder in the specified directory
-        :param directory: directory as string
-        :param foldername: folder to be created as string
-        """
-        os.chdir(directory)
-        os.mkdir(foldername)
