@@ -2,7 +2,7 @@
 from source.factory.factory import Factory
 
 # creation of analysis directories
-analysis_directory = "C:\\gitlab\\quench_modelling_analyses"
+analysis_directory = "C:\\gitlab\\quench_modelling_test_analyses"
 factory = Factory(analysis_directory)
 
 ######################################################
@@ -54,7 +54,7 @@ ans.enter_solver()
 solver.set_circuit_bcs()
 solver.set_initial_temperature()
 solver.set_time_step_temperature()
-solver.set_solver_bcs()
+solver.set_solver_boundary_conditions()
 solver.enter_solver_settings()
 solver.set_time_step()
 solver.solve()

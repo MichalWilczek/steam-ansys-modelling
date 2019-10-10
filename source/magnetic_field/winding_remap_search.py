@@ -1,6 +1,6 @@
 
 
-class WindingRemapSearcher(object):
+class WindingRemapSearch(object):
 
     def __init__(self, number_of_layers, number_of_windings_in_layer):
         self._number_of_layers = number_of_layers

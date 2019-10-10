@@ -13,8 +13,6 @@ from source.ansys.ansys_multiple_1D_skew_quad import AnsysMultiple1DSkewQuad
 from source.ansys.ansys_multiple_1D_slab import AnsysMultiple1DSlab
 from source.ansys.ansys_2D import Ansys2D
 
-from source.material_properties.material_properties_nonlinear import MaterialsNonLinear
-from source.material_properties.material_properties_linear import MaterialsLinear
 
 from source.post_processor.quench_velocity.quench_velocity import QuenchFront
 from source.post_processor.quench_velocity.quench_velocity_constant import QuenchFrontConst
@@ -42,6 +40,12 @@ from source.pre_processor.pre_processor_heat_balance import PreProcessorHeatBala
 
 from source.post_processor.post_processor_heat_balance import PostProcessorHeatBalance
 from source.post_processor.post_processor_quench_velocity import PostProcessorQuenchVelocity
+
+from source.materials.nb_ti_nonlinear_materials import NbTiNonlinearMaterials
+from source.materials.cu_nonlinear_materials import CuNonlinearMaterials
+from source.materials.g10_nonlinear_materials import G10NonlinearMaterials
+from source.materials.insulation_linear_material import InsulationLinearMaterial
+from source.materials.winding_linear_material import WindingLinearMaterial
 
 class Factory(AnalysisLauncher, GeneralFunctions):
 
@@ -92,18 +96,6 @@ class Factory(AnalysisLauncher, GeneralFunctions):
             return Ansys2D(factory, ansys_input_directory=self.get_ansys_scripts_directory())
         else:
             raise ValueError("The specified geometry type and dimensionality do not exist at the same time")
-
-    def get_material_properties_class(self, factory):
-        """
-        Chooses between linear and nonlinear material properties set in json file
-        :return: Class with material properties
-        """
-        if self.input_data.material_settings.type == "linear":
-            return MaterialsLinear(factory)
-        elif self.input_data.material_settings.type == "nonlinear":
-            return MaterialsNonLinear(factory)
-        else:
-            raise ValueError("Class MaterialProperties does not exist")
 
     def get_quench_velocity_class(self):
         """
@@ -188,3 +180,50 @@ class Factory(AnalysisLauncher, GeneralFunctions):
             return PostProcessorHeatBalance(class_geometry, ansys_commands, v_quench, solver, factory)
         else:
             raise ValueError("Class PostProcessor was not properly defined - change the name of 'analysis type'")
+
+    def get_superconductor_class(self, temperature_profile):
+        if self.input_data.material_settings.type == "nonlinear":
+            if self.input_data.material_settings.superconductor_name == "Nb-Ti":
+                return NbTiNonlinearMaterials(temperature_profile)
+            else:
+                raise ValueError("Material does not exist in the library.")
+        elif self.input_data.material_settings.type == "linear":
+            return WindingLinearMaterial(temperature_profile)
+        else:
+            raise ValueError("Material does not exist in the library.")
+
+    def get_normal_conductor_class(self, temperature_profile):
+        if self.input_data.material_settings.type == "nonlinear":
+            if self.input_data.material_settings.superconductor_name == "Cu":
+                return CuNonlinearMaterials(temperature_profile)
+            else:
+                raise ValueError("Material does not exist in the library.")
+        elif self.input_data.material_settings.type == "linear":
+            if self.input_data.material_settings.superconductor_name == "Cu":
+                pass
+            else:
+                raise ValueError("Material does not exist in the library.")
+
+    def get_insulation_class(self, temperature_profile):
+        if self.input_data.material_settings.type == "nonlinear":
+            if self.input_data.material_settings.insulation_name == "G10":
+                return G10NonlinearMaterials(temperature_profile)
+            else:
+                raise ValueError("Material does not exist in the library.")
+        elif self.input_data.material_settings.type == "linear":
+            if self.input_data.material_settings.insulation_name == "G10":
+                pass
+            else:
+                raise ValueError("Material does not exist in the library.")
+
+    # def get_material_properties_class(self, factory):
+    #     """
+    #     Chooses between linear and nonlinear material properties set in json file
+    #     :return: Class with material properties
+    #     """
+    #     if self.input_data.material_settings.type == "linear":
+    #         return LinearMaterials(factory)
+    #     elif self.input_data.material_settings.type == "nonlinear":
+    #         return Materials(factory)
+    #     else:
+    #         raise ValueError("Class MaterialProperties does not exist")

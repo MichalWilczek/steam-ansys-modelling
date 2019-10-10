@@ -1,15 +1,15 @@
 
-from source.magnetic_field.winding_remap_searcher import WindingRemapSearcher
+from source.magnetic_field.winding_remap_search import WindingRemapSearch
 
-class WindingRemap(WindingRemapSearcher):
+class WindingRemap(WindingRemapSearch):
 
     def __init__(self, factory):
         self.input_data = factory.input_data
         self.start_winding = self.input_data.geometry_settings.type_input.winding_number_first_in_analysis
         self.end_winding = self.input_data.geometry_settings.type_input.winding_number_last_in_first_layer
         self.layers = self.input_data.geometry_settings.type_input.number_of_layers_in_analysis
-        WindingRemapSearcher.__init__(self, number_of_layers=self.layers,
-                                      number_of_windings_in_layer=
+        WindingRemapSearch.__init__(self, number_of_layers=self.layers,
+                                    number_of_windings_in_layer=
                                       self.input_data.geometry_settings.type_input.number_turns_in_layer)
 
     def map_winding_list(self):

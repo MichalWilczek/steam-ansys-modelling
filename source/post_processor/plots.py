@@ -210,3 +210,26 @@ class Plots(GeneralFunctions):
         fig = Plots.plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
+
+    @staticmethod
+    def plot_material_properties(directory, filename, array,
+                                 y_axis_name, x_axis_name='temperature, ' + r'[K]', fontsize=15):
+        """
+        Plots material properties
+        :param array: numpy array to be plotted; 1st column: x values as float, 2nd column: y values as float
+        :param y_axis_name: y-axis name as string
+        :param x_axis_name: x-axis name as string set default as 'Temperature, [K]'
+        :return: instance with figure
+        """
+        left_boundary = array[0, 0]
+        right_boundary = array[len(array) - 1, 0]
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_xlabel(x_axis_name, fontsize=fontsize)
+        ax.set_ylabel(y_axis_name, fontsize=fontsize)
+        plt.xlim(left_boundary, right_boundary)
+        ax.plot(array[:, 0], array[:, 1])
+        plt.grid(True)
+        os.chdir(directory)
+        fig.savefig(filename)
+        return fig

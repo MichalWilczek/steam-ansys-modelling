@@ -59,7 +59,7 @@ class Solver(TimeStep, QuenchDetect, UnitConversion):
     def set_time_step_temperature(self):
         self.temperature_ic.set_temperature_in_time_step(iteration=self.iteration[0])
 
-    def set_solver_bcs(self):
+    def set_solver_boundary_conditions(self):
         pass
 
     def solve(self):

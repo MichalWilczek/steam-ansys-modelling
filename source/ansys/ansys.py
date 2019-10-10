@@ -26,7 +26,7 @@ class Ansys(GeneralFunctions):
         self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)  # real constant interpreted as volume with density and specific heat defined as material properties
         self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)  # heat generation independent of temperature
 
-        res_cp = class_mat.calculate_cu_cp()
+        res_cp = class_mat.calculate_cv()
         for j in range(len(res_cp[:, 0])):
             self.define_temperature_for_material_property(table_placement=j+1, temperature=res_cp[j, 0])
             self.define_element_heat_capacity(element_number=element_number, value=res_cp[j, 1])
