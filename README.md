@@ -97,33 +97,40 @@ Material properties settings definition is composed of:
 
  Argument | Units | Model Type | Python Type | Description 
  -------- | ----- | ---------- | ----------- | ----------- 
- nonsupercond_to_supercond_ratio | - | linear, nonlinear | str | Non-superconductor to superconductor ratio 
+ nonsupercond_to_supercond_ratio | - | linear, nonlinear | float | Non-superconductor to superconductor ratio 
  rrr | - | nonlinear | float | Residual resistivity ratio of the normal conductor 
  min_temperature_property | K | linear, nonlinear | float | Minimum temperature of material properties in ANSYS 
  max_temperature_property | K | linear, nonlinear | float | Maximum temperature of material properties in ANSYS 
  superconductor_name | - | nonlinear | str | Superconductor name, only works for 'Nb-Ti' 
  normal_conductor_name | - | nonlinear | str | Normal conductor name, only works for 'Cu'
  insulation_name | - | nonlinear | str | Insulation name, only works for 'G10'
- txt_data_output | - | linear, nonlinear | str | Specifies whether txt files with material properties should be saved
- png_data_output | - | linear, nonlinear | str | Specifies whether png files with material properties should be saved
- magnetic_field_value_list | T | nonlinear | list[float] | Specifies at what magnetic field values the material property should be evaluated for saving 
+ txt_data_output | - | linear, nonlinear | bool | Specifies whether txt files with material properties should be saved
+ png_data_output | - | linear, nonlinear | bool | Specifies whether png files with material properties should be saved
+ magnetic_field_value_list | T | nonlinear | list[float] | Specifies at what magnetic field the material properties should be evaluated for external files
  
-
- 
- 
-
-
-
-The user should choose material properties
-```json
-{"material_properties_settings": {
+The exemplary .json file with input data for non-linear material properties composed of Nb-Ti, Cu and G10 
+is presented below:
+ ```json
+{"material_settings": {
     "type": "nonlinear",
     "input": {
-        "f_cu_f_nbti": 2.2, 
-        "rrr": 193.0}
-	}
+            "nonsupercond_to_supercond_ratio": 2.2,
+            "rrr": 193.0, 
+            "min_temperature_property": 1.0,
+            "max_temperature_property": 50.0,
+            
+            "superconductor_name": "Nb-Ti",
+            "normal_conductor_name": "Cu",
+            "insulation_name": "G10",
+            
+            "txt_data_output": true,
+            "png_data_output": true,
+            "magnetic_field_value_list": [0.0, 3.0]
+          }
+    }
 }
 ```
+
 
 The user magnetic field
 ```json
