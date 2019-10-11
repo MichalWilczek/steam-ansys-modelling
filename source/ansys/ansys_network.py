@@ -49,7 +49,7 @@ class AnsysNetwork(Ansys, UnitConversion):
         self.define_element_constant(element_number=element_number, element_constant=eff_area)
         self.define_element_density(element_number=element_number, value=class_mat.g10_dens)
         g10_therm_cond = class_mat.calculate_thermal_conductivity()
-        g10_cp = class_mat.calculate_cv()
+        g10_cp = class_mat.calculate_volumetric_heat_capacity()
 
         for j in range(len(g10_therm_cond[:, 0])):
             self.define_temperature_for_material_property(table_placement=j+1, temperature=g10_therm_cond[j, 0])
@@ -73,7 +73,7 @@ class AnsysNetwork(Ansys, UnitConversion):
         equivalent_winding_area = class_mat.reduced_wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
         self.define_element_constant(element_number=element_number, element_constant=equivalent_winding_area)  # need to calculate the area
         self.define_element_density(element_number=element_number, value=class_mat.cu_dens)
-        cu_rho = class_mat.calculate_resistivity(magnetic_field=magnetic_field, rrr=class_mat.rrr)
+        cu_rho = class_mat.calculate_electrical_resistivity(magnetic_field=magnetic_field, rrr=class_mat.rrr)
         cu_therm_cond = class_mat.calculate_thermal_conductivity(magnetic_field=magnetic_field, rrr=class_mat.rrr)
         winding_cp = class_mat.calculate_winding_eq_cv(magnetic_field=magnetic_field)
         for j in range(len(cu_therm_cond[:, 0])):

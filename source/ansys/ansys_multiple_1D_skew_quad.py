@@ -51,7 +51,7 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D):
         self.define_element_constant(element_number=element_number, element_constant=insulation_area)
         self.define_element_density(element_number=element_number, value=class_mat.g10_dens)
         g10_therm_cond = class_mat.calculate_thermal_conductivity()
-        g10_cp = class_mat.calculate_cv()
+        g10_cp = class_mat.calculate_volumetric_heat_capacity()
 
         for j in range(len(g10_therm_cond[:, 0])):
             self.define_temperature_for_material_property(table_placement=j+1, temperature=g10_therm_cond[j, 0])

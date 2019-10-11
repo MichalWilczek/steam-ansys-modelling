@@ -41,11 +41,12 @@ from source.pre_processor.pre_processor_heat_balance import PreProcessorHeatBala
 from source.post_processor.post_processor_heat_balance import PostProcessorHeatBalance
 from source.post_processor.post_processor_quench_velocity import PostProcessorQuenchVelocity
 
-from source.materials.nb_ti_nonlinear_materials import NbTiNonlinearMaterials
-from source.materials.cu_nonlinear_materials import CuNonlinearMaterials
-from source.materials.g10_nonlinear_materials import G10NonlinearMaterials
-from source.materials.insulation_linear_material import InsulationLinearMaterial
-from source.materials.winding_linear_material import WindingLinearMaterial
+from source.materials.material_properties import MaterialProperties
+from source.materials.nb_ti_material_properties import NbTiMaterialProperties
+from source.materials.cu_material_properties import CuMaterialProperties
+from source.materials.g10_material_properties import G10MaterialProperties
+from source.materials.insulation_linear_material_properties import InsulationLinearMaterialProperties
+from source.materials.winding_linear_material_properties import WindingLinearMaterialProperties
 
 class Factory(AnalysisLauncher, GeneralFunctions):
 
@@ -181,49 +182,76 @@ class Factory(AnalysisLauncher, GeneralFunctions):
         else:
             raise ValueError("Class PostProcessor was not properly defined - change the name of 'analysis type'")
 
-    def get_superconductor_class(self, temperature_profile):
+    def get_superconductor_class(self, temperature_profile, output_directory_materials):
+
         if self.input_data.material_settings.type == "nonlinear":
-            if self.input_data.material_settings.superconductor_name == "Nb-Ti":
-                return NbTiNonlinearMaterials(temperature_profile)
+            if self.input_data.material_settings.input.superconductor_name == "Nb-Ti":
+                return NbTiMaterialProperties(
+                    temperature_profile,
+                    txt_output=self.input_data.material_settings.input.txt_data_output,
+                    png_output=self.input_data.material_settings.input.png_data_output,
+                    output_directory=output_directory_materials,
+                    magnetic_field_list=self.input_data.material_settings.input.magnetic_field_value_list
+                )
             else:
                 raise ValueError("Material does not exist in the library.")
         elif self.input_data.material_settings.type == "linear":
-            return WindingLinearMaterial(temperature_profile)
+            return WindingLinearMaterialProperties(
+                temperature_profile,
+                txt_output=self.input_data.material_settings.input.txt_data_output,
+                png_output=self.input_data.material_settings.input.png_data_output,
+                output_directory=output_directory_materials
+            )
         else:
-            raise ValueError("Material does not exist in the library.")
+            raise ValueError("Type of the material does not exist.")
 
-    def get_normal_conductor_class(self, temperature_profile):
+    def get_normal_conductor_class(self, temperature_profile, output_directory_materials):
         if self.input_data.material_settings.type == "nonlinear":
-            if self.input_data.material_settings.superconductor_name == "Cu":
-                return CuNonlinearMaterials(temperature_profile)
+            magnetic_field_value_list = self.input_data.material_settings.input.magnetic_field_value_list
+            if self.input_data.material_settings.input.normal_conductor_name == "Cu":
+                return CuMaterialProperties(
+                    temperature_profile,
+                    rrr=self.input_data.material_settings.input.rrr,
+                    txt_output=self.input_data.material_settings.input.txt_data_output,
+                    png_output=self.input_data.material_settings.input.png_data_output,
+                    output_directory=output_directory_materials,
+                    magnetic_field_list=magnetic_field_value_list
+                )
             else:
                 raise ValueError("Material does not exist in the library.")
         elif self.input_data.material_settings.type == "linear":
-            if self.input_data.material_settings.superconductor_name == "Cu":
-                pass
-            else:
-                raise ValueError("Material does not exist in the library.")
+            return WindingLinearMaterialProperties(
+                temperature_profile,
+                txt_output=self.input_data.material_settings.input.txt_data_output,
+                png_output=self.input_data.material_settings.input.png_data_output,
+                output_directory=output_directory_materials
+            )
+        else:
+            raise ValueError("Type of the material does not exist.")
 
-    def get_insulation_class(self, temperature_profile):
+    def get_insulation_class(self, temperature_profile, output_directory_materials):
         if self.input_data.material_settings.type == "nonlinear":
-            if self.input_data.material_settings.insulation_name == "G10":
-                return G10NonlinearMaterials(temperature_profile)
+            if self.input_data.material_settings.input.insulation_name == "G10":
+                return G10MaterialProperties(
+                    temperature_profile,
+                    txt_output=self.input_data.material_settings.input.txt_data_output,
+                    png_output=self.input_data.material_settings.input.png_data_output,
+                    output_directory=output_directory_materials
+                )
             else:
                 raise ValueError("Material does not exist in the library.")
         elif self.input_data.material_settings.type == "linear":
-            if self.input_data.material_settings.insulation_name == "G10":
-                pass
-            else:
-                raise ValueError("Material does not exist in the library.")
+            return InsulationLinearMaterialProperties(
+                temperature_profile,
+                txt_output=self.input_data.material_settings.input.txt_data_output,
+                png_output=self.input_data.material_settings.input.png_data_output,
+                output_directory=output_directory_materials
+            )
+        else:
+            raise ValueError("Type of the material does not exist.")
 
-    # def get_material_properties_class(self, factory):
-    #     """
-    #     Chooses between linear and nonlinear material properties set in json file
-    #     :return: Class with material properties
-    #     """
-    #     if self.input_data.material_settings.type == "linear":
-    #         return LinearMaterials(factory)
-    #     elif self.input_data.material_settings.type == "nonlinear":
-    #         return Materials(factory)
-    #     else:
-    #         raise ValueError("Class MaterialProperties does not exist")
+    @staticmethod
+    def get_material_properties_class(factory):
+        output_directory_materials = GeneralFunctions.create_folder_in_directory(factory.output_directory,
+                                                                                 "material_properties")
+        return MaterialProperties(factory, output_directory_materials)

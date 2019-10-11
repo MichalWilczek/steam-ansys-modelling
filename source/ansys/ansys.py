@@ -26,7 +26,7 @@ class Ansys(GeneralFunctions):
         self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)  # real constant interpreted as volume with density and specific heat defined as material properties
         self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)  # heat generation independent of temperature
 
-        res_cp = class_mat.calculate_cv()
+        res_cp = class_mat.calculate_volumetric_heat_capacity()
         for j in range(len(res_cp[:, 0])):
             self.define_temperature_for_material_property(table_placement=j+1, temperature=res_cp[j, 0])
             self.define_element_heat_capacity(element_number=element_number, value=res_cp[j, 1])
@@ -48,7 +48,7 @@ class Ansys(GeneralFunctions):
         self.enter_preprocessor()
         strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
         current = self.input_data.circuit_settings.electric_ansys_element_input.current_init
-        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=strand_diameter, current=current)
+        heat_gen_array = class_mat.create_joule_heating_density_profile(magnetic_field, wire_diameter=strand_diameter, current=current)
         self.create_dim_table(dim_name="heatgen", dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
         self.fill_dim_table(dim_name="heatgen", row=0, column=1, value=0.0)
         for i in range(len(heat_gen_array[:, 0])):

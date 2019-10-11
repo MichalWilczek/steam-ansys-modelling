@@ -35,7 +35,7 @@ class AnalysisLauncher(GeneralFunctions):
         os.chdir(path)
         if AnalysisLauncher.check_if_object_exists_in_directory(path, filename=json_filename):
             with open(json_filename) as json_file :
-                data = json.load(json_file, object_hook=lambda d : namedtuple(class_name, d.keys())(*d.values()))
+                data = json.load(json_file, object_hook=lambda d: namedtuple(class_name, d.keys())(*d.values()))
                 return data
         else:
             raise ValueError("Please, create input .json file in input output_directory.")
