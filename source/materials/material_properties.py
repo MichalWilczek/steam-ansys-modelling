@@ -73,8 +73,8 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
     def create_temperature_step(temp_min, temp_max, number_temp_points=100):
         """
         Creates temperature values to be input in all material properties functions
-        :param temp_min: minimum temperature as integer
-        :param temp_max: maximum temperature as integer
+        :param temp_min: minimum temperature as float
+        :param temp_max: maximum temperature as float
         :param number_temp_points: number of temperature points to be defined as integer
         :return: list of temperature steps
         """
