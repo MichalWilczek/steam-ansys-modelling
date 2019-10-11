@@ -5,7 +5,7 @@
 ## Prerequisites
 In order to run the script, the user should have the installed version of ANSYS APDL.
 
-##### Initial Simulation Settings
+##### Analysis Settings
 The first part of configuration corresponds to definition of basic simulation settings. 
 ```json
 {"analysis_settings": {
@@ -30,31 +30,6 @@ time_step_min_ansys | ms | Minimum time step applied within the automatic ANSYS 
 time_step_max_ansys | ms | Maximum time step applied within the automatic ANSYS time stepping algorithm. It must be smaller than the time_step_cosimulation.
 current_init | A | Initial current set in the analysis.
 
-##### Temperature Distribution Settings
-The user should decide what what type of temperature conditions will be applied in the analysis. 
-```json
-{"temperature_init_distribution": {
-	"type": "gaussian",
-	"input": {
-		"temperature_init": 1.9, 
-		"temperature_max_init_quenched_zone": 10.0, 
-		"magnetic_field_initially_quenched_winding": 2.0}	
-}}
-```
-There are two different types available: uniform and gaussian. Each of them requires different input as described below: 
-
- Type | Required Input 
- ---- | --------------
- gaussian | temperature_init, temperature_max_init_quenched_zone
- uniform | temperature_init, temperature_max_init_quenched_zone, magnetic_field_initially_quenched_winding
-
-Temperature distribution settings is composed of:
-
- Argument | Units | Description 
- -------- | ----- | ----------- 
- temperature_init | K | Initial temperature set outside of the initially quenched zone.
- temperature_max_init_quenched_zone | K | Maximum temperature set in the quenched zone.
- magnetic_field_initially_quenched_winding | T | Magnetic field value in the winding where the initial quench is triggered. This value is only required for the initial gaussian distribution whose borders of the quenched zone are at critical temperature dependent on the magnetic field strength.
 
 ##### Analysis Type Settings
 The programme is written in order to perform one- and multi-dimensional analysis based on quench velocity algorithm. However, it is also possible 
@@ -82,15 +57,6 @@ The analysis type input settings is presented below:
  --------  | ----------- 
  constant | Applies constant quench velocity.
  numerical | Initial temperature set outside of the initially quenched zone.
-
-The user options for the analysis of the electric circuit
-```json
-{"circuit_settings": {
-    "build_electric_circuit": false,
-    "input": {"transient_electric_analysis": false}
-	}
-}
-```
 
 ##### Material Properties Settings
 Material properties settings definition is composed of:
@@ -131,7 +97,7 @@ is presented below:
 }
 ```
 
-
+##### Magnetic Field Mapping Settings
 The user magnetic field
 ```json
 {"magnetic_field_settings": {
@@ -140,6 +106,43 @@ The user magnetic field
 	}
 }
 ```
+
+##### Electric Circuit Settings
+The user options for the analysis of the electric circuit
+```json
+{"circuit_settings": {
+    "build_electric_circuit": false,
+    "input": {"transient_electric_analysis": false}
+	}
+}
+```
+
+##### Temperature Distribution Settings
+
+The user should decide what what type of temperature conditions will be applied in the analysis. 
+```json
+{"temperature_init_distribution": {
+	"type": "gaussian",
+	"input": {
+		"temperature_init": 1.9, 
+		"temperature_max_init_quenched_zone": 10.0, 
+		"magnetic_field_initially_quenched_winding": 2.0}	
+}}
+```
+There are two different types available: uniform and gaussian. Each of them requires different input as described below: 
+
+ Type | Required Input 
+ ---- | --------------
+ gaussian | temperature_init, temperature_max_init_quenched_zone
+ uniform | temperature_init, temperature_max_init_quenched_zone, magnetic_field_initially_quenched_winding
+
+Temperature distribution settings is composed of:
+
+ Argument | Units | Description 
+ -------- | ----- | ----------- 
+ temperature_init | K | Initial temperature set outside of the initially quenched zone.
+ temperature_max_init_quenched_zone | K | Maximum temperature set in the quenched zone.
+ magnetic_field_initially_quenched_winding | T | Magnetic field value in the winding where the initial quench is triggered. This value is only required for the initial gaussian distribution whose borders of the quenched zone are at critical temperature dependent on the magnetic field strength.
 
 ##### Geometry Settings
 At the moment, the programme works for two types of geometries: skew quadrupole and so called "slab" which is a 1D cable 
