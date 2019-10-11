@@ -92,6 +92,28 @@ The user options for the analysis of the electric circuit
 }
 ```
 
+##### Material Properties Settings
+Material properties settings definition is composed of:
+
+ Argument | Units | Type | Description 
+ -------- | ----- | ---- | ----------- 
+ nonsupercond_to_supercond_ratio | - | linear, nonlinear | Non-superconductor to superconductor ratio 
+ rrr | - | nonlinear |Residual resistivity ratio of the normal conductor 
+ min_temperature_property | K | linear, nonlinear | Minimum temperature of material properties in ANSYS 
+ max_temperature_property | K | linear, nonlinear | Maximum temperature of material properties in ANSYS 
+ superconductor_name | - | nonlinear | Superconductor name, only works for 'Nb-Ti' 
+ normal_conductor_name | - | nonlinear | Normal conductor name, only works for 'Cu'
+ insulation_name | - | nonlinear | Insulation name, only works for 'G10'
+ txt_data_output | - | linear, nonlinear | Specifies whether txt files with material properties should be saved
+ png_data_output | - | linear, nonlinear | Specifies whether png files with material properties should be saved
+ magnetic_field_value_list | T | nonlinear | Specifies at what magnetic field values the material property should be evaluated for saving 
+ 
+
+ 
+ 
+
+
+
 The user should choose material properties
 ```json
 {"material_properties_settings": {
