@@ -50,18 +50,23 @@ from source.materials.winding_linear_material_properties import WindingLinearMat
 
 class Factory(AnalysisLauncher, GeneralFunctions):
 
-    def __init__(self, directory):
-        AnalysisLauncher.__init__(self, directory)
-        self.input_data = self.get_input_data_class()
+    def __init__(self, json_directory, json_filename):
+        self.input_data = self.get_input_data_class(json_directory, json_filename)
+        AnalysisLauncher.__init__(self, self.input_data, json_directory, json_filename)
 
-    def get_input_data_class(self):
+    def get_input_data_class(self, json_directory, json_filename):
         """
         Converts .json file input into a class with subclasses
         """
-        return self.convert_json_to_class_object(class_name="InputUser", json_filename='input_ansys_modelling.json')
+        return AnalysisLauncher.convert_json_to_class_object(
+            json_filename_directory=json_directory, json_filename=json_filename)
 
     @staticmethod
     def get_source_directory():
+        """
+        Returns the directory of the main repository with Python scripts
+        :return: directory as string
+        """
         return os.path.dirname(source.__file__)
 
     def get_ansys_scripts_directory(self):
@@ -76,6 +81,11 @@ class Factory(AnalysisLauncher, GeneralFunctions):
             raise ValueError("Directory does not exist")
 
     def get_geometry_class(self, factory):
+        """
+        Returns the geometry Class instance
+        :param factory: Class factory
+        :return: Class
+        """
         if self.input_data.geometry_settings.dimensionality == "1D" or \
                 self.input_data.geometry_settings.dimensionality == "multiple_1D":
             return GeometryMulti1D(factory)
@@ -85,6 +95,11 @@ class Factory(AnalysisLauncher, GeneralFunctions):
             raise ValueError("Class Geometry does not exist")
 
     def get_ansys_class(self, factory):
+        """
+        Returns the ANSYS Class instance
+        :param factory: Class factory
+        :return: Class
+        """
         if self.input_data.geometry_settings.dimensionality == "1D":
                 return Ansys1D(factory, ansys_input_directory=self.get_ansys_scripts_directory())
         elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
@@ -182,8 +197,15 @@ class Factory(AnalysisLauncher, GeneralFunctions):
         else:
             raise ValueError("Class PostProcessor was not properly defined - change the name of 'analysis type'")
 
-    def get_superconductor_class(self, temperature_profile, output_directory_materials):
-
+    def get_superconductor_class(self, temperature_profile, output_directory_materials=None):
+        """
+        Returns a Class with superconductor material properties
+        :param temperature_profile: 1D numpy array with temperatures at which the
+        material properties should be evaluated
+        :param output_directory_materials: output directory where material properties files should be saved as string,
+        default as None
+        :return: Class instance
+        """
         if self.input_data.material_settings.type == "nonlinear":
             if self.input_data.material_settings.input.superconductor_name == "Nb-Ti":
                 return NbTiMaterialProperties(
@@ -191,8 +213,7 @@ class Factory(AnalysisLauncher, GeneralFunctions):
                     txt_output=self.input_data.material_settings.input.txt_data_output,
                     png_output=self.input_data.material_settings.input.png_data_output,
                     output_directory=output_directory_materials,
-                    magnetic_field_list=self.input_data.material_settings.input.magnetic_field_value_list
-                )
+                    magnetic_field_list=self.input_data.material_settings.input.magnetic_field_value_list)
             else:
                 raise ValueError("Material does not exist in the library.")
         elif self.input_data.material_settings.type == "linear":
@@ -205,7 +226,15 @@ class Factory(AnalysisLauncher, GeneralFunctions):
         else:
             raise ValueError("Type of the material does not exist.")
 
-    def get_normal_conductor_class(self, temperature_profile, output_directory_materials):
+    def get_normal_conductor_class(self, temperature_profile, output_directory_materials=None):
+        """
+        Returns a Class with normal-conductor material properties
+        :param temperature_profile: temperature_profile: 1D numpy array with temperatures at which the
+        material properties should be evaluated
+        :param output_directory_materials: output directory where material properties files should be saved as string,
+        default as None
+        :return: Class instance
+        """
         if self.input_data.material_settings.type == "nonlinear":
             magnetic_field_value_list = self.input_data.material_settings.input.magnetic_field_value_list
             if self.input_data.material_settings.input.normal_conductor_name == "Cu":
@@ -215,8 +244,7 @@ class Factory(AnalysisLauncher, GeneralFunctions):
                     txt_output=self.input_data.material_settings.input.txt_data_output,
                     png_output=self.input_data.material_settings.input.png_data_output,
                     output_directory=output_directory_materials,
-                    magnetic_field_list=magnetic_field_value_list
-                )
+                    magnetic_field_list=magnetic_field_value_list)
             else:
                 raise ValueError("Material does not exist in the library.")
         elif self.input_data.material_settings.type == "linear":
@@ -224,20 +252,26 @@ class Factory(AnalysisLauncher, GeneralFunctions):
                 temperature_profile,
                 txt_output=self.input_data.material_settings.input.txt_data_output,
                 png_output=self.input_data.material_settings.input.png_data_output,
-                output_directory=output_directory_materials
-            )
+                output_directory=output_directory_materials)
         else:
             raise ValueError("Type of the material does not exist.")
 
     def get_insulation_class(self, temperature_profile, output_directory_materials):
+        """
+        Returns a Class with insulation material properties
+        :param temperature_profile: temperature_profile: 1D numpy array with temperatures at which the
+        material properties should be evaluated
+        :param output_directory_materials: output directory where material properties files should be saved as string,
+        default as None
+        :return: Class instance
+        """
         if self.input_data.material_settings.type == "nonlinear":
             if self.input_data.material_settings.input.insulation_name == "G10":
                 return G10MaterialProperties(
                     temperature_profile,
                     txt_output=self.input_data.material_settings.input.txt_data_output,
                     png_output=self.input_data.material_settings.input.png_data_output,
-                    output_directory=output_directory_materials
-                )
+                    output_directory=output_directory_materials)
             else:
                 raise ValueError("Material does not exist in the library.")
         elif self.input_data.material_settings.type == "linear":
@@ -245,13 +279,17 @@ class Factory(AnalysisLauncher, GeneralFunctions):
                 temperature_profile,
                 txt_output=self.input_data.material_settings.input.txt_data_output,
                 png_output=self.input_data.material_settings.input.png_data_output,
-                output_directory=output_directory_materials
-            )
+                output_directory=output_directory_materials)
         else:
             raise ValueError("Type of the material does not exist.")
 
     @staticmethod
     def get_material_properties_class(factory):
+        """
+        Returns a Class which is the engine for material properties evaluation
+        :param factory: Class with input data instances from factory
+        :return: Class with material properties evaluation engine
+        """
         output_directory_materials = GeneralFunctions.create_folder_in_directory(factory.output_directory,
                                                                                  "material_properties")
         return MaterialProperties(factory, output_directory_materials)

@@ -2,8 +2,9 @@
 from source.factory.factory import Factory
 
 # creation of analysis directories
-analysis_directory = "C:\\gitlab\\quench_modelling_test_analyses"
-factory = Factory(analysis_directory)
+json_file_directory = "C:\\gitlab\\quench_modelling_test_analyses\\input"
+json_filename = "input_ansys_modelling.json"
+factory = Factory(json_file_directory, json_filename)
 
 ######################################################
 # DEFINITION OF INITIAL INSTANCES TO RUN THE PROGRAMME
@@ -106,4 +107,4 @@ for i in range(2, len(solver.time_step_vector)):
 postprocessor.make_gif()
 ans.save_analysis()
 ans.terminate_analysis()
-factory.copy_ansys_analysis_files_to_output_directory()
+factory.copy_ansys_analysis_files_to_output_results_directory()

@@ -109,7 +109,7 @@ class QuenchDetect(object):
             for key in item:
                 array = item[key]
                 mag_field = magnetic_map_dict[key]
-                critic_temp = self.mat_props.calculate_critical_temperature(magnetic_field=mag_field)
+                critic_temp = self.mat_props.superconductor.calculate_critical_temperature(magnetic_field=mag_field)
                 temporary_quenched_nodes = array[np.where(array[:, 1] >= critic_temp)]
                 if len(temporary_quenched_nodes) != 0:
                     quenched_nodes.append(temporary_quenched_nodes)

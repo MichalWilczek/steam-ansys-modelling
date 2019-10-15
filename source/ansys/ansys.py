@@ -18,19 +18,19 @@ class Ansys(GeneralFunctions):
             aasMapdlKey = f.read()
         self.mapdl = CORBA.ORB_init().string_to_object(aasMapdlKey)
 
-    def input_point_mass_material_properties(self, class_mat, elem_volume):
-        self.enter_preprocessor()
-        element_number = 2 * self.factory.number_of_windings() + 2
-        self.define_element_type(element_number=element_number, element_name="mass71")
-        self.define_element_constant(element_number=element_number, element_constant=elem_volume)
-        self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)  # real constant interpreted as volume with density and specific heat defined as material properties
-        self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)  # heat generation independent of temperature
-
-        res_cp = class_mat.calculate_volumetric_heat_capacity()
-        for j in range(len(res_cp[:, 0])):
-            self.define_temperature_for_material_property(table_placement=j+1, temperature=res_cp[j, 0])
-            self.define_element_heat_capacity(element_number=element_number, value=res_cp[j, 1])
-        return element_number
+    # def input_point_mass_material_properties(self, class_mat, elem_volume):
+    #     self.enter_preprocessor()
+    #     element_number = 2 * self.factory.number_of_windings() + 2
+    #     self.define_element_type(element_number=element_number, element_name="mass71")
+    #     self.define_element_constant(element_number=element_number, element_constant=elem_volume)
+    #     self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)  # real constant interpreted as volume with density and specific heat defined as material properties
+    #     self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)  # heat generation independent of temperature
+    #
+    #     res_cp = class_mat.calculate_volumetric_heat_capacity()
+    #     for j in range(len(res_cp[:, 0])):
+    #         self.define_temperature_for_material_property(table_placement=j+1, temperature=res_cp[j, 0])
+    #         self.define_element_heat_capacity(element_number=element_number, value=res_cp[j, 1])
+    #     return element_number
 
     # def input_heat_generation_curve(self, class_mat, magnetic_field):
     #     self.enter_preprocessor()
@@ -65,9 +65,9 @@ class Ansys(GeneralFunctions):
     #         self.fill_dim_table(dim_name=dim_name, row=i+1, column=0, value=heat_gen_array[i, 0])
     #         self.fill_dim_table(dim_name=dim_name, row=i+1, column=1, value=heat_gen_array[i, 1])
 
-    def input_heat_generation_on_windings(self, winding_number):
-        dim_name = "%heatgen_" + winding_number[7:] + "%"
-        self.set_heat_generation_in_nodes(node_number="all", value=dim_name)
+    # def input_heat_generation_on_windings(self, winding_number):
+    #     dim_name = "%heatgen_" + winding_number[7:] + "%"
+    #     self.set_heat_generation_in_nodes(node_number="all", value=dim_name)
 
     # def input_heat_flow_table(self, number_windings_heated=1.0, scaling_factor=1.0):
     #     self.enter_preprocessor()
@@ -123,6 +123,8 @@ class Ansys(GeneralFunctions):
         data.write_text('/show,png')
         data.write_text('electric_analysis={}'.format(GeneralFunctions.change_boolean_into_integer(
             self.input_data.circuit_settings.electric_ansys_elements)))
+        data.write_text('insulation_analysis =' + str(GeneralFunctions.change_boolean_into_integer(
+            self.input_data.geometry_settings.type_input.type_insulation_settings.insulation_analysis)))
 
     def select_nodes_list(self, nodes_list):
         """
@@ -131,9 +133,11 @@ class Ansys(GeneralFunctions):
         """
         for i in range(len(nodes_list)):
             if i == 0:
-                print(self.mapdl.executeCommandToString("nsel,s,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
+                print(self.mapdl.executeCommandToString(
+                    "nsel,s,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
             else:
-                print(self.mapdl.executeCommandToString("nsel,a,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
+                print(self.mapdl.executeCommandToString(
+                    "nsel,a,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1])))
 
     def unselect_nodes_list(self, nodes_list):
         """
@@ -324,7 +328,8 @@ class Ansys(GeneralFunctions):
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('lnsrch,on'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
-        print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal integration (default) into backward Euler formulation
+        print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal
+        # integration (default) into backward Euler formulation
 
     # postprocessor commands
     def create_file(self, filename, extension):

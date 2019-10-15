@@ -1,11 +1,31 @@
 
-import math
 from source.ansys.ansys_network import AnsysNetwork
 
 class AnsysMultiple1D(AnsysNetwork):
 
     def __init__(self, factory, ansys_input_directory):
         AnsysNetwork.__init__(self, factory, ansys_input_directory)
+
+    def input_insulation_material_properties(self, class_mat):
+        """
+        Inputs material properties for the insulation
+        """
+        self.enter_preprocessor()
+        element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 1
+        self.define_element_type(element_number=element_number, element_name="link33")
+        insulation_area = self.calculate_insulation_element_area()
+        self.define_element_constant(element_number=element_number, element_constant=insulation_area)
+        self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
+        insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
+        insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
+
+        for j in range(len(insulation_thermal_conductivity[:, 0])):
+            self.define_temperature_for_material_property(
+                table_placement=j+1, temperature=insulation_thermal_conductivity[j, 0])
+            self.define_element_conductivity(
+                element_number=element_number, value=insulation_thermal_conductivity[j, 1])
+            self.define_element_heat_capacity(
+                element_number=element_number, value=insulation_volumetric_heat_capacity[j, 1])
 
     def input_solver(self):
         """
@@ -26,7 +46,8 @@ class AnsysMultiple1D(AnsysNetwork):
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
     def select_nodes_in_analysis_mag(self, class_geometry, winding_number, x_down_node, x_up_node):
-        nodes_to_select = class_geometry.convert_imaginary_nodes_set_into_real_nodes_1d_1d_winding_number(winding_number=winding_number, x_down_node=x_down_node, x_up_node=x_up_node)
+        nodes_to_select = class_geometry.convert_imaginary_nodes_set_into_real_nodes_1d_1d_winding_number(
+            winding_number=winding_number, x_down_node=x_down_node, x_up_node=x_up_node)
         nodes_to_select_ansys = class_geometry.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_to_select)
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
@@ -34,40 +55,11 @@ class AnsysMultiple1D(AnsysNetwork):
         nodes_to_select_ansys = [[1, 1]]
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
-    def calculate_insulation_area_1d_1d_1d(self):
+    def calculate_insulation_element_area(self):
+        pass
 
-        if self.factory.number_of_windings() != 1:
-            strand_area = math.pi / 4.0 * self.STRAND_DIAMETER ** 2.0
-            winding_area = self.WINDING_SIDE ** 2.0
-            G10_volume_per_winding = (winding_area - strand_area) * self.factory.length_per_winding() * 1000.0  # [mm3]
-            G10_total_volume = G10_volume_per_winding * self.factory.number_of_windings()
-            total_number_of_G10_elements = (self.factory.number_of_windings() - 1) * (self.factory.division_per_winding() + 1)
-            volume_per_G10_element = G10_total_volume / total_number_of_G10_elements
-            G10_element_length = self.factory.transverse_dimension_winding() * 1000.0  # [mm]
-            G10_element_area = volume_per_G10_element / G10_element_length  # [mm2]
-            G10_element_area_meters2 = G10_element_area * 10.0 ** (-6.0)  # [m2]
-            print("G10_element_area = {} [m2]".format(G10_element_area_meters2))
-            return G10_element_area_meters2
-        else:
-            return 1.0
+    def calculate_total_winding_length(self):
+        pass
 
-    def calculate_insulation_area_1d_1d_1d_quadrupole(self):
-        if self.factory.number_of_windings() != 1:
-            strand_area = math.pi / 4.0 * self.STRAND_DIAMETER ** 2.0
-            winding_area = self.WINDING_SIDE ** 2.0
-            number_of_windings_in_layer = self.factory.number_of_windings_in_reel()
-            number_of_layers = self.factory.number_of_windings() / number_of_windings_in_layer
-            coil_total_length = self.factory.number_of_windings()*(2*self.COIL_SHORT_SIDE+2*self.COIL_LONG_SIDE)
-            G10_total_volume = coil_total_length*(winding_area-strand_area)
-            number_divisions_in_winding = (2.0 * self.factory.division_long_side() + 2.0 * self.factory.division_short_side())
-            number_of_transverse_insulation_elements_1 = (number_divisions_in_winding+1.0)*(number_of_windings_in_layer-1)*number_of_layers
-            number_of_transverse_insulation_elements_2 = (number_divisions_in_winding+1.0)*(number_of_layers-1)*number_of_windings_in_layer
-            total_number_of_G10_elements = number_of_transverse_insulation_elements_1+number_of_transverse_insulation_elements_2
-            volume_per_G10_element = G10_total_volume / total_number_of_G10_elements
-            G10_element_length = self.factory.transverse_dimension_winding() * 1000.0  # [mm]
-            G10_element_area = volume_per_G10_element / G10_element_length  # [mm2]
-            G10_element_area_meters2 = G10_element_area * 10.0 ** (-6.0)  # [m2]
-            print("G10_element_area = {} [m2]".format(G10_element_area_meters2))
-            return G10_element_area_meters2
-        else:
-            return 1.0
+    def calculate_number_of_elements_per_winding(self):
+        pass

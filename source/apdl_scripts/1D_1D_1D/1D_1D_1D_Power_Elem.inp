@@ -1,0 +1,52 @@
+
+
+! radius = (9+0.15)*0.001   ! [m]
+! initial_radius = radius
+
+! CREATE RESISTOR ELEMENT
+/prep7
+effective_ins_length = 0.0001679  !m
+res_volume = 2 ! mm3
+
+csys,0
+allsel
+*get,knum,kp,,count
+posx1 = coupling_span + nint(division_long_side/2)*(long_side-coupling_span)/division_long_side
+k,knum+1,posx1,-initial_radius+effective_ins_length,0
+
+allsel
+*get,knum,kp,,count
+posx2 = coupling_span + (nint(division_long_side/2)-1)*(long_side-coupling_span)/division_long_side
+k,knum+1,posx2,-initial_radius+effective_ins_length,0
+
+allsel
+*get,knum,kp,,count
+l,knum-1,knum,1
+allsel
+*get,lnum,line,,count
+lsel,s,line,,lnum
+cm,resistor,line
+
+res_area = res_volume*0.000001/abs(posx1-posx2)
+et,number_of_windings*2+2,link33
+r,number_of_windings*2+2,res_area
+
+allsel
+*get,lnum,line,,count
+type,number_of_windings*2+2
+real,number_of_windings*2+2
+mat,number_of_windings*2+2
+lmesh,lnum
+
+! CREATE INSULATION BETWEEN RESISTOR AND COIL
+type,number_of_windings*2+1
+real,number_of_windings*2+1
+mat,number_of_windings*2+1
+
+l,knum,nint(division_long_side/2),transverse_division_insulation
+l,knum-1,nint(division_long_side/2)+1,transverse_division_insulation
+
+allsel
+*get,lnum,line,,count
+lmesh,lnum
+lmesh,lnum-1

@@ -6,7 +6,7 @@ class Ansys2D(Ansys):
     def __init__(self, factory, ansys_input_directory):
         Ansys.__init__(self, factory, ansys_input_directory)
 
-    # TO BE MODIFED !!!
+    # it is an old script that can be modified for a future upgrade !!!
     def create_variable_file(self):
         """
         Creates an input file with parameters used by ANSYS
@@ -39,7 +39,8 @@ class Ansys2D(Ansys):
         self.set_ground(node_number="all", value=0)
 
     def select_nodes_in_analysis(self, class_geometry, x_down_node, x_up_node):
-        nodes_to_select = class_geometry.convert_imaginary_nodes_set_into_real_nodes(x_down_node=x_down_node, x_up_node=x_up_node)
+        nodes_to_select = class_geometry.convert_imaginary_nodes_set_into_real_nodes(
+            x_down_node=x_down_node, x_up_node=x_up_node)
         nodes_to_select_ansys = class_geometry.prepare_ansys_nodes_selection_list(real_nodes_list=nodes_to_select)
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
@@ -49,5 +50,6 @@ class Ansys2D(Ansys):
         self.select_nodes_list(nodes_list=nodes_to_select_ansys)
 
     def get_temperature_profile(self, class_geometry, npoints):
-        temperature_profile_1d = class_geometry.load_temperature_and_map_onto_1d_cable(directory=self.factory.get_ansys_scripts_directory(), npoints=npoints)
+        temperature_profile_1d = class_geometry.load_temperature_and_map_onto_1d_cable(
+            directory=self.factory.get_ansys_scripts_directory(), npoints=npoints)
         return temperature_profile_1d

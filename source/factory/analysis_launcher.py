@@ -8,77 +8,76 @@ from source.factory.general_functions import GeneralFunctions
 
 class AnalysisLauncher(GeneralFunctions):
 
-    def __init__(self, directory):
-        self.directory = directory
-        self.input_directory = os.path.join(directory, "input")
-        self.output_directory = self.get_analysis_directory(directory)
-        self.copy_input_folder_to_output_directory()
+    def __init__(self, input_data, json_directory, json_filename):
+        self.json_filename = json_filename
+        self.input_directory = json_directory
+        self.directory = input_data.analysis_output_directory
+        self.output_directory = AnalysisLauncher.get_output_directory(self.directory)
+        self.input_copy_directory = self.copy_input_json_file_to_output_directory()
 
     @staticmethod
-    def get_analysis_directory(analysis_directory):
+    def get_output_directory(analysis_directory):
         """
         Creates analysis output_directory where output files will be stored
         :param analysis_directory: as string
         :return: output analysis data output_directory as string
         """
-        output_directory = AnalysisLauncher.create_analysis_directories(analysis_directory)
+        output_directory = AnalysisLauncher.create_analysis_output_directories(analysis_directory)
         return output_directory
 
-    def convert_json_to_class_object(self, class_name, json_filename):
+    @staticmethod
+    def convert_json_to_class_object(json_filename, json_filename_directory, class_name="InputUser"):
         """
-        Creates input data class from a json file
-        :param class_name: class name as string
-        :param json_filename: filename as string
-        :return: created class
+        Creates input data Class from a json file
+        :param json_filename: as string
+        :param json_filename_directory: as string
+        :param class_name: as string, default: 'InputUser'
+        :return: Class with all input data from json file
         """
-        path = os.path.join(self.directory, 'input')
-        os.chdir(path)
-        if AnalysisLauncher.check_if_object_exists_in_directory(path, filename=json_filename):
-            with open(json_filename) as json_file :
+        if AnalysisLauncher.check_if_object_exists_in_directory(json_filename_directory, filename=json_filename):
+            with open(json_filename) as json_file:
                 data = json.load(json_file, object_hook=lambda d: namedtuple(class_name, d.keys())(*d.values()))
                 return data
         else:
-            raise ValueError("Please, create input .json file in input output_directory.")
+            raise ValueError(".json input file does not exist in specified directory.")
 
-    def copy_input_folder_to_output_directory(self, output_copy_foldername="input_copy"):
+    def copy_input_json_file_to_output_directory(self):
         """
         Copies all input files used in the analysis to the output output_directory
-        :param output_copy_foldername: copied input folder name as string
+        :return: directory with copied input files as string
         """
         os.chdir(self.output_directory)
-        input_directory = os.path.join(self.directory, "input")
-        input_copy_directory = os.path.join(self.output_directory, output_copy_foldername)
-        shutil.copytree(input_directory, input_copy_directory)
+        input_copy_directory = GeneralFunctions.create_folder_in_directory(
+            directory=self.output_directory, foldername="input_copy")
+        input_json_file_directory = os.path.join(self.input_directory, self.json_filename)
+        shutil.copy(input_json_file_directory, input_copy_directory)
+        return input_copy_directory
 
     @staticmethod
-    def create_analysis_directories(analysis_directory, output_foldername="output", input_foldername="input"):
+    def create_analysis_output_directories(analysis_directory):
         """
         Creates the output_directory for the output files in the folder 'output'
-        :param analysis_directory: analysis output_directory as string
-        :param output_foldername: as string
-        :param input_foldername: as string
+        :param analysis_directory: analysis directory as string
         :return: output_directory for the output files as string
         """
-        if not AnalysisLauncher.check_if_object_exists_in_directory(analysis_directory, input_foldername):
-            raise ValueError("Please, create 'input' folder in specified analysis output_directory.")
-        if not AnalysisLauncher.check_if_object_exists_in_directory(analysis_directory, output_foldername):
-            AnalysisLauncher.create_folder_in_directory(analysis_directory, output_foldername)
-        path = os.path.join(analysis_directory, output_foldername)
-        last_analysis_folder = AnalysisLauncher.count_number_of_analysis_folders_in_directory(path)
-        AnalysisLauncher.create_folder_in_directory(directory=path, foldername=str(last_analysis_folder+1))
-        path_final = os.path.join(path, str(last_analysis_folder+1))
+        last_analysis_folder = AnalysisLauncher.count_number_of_analysis_output_folders_in_directory(analysis_directory)
+        AnalysisLauncher.create_folder_in_directory(
+            directory=analysis_directory, foldername=str(last_analysis_folder+1))
+        path_final = os.path.join(analysis_directory, str(last_analysis_folder+1))
         return path_final
 
-    def copy_ansys_analysis_files_to_output_directory(self):
+    def copy_ansys_analysis_files_to_output_results_directory(self):
+        """
+        Cuts the ANSYS files from the ANSYS initial directory and pastes them to the final output directory specified
+        by the user
+        """
         time.sleep(2)
         list_files = os.listdir(self.directory)
-        list_files.remove("input")
-        list_files.remove("output")
-        os.chdir(self.directory)
         for file in list_files:
-            shutil.copy(file, self.output_directory)
-        for file in list_files:
-            GeneralFunctions.delete_file(file, self.directory)
+            path = os.path.join(self.directory, file)
+            if os.path.isfile(path):
+                shutil.copy(path, self.output_directory)
+                GeneralFunctions.delete_file(file, self.directory)
 
     @staticmethod
     def copy_object_to_another_object(directory_to_copy, directory_destination):
@@ -105,7 +104,7 @@ class AnalysisLauncher(GeneralFunctions):
             return False
 
     @staticmethod
-    def count_number_of_analysis_folders_in_directory(directory):
+    def count_number_of_analysis_output_folders_in_directory(directory):
         """
         Returns the maximum folder number with hidden analyses in the analysis output_directory
         :param directory: output_directory as string

@@ -230,10 +230,10 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         :return: numpy array; 1st column temperature as float, 2nd column: Joule heating density as float
         """
         temperature_profile = MaterialProperties.create_temperature_step(
-            temp_min=self.input_data.material_settings.input.min_temperature_span,
-            temp_max=self.input_data.material_settings.input.max_temperature_span,
-            number_temp_points=(self.input_data.material_settings.input.max_temperature_span -
-                                self.input_data.material_settings.input.min_temperature_span)*10)
+            temp_min=self.input_data.material_settings.input.min_temperature_property,
+            temp_max=self.input_data.material_settings.input.max_temperature_property,
+            number_temp_points=(self.input_data.material_settings.input.max_temperature_property -
+                                self.input_data.material_settings.input.min_temperature_property)*10)
         heat_gen_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             heat_gen_array[i, 0] = temperature_profile[i]
@@ -252,7 +252,7 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
                                     joule_heating_density_array)
         MaterialPropertiesPlotter.plot_material_properties(
             directory=self.output_directory_materials,
-            filename="joule_heating_density_profile.png" + MaterialPropertiesUnits.power_density_unit,
+            filename="joule_heating_density_profile.png",
             array=joule_heating_density_array,
             y_axis_name="Joule Heating Density.png" + MaterialPropertiesUnits.power_density_unit)
 
