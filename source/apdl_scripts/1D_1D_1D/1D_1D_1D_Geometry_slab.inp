@@ -3,6 +3,7 @@ winding_counter = 1
 reel_number = 1
 is_reel_number_odd = mod(reel_number, 2)
 kp_per_winding = division_per_winding+1
+ins_elem_number = number_of_windings*2+1
 
 x=0
 y=0
@@ -105,7 +106,7 @@ z=0
             *endif
 
             type,ins_elem_number
-            real,ins_elem_number+(j-1)
+            real,ins_elem_number
             mat,ins_elem_number
             allsel
             *get,lnum,line,,count
@@ -181,9 +182,10 @@ z=0
 *if,insulation_analysis,eq,1,then
   allsel
   tolerance_range = trans_dimension_winding - 2*eq_trans_dimension_insulation
-  *do,j,1,number_of_windings,1
+  *do,j,1,number_of_windings,2
     *do,i,1,kp_per_winding*4,1,1
       nnode = insulation_tip_nodes_array%j%(i)
+
       csys,0
       allsel
       *get,nposx,node,nnode,loc,x
@@ -197,10 +199,14 @@ z=0
       cmsel,u,winding_with_insulation_nodes%j%
 
       *get,num_node,node,,count
+
       *if,num_node,eq,1,then
         *get,num_node,node,,num,max
         allsel
-        cp,next,temp,nnode,num_node
+        nsel,s,node,,num_node
+        nsel,a,node,,nnode
+        cp,next,temp,all
+        ! cp,next,temp,nnode,num_node
       *endif
     *enddo
   *enddo

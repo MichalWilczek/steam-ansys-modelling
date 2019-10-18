@@ -2,8 +2,8 @@
 from source.factory.factory import Factory
 
 # creation of analysis directories
-json_file_directory = "C:\\gitlab\\quench_modelling_test_analyses\\input"
-json_filename = "input_ansys_modelling.json"
+json_file_directory = "C:\\1D_COMSOL_ANSYS_Benchmarking\\no_insulation"
+json_filename = "input.json"
 factory = Factory(json_file_directory, json_filename)
 
 ######################################################
@@ -29,9 +29,6 @@ coil_geo = factory.get_geometry_class(factory)
 preprocessor.include_class_geometry_in_class_instance(class_geometry=coil_geo)
 # input circuit creator
 circuit = factory.get_circuit_class(ansys_commands=ans, class_geometry=coil_geo, factory=factory)
-# save before entering the solver
-ans.save_analysis()
-ans.finish()
 
 ############################
 # INITIAL TIME STEP SOLVER #

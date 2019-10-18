@@ -168,24 +168,6 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         winding_eq_cv = self.f_non_superconductor*normal_conductor_cv + self.f_superconductor*superconductor_cv
         return winding_eq_cv
 
-    def calculate_current_in_copper_matrix(self, temperature, magnetic_field, current):
-        """
-        Calculates current level in copper matrix at superconducting, transition and normal state
-        :param temperature: reference temperature as float
-        :param magnetic_field: magnetic field as float
-        :param current: current as float
-        :return: current in copper as float
-        """
-        temp_critic = self.superconductor.calculate_critical_temperature(magnetic_field)
-        temp_cs = self.superconductor.calculate_current_sharing_temperature(temp_critic, current, magnetic_field)
-        ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
-        if temperature < temp_cs:
-            return 0.0
-        elif temp_cs <= temperature < temp_critic:
-            return current - ic
-        else:
-            return current
-
     @staticmethod
     def calculate_critical_current_ic(current, temperature, critical_temperature, current_sharing_temperature):
         """
@@ -211,13 +193,13 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         temp_critic = self.superconductor.calculate_critical_temperature(magnetic_field)
         temp_cs = self.superconductor.calculate_current_sharing_temperature(temp_critic, current, magnetic_field)
         reduced_area = self.reduced_wire_area(wire_diameter)*UnitConversion.milimeters2_to_meters2
-        ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
         normal_conductor_resistivity = self.normal_conductor.electrical_resistivity(magnetic_field, temperature,
                                                                                     rrr=self.normal_conductor.rrr)
         if temperature < temp_cs:
             return 0.0
-        elif temp_cs <= temperature < temp_critic:
-            return normal_conductor_resistivity*(current-ic)**2.0/(reduced_area**2.0)
+        elif temp_cs <= temperature <= temp_critic:
+            ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
+            return normal_conductor_resistivity * ic ** 2.0 / (reduced_area ** 2.0)
         else:
             return normal_conductor_resistivity*current**2.0/(reduced_area**2.0)
 

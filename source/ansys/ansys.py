@@ -45,7 +45,6 @@ class Ansys(GeneralFunctions):
     #     self.input_file(filename=filename, extension="inp")
 
     def input_heat_generation_table(self, class_mat, magnetic_field):
-        self.enter_preprocessor()
         strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
         current = self.input_data.circuit_settings.electric_ansys_element_input.current_init
         heat_gen_array = class_mat.create_joule_heating_density_profile(magnetic_field, wire_diameter=strand_diameter, current=current)

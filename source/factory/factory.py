@@ -8,11 +8,9 @@ import source
 from source.geometry.geometry_1D1D1D import GeometryMulti1D
 from source.geometry.geometry_2D import Geometry2D
 
-from source.ansys.ansys_1D import Ansys1D
 from source.ansys.ansys_multiple_1D_skew_quad import AnsysMultiple1DSkewQuad
 from source.ansys.ansys_multiple_1D_slab import AnsysMultiple1DSlab
 from source.ansys.ansys_2D import Ansys2D
-
 
 from source.post_processor.quench_velocity.quench_velocity import QuenchFront
 from source.post_processor.quench_velocity.quench_velocity_constant import QuenchFrontConst
@@ -100,9 +98,7 @@ class Factory(AnalysisLauncher, GeneralFunctions):
         :param factory: Class factory
         :return: Class
         """
-        if self.input_data.geometry_settings.dimensionality == "1D":
-                return Ansys1D(factory, ansys_input_directory=self.get_ansys_scripts_directory())
-        elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
+        if self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
                 self.input_data.geometry_settings.type == "skew_quadrupole":
             return AnsysMultiple1DSkewQuad(factory, ansys_input_directory=self.get_ansys_scripts_directory())
         elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
