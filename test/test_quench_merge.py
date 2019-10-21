@@ -1,7 +1,7 @@
 
 import unittest
-from source.post_processor.quench_velocity.quench_velocity_constant import QuenchFrontConst
-from source.post_processor.quench_velocity.quench_velocity_numerical import QuenchFrontNum
+from source.post_processor.quench_velocity.quench_front_constant import QuenchFrontConst
+from source.post_processor.quench_velocity.quench_front_numerical import QuenchFrontNum
 from source.post_processor.quench_velocity.quench_merge import QuenchMerge
 
 

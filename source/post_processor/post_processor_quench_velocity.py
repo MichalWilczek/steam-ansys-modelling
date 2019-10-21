@@ -68,9 +68,6 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
                                     newfile=False)
 
     def estimate_quench_velocity(self):
-
-        min_coil_length = self.geometry.coil_geometry[0, 1]
-        max_coil_length = self.geometry.coil_geometry[len(self.geometry.coil_geometry)-1, 1]
         magnetic_map = self.magnetic_map.im_short_mag_dict
 
         # calculate quench propagation
@@ -78,7 +75,7 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
             qf.return_quench_front_position(
                 initial_time=self.time_step_vector[self.iteration[0]-1],
                 final_time=self.time_step_vector[self.iteration[0]],
-                min_length=min_coil_length, max_length=max_coil_length, mag_field_map=magnetic_map)
+                min_length=self.min_coil_length, max_length=self.max_coil_length, mag_field_map=magnetic_map)
 
         # what if quench fronts meet
         self.quench_fronts = QuenchMerge.quench_merge(self.quench_fronts)

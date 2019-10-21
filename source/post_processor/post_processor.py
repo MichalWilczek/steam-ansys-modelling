@@ -32,6 +32,9 @@ class PostProcessor(Plots, QuenchDetect):
         self.time_step_vector = solver.time_step_vector
         self.iteration = solver.iteration
 
+        self.min_coil_length = self.geometry.coil_geometry[0, 1]
+        self.max_coil_length = self.geometry.coil_geometry[len(self.geometry.coil_geometry) - 1, 1]
+
     def get_temperature_profile(self):
         self.temperature_profile = self.ansys_commands.get_temperature_profile(
             npoints=self.npoints, class_geometry=self.geometry)

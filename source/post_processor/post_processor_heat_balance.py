@@ -6,9 +6,28 @@ class PostProcessorHeatBalance(PostProcessor):
 
     def __init__(self, class_geometry, ansys_commands, v_quench, solver, input_data):
         PostProcessor.__init__(self, class_geometry, ansys_commands, v_quench, solver, input_data)
+        init_quench_pos = self.define_initial_quench_position()
+        self.quench_fronts = [self.qf(x_down=init_quench_pos[0],
+                                      x_up=init_quench_pos[1],
+                                      label=self.quench_label,
+                                      class_geometry=self.geometry)]
+
+    def define_initial_quench_position(self):
+        x_down = self.input_data.analysis_settings.quench_init_position - \
+            self.input_data.analysis_settings.quench_init_length/2.0
+        x_up = self.input_data.analysis_settings.quench_init_position + \
+            self.input_data.analysis_settings.quench_init_length/2.0
+
+        if x_down < self.min_coil_length:
+            x_down = 0.0
+        if x_up > self.max_coil_length:
+            x_up = self.max_coil_length
+        return x_down, x_up
 
     def check_quench_state(self):
-        time_step = [self.time_step_vector[self.iteration[0]]][0]
+
+        time_step = [self.time_step_vector[self.iteration[0]]][0] - [self.time_step_vector[self.iteration[0]-1]][0]
+        time = [self.time_step_vector[self.iteration[0]]][0]
         q_v_time_array = []
         quench_fronts = []
         quench_front_new = self.q_det.detect_quench(quench_fronts, self.temperature_profile,
@@ -18,14 +37,22 @@ class PostProcessorHeatBalance(PostProcessor):
             if len(quench_front_new) > 0:
                 pos_x_down = quench_front_new[0][0]
                 pos_x_up = quench_front_new[0][1]
-                q_length_up = abs(pos_x_up - self.input_data.analysis_settings.quench_init_position)
-                q_length_down = abs(pos_x_down - self.input_data.analysis_settings.quench_init_position)
-                q_vel = ((q_length_up + q_length_down) / 2.0) / time_step
-                q_v_time_array[0, 0] = time_step
+
+                q_length_up = abs(pos_x_up - self.quench_fronts[0].x_up)
+                q_length_down = abs(pos_x_down - self.quench_fronts[0].x_down)
+
+                if q_length_up == 0.0:
+                    q_vel = q_length_down / time_step
+                elif q_length_down == 0.0:
+                    q_vel = q_length_up / time_step
+                else:
+                    q_vel = ((q_length_up + q_length_down) / 2.0) / time_step
+
+                q_v_time_array[0, 0] = time
                 q_v_time_array[0, 1] = q_length_down + q_length_up
                 q_v_time_array[0, 2] = q_vel
             else:
-                q_v_time_array[0, 0] = time_step
+                q_v_time_array[0, 0] = time
                 q_v_time_array[0, 1] = 0.0
                 q_v_time_array[0, 2] = 0.0
 
@@ -37,6 +64,10 @@ class PostProcessorHeatBalance(PostProcessor):
             self.write_line_in_file(directory=self.plots.output_directory_quench_state,
                                     filename="Q_V_array.txt", mydata=q_v_time_array,
                                     newfile=False)
+        for qf in quench_front_new:
+            self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label,
+                                          class_geometry=self.geometry)]
+
         for qf in quench_front_new:
             self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label,
                                           class_geometry=self.geometry)]

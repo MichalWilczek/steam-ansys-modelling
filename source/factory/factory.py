@@ -12,9 +12,9 @@ from source.ansys.ansys_multiple_1D_skew_quad import AnsysMultiple1DSkewQuad
 from source.ansys.ansys_multiple_1D_slab import AnsysMultiple1DSlab
 from source.ansys.ansys_2D import Ansys2D
 
-from source.post_processor.quench_velocity.quench_velocity import QuenchFront
-from source.post_processor.quench_velocity.quench_velocity_constant import QuenchFrontConst
-from source.post_processor.quench_velocity.quench_velocity_numerical import QuenchFrontNum
+from source.post_processor.quench_velocity.quench_front import QuenchFront
+from source.post_processor.quench_velocity.quench_front_constant import QuenchFrontConst
+from source.post_processor.quench_velocity.quench_front_numerical import QuenchFrontNum
 
 from source.magnetic_field.magnetic_field_constant import MagneticFieldConstant
 from source.magnetic_field.magnetic_field_2D_static import MagneticField2DStatic

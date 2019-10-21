@@ -1,5 +1,5 @@
 
-from source.post_processor.quench_velocity.quench_velocity import QuenchFront
+from source.post_processor.quench_velocity.quench_front import QuenchFront
 
 
 class QuenchFrontConst(QuenchFront):
