@@ -199,9 +199,9 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
             return 0.0
         elif temp_cs <= temperature <= temp_critic:
             ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
-            return normal_conductor_resistivity * ic ** 2.0 / (reduced_area ** 2.0)
+            return normal_conductor_resistivity * (ic / reduced_area)**2.0
         else:
-            return normal_conductor_resistivity*current**2.0/(reduced_area**2.0)
+            return normal_conductor_resistivity * (current / reduced_area)**2.0
 
     def create_joule_heating_density_profile(self, magnetic_field, wire_diameter, current):
         """

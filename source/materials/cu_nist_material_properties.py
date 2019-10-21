@@ -45,45 +45,38 @@ class CuNISTMaterialProperties(object):
         resistivity = rho_n * (1 + corr)
         return resistivity
 
-    # @staticmethod
-    # def thermal_conductivity(magnetic_field, temperature, rrr):
-    #     """
-    #     Calculates thermal conductivity of copper according to NIST standards
-    #     :param magnetic_field: magnetic field as float
-    #     :param temperature: temperature as float
-    #     :param rrr: residual resistivity ratio as float
-    #     :return: thermal conductivity as float
-    #     """
-    #     beta = 0.634 / rrr
-    #     beta_r = beta / (3.0 * 10.0 ** (-4.0))
-    #     p1 = 1.754 * 10.0 ** (-8.0)
-    #     p2 = 2.763
-    #     p3 = 1102.0
-    #     p4 = -0.165
-    #     p5 = 70.0
-    #     p6 = 1.756
-    #     p7 = 0.838 / (beta_r ** 0.1661)
-    #     w_0 = beta / temperature
-    #     w_i = p1 * temperature ** p2 / (1.0 + p1 * p3 * temperature ** (p2 + p4) * math.e **
-    #                                     (-(p5 / temperature) ** p6))
-    #     w_i0 = p7 * (w_i * w_0) / (w_i + w_0)
-    #     k_n = 1.0 / (w_0 + w_i + w_i0)
-    #     thermal_conductivity = k_n * \
-    #         (CuNISTMaterialProperties.electrical_resistivity(magnetic_field=0.0, temperature=temperature, rrr=rrr) /
-    #          CuNISTMaterialProperties.electrical_resistivity(magnetic_field=magnetic_field, temperature=temperature,
-    #                                                          rrr=rrr))
-    #     return thermal_conductivity
     @staticmethod
-    def thermal_conductivity(magnetic_field, temperature, rrr):
+    def thermal_conductivity(magnetic_field, temperature, rrr, wiedermann=False):
         """
-        Calculates thermal conductivity of copper according to Wiedermann formula
+        Calculates thermal conductivity of copper according to NIST standards
         :param magnetic_field: magnetic field as float
         :param temperature: temperature as float
         :param rrr: residual resistivity ratio as float
+        :param wiedermann: chooses wiedermann thermal conductivity formula; default as False
         :return: thermal conductivity as float
         """
-        electrical_resistivity = CuNISTMaterialProperties.electrical_resistivity(magnetic_field, temperature, rrr)
-        thermal_conductivity = 2.45 * 10.0**(-8.0) * temperature/electrical_resistivity
+        if wiedermann:
+            electrical_resistivity = CuNISTMaterialProperties.electrical_resistivity(magnetic_field, temperature, rrr)
+            thermal_conductivity = 2.45 * 10.0 ** (-8.0) * temperature / electrical_resistivity
+        else:
+            beta = 0.634 / rrr
+            beta_r = beta / (3.0 * 10.0 ** (-4.0))
+            p1 = 1.754 * 10.0 ** (-8.0)
+            p2 = 2.763
+            p3 = 1102.0
+            p4 = -0.165
+            p5 = 70.0
+            p6 = 1.756
+            p7 = 0.838 / (beta_r ** 0.1661)
+            w_0 = beta / temperature
+            w_i = p1 * temperature ** p2 / (1.0 + p1 * p3 * temperature ** (p2 + p4) * math.e **
+                                            (-(p5 / temperature) ** p6))
+            w_i0 = p7 * (w_i * w_0) / (w_i + w_0)
+            k_n = 1.0 / (w_0 + w_i + w_i0)
+            thermal_conductivity = k_n * \
+                (CuNISTMaterialProperties.electrical_resistivity(magnetic_field=0.0, temperature=temperature, rrr=rrr) /
+                 CuNISTMaterialProperties.electrical_resistivity(magnetic_field=magnetic_field, temperature=temperature,
+                                                                 rrr=rrr))
         return thermal_conductivity
 
     @staticmethod
