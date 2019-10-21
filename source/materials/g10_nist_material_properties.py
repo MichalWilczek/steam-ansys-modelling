@@ -3,6 +3,7 @@ import math
 
 class G10NISTMaterialProperties(object):
 
+    # Values taken from 'Review of ROXIE's Material Properties Database for Quench Simulation'
     density = 1948.0    # [kg/m3]
     density_fake = 1.0  # [kg/m3]
 
