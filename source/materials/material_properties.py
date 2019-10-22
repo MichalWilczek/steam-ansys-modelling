@@ -186,10 +186,11 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
                                 self.input_data.material_settings.input.min_temperature_property)*10)
         heat_gen_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
+            electrical_resistivity = self.normal_conductor.electrical_resistivity(
+                magnetic_field=magnetic_field, rrr=self.normal_conductor.rrr, temperature=temperature_profile[i])
             power_density = self.critical_current_density.calculate_joule_heating(
                 magnetic_field, current, temperature=temperature_profile[i], wire_area=wire_area,
-                normal_conductor_resistivity=self.normal_conductor.electrical_resistivity(
-                    magnetic_field, temperature=temperature_profile[i], rrr=self.super_to_normal_ratio),
+                normal_conductor_resistivity=electrical_resistivity,
                 superconductor_proportion=self.f_superconductor)
             heat_gen_array[i, 0] = temperature_profile[i]
             heat_gen_array[i, 1] = power_density

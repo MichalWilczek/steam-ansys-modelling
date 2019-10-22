@@ -12,14 +12,10 @@ class NbTiJcLowCurrent(NbTiCUDIMaterialProperties):
         current_density = NbTiJcLowCurrent.current_density(current, wire_area)
         resistivity = normal_conductor_resistivity*NbTiJcLowCurrent.check_if_domain_is_normal(
             critical_current_density, current_density)
-        print(current_density)
-        # print(resistivity * current_density**2.0)
         return resistivity * current_density**2.0
 
     @staticmethod
     def check_if_domain_is_normal(critical_current_density, current_density):
-        # x = max(1 - critical_current_density / (abs(current_density) + 10.0**(-3.0)), 0.0)
-        # print(x)
         return max(1 - critical_current_density / (abs(current_density) + 10.0**(-3.0)), 0.0)
 
     @staticmethod
@@ -32,9 +28,10 @@ class NbTiJcLowCurrent(NbTiCUDIMaterialProperties):
         :return: critical current density as float
         """
         critical_temperature = NbTiJcLowCurrent.critical_temperature(magnetic_field)
-        critical_current_density = max(0, (1.004*10.0**10.0 - 7.619*10.0**8.0 * magnetic_field +
-                                           2.797*10.0**10.0 * math.e**(-1.4 * magnetic_field) + 1.112*10.0**11.0 *
-                                           math.e**(-12 * magnetic_field)) * (1 - temperature / critical_temperature))
+        critical_current_density = max(0.0, (1.004*10.0**10.0 - 7.619*10.0**8.0 * magnetic_field +
+                                             2.797*10.0**10.0 * math.exp(-1.4 * magnetic_field) + 1.112*10.0**11.0 *
+                                             math.exp(-12 * magnetic_field)) * (1.0 - temperature /
+                                                                                critical_temperature))
         return critical_current_density * superconductor_proportion
 
     @staticmethod
@@ -52,7 +49,6 @@ class NbTiJcLowCurrent(NbTiCUDIMaterialProperties):
         :param magnetic_field: magnetic field as float
         :return: critical temperature as float
         """
-        critical_temperature = critical_temperature_0 * pow((1 - max(min(magnetic_field, 14.499), 0) /
-                                                             critical_magnetic_field_0), 0.59)
+        critical_temperature = critical_temperature_0 * (1 - max(min(magnetic_field, 14.499), 0.0) /
+                                                         critical_magnetic_field_0)**0.59
         return critical_temperature
-
