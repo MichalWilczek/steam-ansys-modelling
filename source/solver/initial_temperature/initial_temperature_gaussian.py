@@ -40,7 +40,8 @@ class InitialTemperatureGaussian(InitialTemperature):
         :param magnetic_field: magnetic field as float
         :return: coefficient as float
         """
-        temp_quench = self.material_properties.superconductor.calculate_critical_temperature(magnetic_field=magnetic_field)
+        temp_quench = self.material_properties.critical_current_density.critical_temperature(
+            magnetic_field=magnetic_field)
         temp_peak = self.input_data.temperature_settings.input.temperature_max_init_quenched_zone
         temp_operating = self.input_data.temperature_settings.input.temperature_init
         directional_quench_init_length = self.input_data.analysis_settings.quench_init_length / 2.0

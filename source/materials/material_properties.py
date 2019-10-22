@@ -28,6 +28,7 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
                                                                    self.output_directory_materials)
         self.insulation = factory.get_insulation_class(self.temperature_profile,
                                                        self.output_directory_materials)
+        self.critical_current_density = factory.get_critical_current_density_class()
 
         magnetic_field_list = self.input_data.material_settings.input.magnetic_field_value_list
         self.strand_equivalent_cv = []
@@ -168,41 +169,6 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         winding_eq_cv = self.f_non_superconductor*normal_conductor_cv + self.f_superconductor*superconductor_cv
         return winding_eq_cv
 
-    @staticmethod
-    def calculate_critical_current_ic(current, temperature, critical_temperature, current_sharing_temperature):
-        """
-        Calculates critical current
-        :param current: as float
-        :param temperature: reference temperature as float
-        :param critical_temperature: as float
-        :param current_sharing_temperature: as float
-        :return: critical current as float
-        """
-        return current * (temperature - current_sharing_temperature) / (
-                critical_temperature - current_sharing_temperature)
-
-    def calculate_joule_heating(self, magnetic_field, wire_diameter, current, temperature):
-        """
-        Calculates Joule heating power density in W/m3
-        :param magnetic_field: as float
-        :param wire_diameter: as float
-        :param current: as float
-        :param temperature: as float
-        :return: joule heating power density as float
-        """
-        temp_critic = self.superconductor.calculate_critical_temperature(magnetic_field)
-        temp_cs = self.superconductor.calculate_current_sharing_temperature(temp_critic, current, magnetic_field)
-        reduced_area = self.reduced_wire_area(wire_diameter)*UnitConversion.milimeters2_to_meters2
-        normal_conductor_resistivity = self.normal_conductor.electrical_resistivity(magnetic_field, temperature,
-                                                                                    rrr=self.normal_conductor.rrr)
-        if temperature < temp_cs:
-            return 0.0
-        elif temp_cs <= temperature <= temp_critic:
-            ic = self.calculate_critical_current_ic(current, temperature, temp_critic, temp_cs)
-            return normal_conductor_resistivity * (ic / reduced_area)**2.0
-        else:
-            return normal_conductor_resistivity * (current / reduced_area)**2.0
-
     def create_joule_heating_density_profile(self, magnetic_field, wire_diameter, current):
         """
         Returns initial Joule heating density profile as numpy array
@@ -211,6 +177,8 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         :param current: current as float
         :return: numpy array; 1st column temperature as float, 2nd column: Joule heating density as float
         """
+        wire_area = self.reduced_wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
+
         temperature_profile = MaterialProperties.create_temperature_step(
             temp_min=self.input_data.material_settings.input.min_temperature_property,
             temp_max=self.input_data.material_settings.input.max_temperature_property,
@@ -218,9 +186,13 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
                                 self.input_data.material_settings.input.min_temperature_property)*10)
         heat_gen_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
+            power_density = self.critical_current_density.calculate_joule_heating(
+                magnetic_field, current, temperature=temperature_profile[i], wire_area=wire_area,
+                normal_conductor_resistivity=self.normal_conductor.electrical_resistivity(
+                    magnetic_field, temperature=temperature_profile[i], rrr=self.super_to_normal_ratio),
+                superconductor_proportion=self.f_superconductor)
             heat_gen_array[i, 0] = temperature_profile[i]
-            heat_gen_array[i, 1] = self.calculate_joule_heating(
-                magnetic_field, wire_diameter, current, temperature=temperature_profile[i])
+            heat_gen_array[i, 1] = power_density
         self.extract_joule_heating_density_profile(heat_gen_array)
         return heat_gen_array
 
@@ -236,7 +208,7 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
             directory=self.output_directory_materials,
             filename="joule_heating_density_profile.png",
             array=joule_heating_density_array,
-            y_axis_name="Joule Heating Density.png" + MaterialPropertiesUnits.power_density_unit)
+            y_axis_name="Joule Heating Density, " + MaterialPropertiesUnits.power_density_unit)
 
     def calculate_stored_material_properties(self, magnetic_field_list):
         """

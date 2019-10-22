@@ -13,10 +13,6 @@ class NbTiMaterialProperties(GeneralFunctions, MaterialPropertiesUnits, NbTiCUDI
     a2 = 9.57 * 10 ** 5.0
     a3 = 163.0
 
-    # - current sharing parameters
-    c1 = 3449.0
-    c2 = -257.0
-
     def __init__(self, temperature_profile,
                  txt_output=False, png_output=False, output_directory=None, magnetic_field_list=None):
         self.temperature_profile = temperature_profile
@@ -44,27 +40,6 @@ class NbTiMaterialProperties(GeneralFunctions, MaterialPropertiesUnits, NbTiCUDI
             nbti_cv_array[i, 0] = self.temperature_profile[i]
             nbti_cv_array[i, 1] = self.volumetric_heat_capacity(magnetic_field, temperature=self.temperature_profile[i])
         return nbti_cv_array
-
-    def calculate_critical_temperature(self, magnetic_field):
-        """
-        Calculates Nb-Ti critical temperature
-        :param magnetic_field: magnetic field as float
-        :return: critical temperature as float
-        """
-        critical_temperature_0 = self.tc0              # [K]
-        critical_magnetic_field_0 = self.bc20          # [T]
-        critical_temperature = critical_temperature_0*(1.0-magnetic_field/critical_magnetic_field_0)**0.59
-        return critical_temperature
-
-    def calculate_current_sharing_temperature(self, critical_temperature, current, magnetic_field):
-        """
-        Calculates current sharing temperature
-        :param critical_temperature: as float
-        :param current: as float
-        :param magnetic_field: as float
-        :return: current sharing temperature as float
-        """
-        return critical_temperature*(1.0-current/(self.c1+self.c2*magnetic_field))
 
     def calculate_stored_material_properties(self, magnetic_field_list):
         """

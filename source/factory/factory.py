@@ -45,6 +45,8 @@ from source.materials.cu_material_properties import CuMaterialProperties
 from source.materials.g10_material_properties import G10MaterialProperties
 from source.materials.insulation_linear_material_properties import InsulationLinearMaterialProperties
 from source.materials.winding_linear_material_properties import WindingLinearMaterialProperties
+from source.materials.nb_ti_jc_low_current import NbTiJcLowCurrent
+from source.materials.nb_ti_jc_russenschuck import NbTiJcRussenschuck
 
 class Factory(AnalysisLauncher, GeneralFunctions):
 
@@ -278,6 +280,12 @@ class Factory(AnalysisLauncher, GeneralFunctions):
                 output_directory=output_directory_materials)
         else:
             raise ValueError("Type of the material does not exist.")
+
+    def get_critical_current_density_class(self):
+        if self.input_data.material_settings.input.current_density_formula == "low_current_jc":
+            return NbTiJcLowCurrent()
+        elif self.input_data.material_settings.input.current_density_formula == "russenschuck_jc":
+            return NbTiJcRussenschuck()
 
     @staticmethod
     def get_material_properties_class(factory):
