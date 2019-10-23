@@ -16,7 +16,7 @@ class NbTiJcLowCurrent(NbTiCUDIMaterialProperties):
 
     @staticmethod
     def check_if_domain_is_normal(critical_current_density, current_density):
-        return max(1 - critical_current_density / (abs(current_density) + 10.0**(-3.0)), 0.0)
+        return max(1.0 - critical_current_density / (abs(current_density) + 10.0**(-3.0)), 0.0)
 
     @staticmethod
     def critical_current_density(magnetic_field, temperature, superconductor_proportion):
@@ -36,7 +36,6 @@ class NbTiJcLowCurrent(NbTiCUDIMaterialProperties):
 
     @staticmethod
     def current_density(current, wire_area):
-        print(current / wire_area)
         return current / wire_area
 
     @staticmethod

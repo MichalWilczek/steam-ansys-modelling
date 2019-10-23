@@ -18,24 +18,26 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
         :param element_name: ansys 1D element name to be input
         """
         strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
-        
+
         self.enter_preprocessor()
         for i in range(len(magnetic_field_map.keys())):
-            magnetic_field = magnetic_field_map["winding"+str(i+1)]
-            equivalent_winding_area = class_mat.reduced_wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
+            magnetic_field = magnetic_field_map["winding" + str(i + 1)]
+            wire_area = class_mat.wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
             self.define_element_type(element_number=i + 1, element_name=element_name)
-            self.define_element_constant(element_number=i + 1, element_constant=equivalent_winding_area)
-            self.define_element_density(element_number=i+1, value=class_mat.normal_conductor.density_fake)
+            self.define_element_constant(element_number=i + 1, element_constant=wire_area)
+            self.define_element_density(element_number=i + 1, value=class_mat.normal_conductor.density_fake)
             superconductor_resistivity = 1.0e-16
             normal_conductor_thermal_conductivity = \
-                class_mat.normal_conductor.calculate_thermal_conductivity(magnetic_field=magnetic_field)
+                class_mat.normal_conductor.calculate_thermal_conductivity(magnetic_field=magnetic_field) * \
+                class_mat.f_non_superconductor
             winding_volumetric_heat_capacity = class_mat.calculate_winding_eq_cv(magnetic_field=magnetic_field)
 
             for j in range(len(normal_conductor_thermal_conductivity[:, 0])):
                 self.define_temperature_for_material_property(
-                    table_placement=j+1, temperature=normal_conductor_thermal_conductivity[j, 0])
-                self.define_element_conductivity(element_number=i+1, value=normal_conductor_thermal_conductivity[j, 1])
-                self.define_element_heat_capacity(element_number=i+1, value=winding_volumetric_heat_capacity[j, 1])
+                    table_placement=j + 1, temperature=normal_conductor_thermal_conductivity[j, 0])
+                self.define_element_conductivity(element_number=i + 1,
+                                                 value=normal_conductor_thermal_conductivity[j, 1])
+                self.define_element_heat_capacity(element_number=i + 1, value=winding_volumetric_heat_capacity[j, 1])
                 if element_name == "link68":
                     self.define_element_resistivity(element_number=i + 1, value=superconductor_resistivity)
 

@@ -318,16 +318,16 @@ class Ansys(GeneralFunctions):
     def set_analysis_setting(self):
         print(self.mapdl.executeCommandToString('antype,4'))
         print(self.mapdl.executeCommandToString('trnopt,full'))
-        print(self.mapdl.executeCommandToString('kbc,1'))
-        print(self.mapdl.executeCommandToString('eqslv,sparse'))
-        print(self.mapdl.executeCommandToString('bcsoption,,default'))
-        print(self.mapdl.executeCommandToString('lumpm,0'))
+        # print(self.mapdl.executeCommandToString('kbc,1'))
+        # print(self.mapdl.executeCommandToString('eqslv,sparse'))
+        # print(self.mapdl.executeCommandToString('bcsoption,,default'))
+        # print(self.mapdl.executeCommandToString('lumpm,0'))
         print(self.mapdl.executeCommandToString('autots,on'))
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
-        print(self.mapdl.executeCommandToString('lnsrch,on'))
-        print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
-        print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal
+        # print(self.mapdl.executeCommandToString('lnsrch,on'))
+        # print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
+        # print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal
         # integration (default) into backward Euler formulation
 
     # postprocessor commands

@@ -53,6 +53,10 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         """
         return 1.0 - self.ratio_superconductor()
 
+    @staticmethod
+    def wire_area(wire_diameter):
+        return GeometricFunctions.calculate_circle_area(wire_diameter)
+
     def reduced_wire_area(self, wire_diameter):
         """
         Calculates the normal conductor (filler) area in the strand composite
@@ -183,7 +187,7 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
             temp_min=self.input_data.material_settings.input.min_temperature_property,
             temp_max=self.input_data.material_settings.input.max_temperature_property,
             number_temp_points=(self.input_data.material_settings.input.max_temperature_property -
-                                self.input_data.material_settings.input.min_temperature_property)*10)
+                                self.input_data.material_settings.input.min_temperature_property)*500)
         heat_gen_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             electrical_resistivity = self.normal_conductor.electrical_resistivity(
@@ -191,7 +195,7 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
             power_density = self.critical_current_density.calculate_joule_heating(
                 magnetic_field, current, temperature=temperature_profile[i], wire_area=wire_area,
                 normal_conductor_resistivity=electrical_resistivity,
-                superconductor_proportion=self.f_superconductor)
+                superconductor_proportion=self.f_superconductor) * self.f_non_superconductor
             heat_gen_array[i, 0] = temperature_profile[i]
             heat_gen_array[i, 1] = power_density
         self.extract_joule_heating_density_profile(heat_gen_array)
