@@ -18,31 +18,31 @@ class Ansys(GeneralFunctions):
             aasMapdlKey = f.read()
         self.mapdl = CORBA.ORB_init().string_to_object(aasMapdlKey)
 
-    # def input_point_mass_material_properties(self, class_mat, elem_volume):
-    #     self.enter_preprocessor()
-    #     element_number = 2 * self.factory.number_of_windings() + 2
-    #     self.define_element_type(element_number=element_number, element_name="mass71")
-    #     self.define_element_constant(element_number=element_number, element_constant=elem_volume)
-    #     self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)  # real constant interpreted as volume with density and specific heat defined as material properties
-    #     self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)  # heat generation independent of temperature
-    #
-    #     res_cp = class_mat.calculate_volumetric_heat_capacity()
-    #     for j in range(len(res_cp[:, 0])):
-    #         self.define_temperature_for_material_property(table_placement=j+1, temperature=res_cp[j, 0])
-    #         self.define_element_heat_capacity(element_number=element_number, value=res_cp[j, 1])
-    #     return element_number
+    def input_point_mass_material_properties(self, class_mat, elem_volume):
+        self.enter_preprocessor()
+        element_number = 2 * self.factory.number_of_windings() + 2
+        self.define_element_type(element_number=element_number, element_name="mass71")
+        self.define_element_constant(element_number=element_number, element_constant=elem_volume)
+        self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)  # real constant interpreted as volume with density and specific heat defined as material properties
+        self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)  # heat generation independent of temperature
 
-    # def input_heat_generation_curve(self, class_mat, magnetic_field):
-    #     self.enter_preprocessor()
-    #     heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.factory.STRAND_DIAMETER, current=self.factory.current_init)
-    #     filename = "HGEN_Table"
-    #     filename_path = self.analysis_directory + "\\" + filename
-    #     hgen = Table(filename_path, ext='.inp')
-    #     hgen.load('hgen_table', heat_gen_array[:, 1], [heat_gen_array[:, 0]])
-    #     hgen.write(['HGEN'])
-    #     self.create_apdl_commands_for_python_waiting_process(hgen)
-    #     hgen.close()
-    #     self.input_file(filename=filename, extension="inp")
+        res_cp = class_mat.calculate_volumetric_heat_capacity()
+        for j in range(len(res_cp[:, 0])):
+            self.define_temperature_for_material_property(table_placement=j+1, temperature=res_cp[j, 0])
+            self.define_element_heat_capacity(element_number=element_number, value=res_cp[j, 1])
+        return element_number
+
+    def input_heat_generation_curve(self, class_mat, magnetic_field):
+        self.enter_preprocessor()
+        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.factory.STRAND_DIAMETER, current=self.factory.current_init)
+        filename = "HGEN_Table"
+        filename_path = self.analysis_directory + "\\" + filename
+        hgen = Table(filename_path, ext='.inp')
+        hgen.load('hgen_table', heat_gen_array[:, 1], [heat_gen_array[:, 0]])
+        hgen.write(['HGEN'])
+        self.create_apdl_commands_for_python_waiting_process(hgen)
+        hgen.close()
+        self.input_file(filename=filename, extension="inp")
 
     def input_heat_generation_table(self, class_mat, magnetic_field):
         strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
@@ -54,28 +54,28 @@ class Ansys(GeneralFunctions):
             self.fill_dim_table(dim_name="heatgen", row=i+1, column=0, value=heat_gen_array[i, 0])
             self.fill_dim_table(dim_name="heatgen", row=i+1, column=1, value=heat_gen_array[i, 1])
 
-    # def input_heat_generation_table_winding(self, class_mat, magnetic_field, winding_number):
-    #     self.enter_preprocessor()
-    #     heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.factory.STRAND_DIAMETER, current=self.factory.current_init)
-    #     dim_name = "heatgen_"+winding_number
-    #     self.create_dim_table(dim_name=dim_name, dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
-    #     self.fill_dim_table(dim_name=dim_name, row=0, column=1, value=0.0)
-    #     for i in range(len(heat_gen_array[:, 0])):
-    #         self.fill_dim_table(dim_name=dim_name, row=i+1, column=0, value=heat_gen_array[i, 0])
-    #         self.fill_dim_table(dim_name=dim_name, row=i+1, column=1, value=heat_gen_array[i, 1])
+    def input_heat_generation_table_winding(self, class_mat, magnetic_field, winding_number):
+        self.enter_preprocessor()
+        heat_gen_array = class_mat.create_heat_gen_profile(magnetic_field, wire_diameter=self.factory.STRAND_DIAMETER, current=self.factory.current_init)
+        dim_name = "heatgen_"+winding_number
+        self.create_dim_table(dim_name=dim_name, dim_type="table", size1=len(heat_gen_array[:, 0]), size2=1, size3=1, name1="temp")
+        self.fill_dim_table(dim_name=dim_name, row=0, column=1, value=0.0)
+        for i in range(len(heat_gen_array[:, 0])):
+            self.fill_dim_table(dim_name=dim_name, row=i+1, column=0, value=heat_gen_array[i, 0])
+            self.fill_dim_table(dim_name=dim_name, row=i+1, column=1, value=heat_gen_array[i, 1])
 
-    # def input_heat_generation_on_windings(self, winding_number):
-    #     dim_name = "%heatgen_" + winding_number[7:] + "%"
-    #     self.set_heat_generation_in_nodes(node_number="all", value=dim_name)
+    def input_heat_generation_on_windings(self, winding_number):
+        dim_name = "%heatgen_" + winding_number[7:] + "%"
+        self.set_heat_generation_in_nodes(node_number="all", value=dim_name)
 
-    # def input_heat_flow_table(self, number_windings_heated=1.0, scaling_factor=1.0):
-    #     self.enter_preprocessor()
-    #     heat_flow_array = PolynomialFit.extract_meas_power_function()
-    #     self.create_dim_table(dim_name="heat_flow", dim_type="table", size1=len(heat_flow_array), size2=1, size3=1, name1="time")
-    #     self.fill_dim_table(dim_name="heat_flow", row=0, column=1, value=0.0)
-    #     for i in range(len(heat_flow_array[:, 0])):
-    #         self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=0, value=heat_flow_array[i, 0])
-    #         self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=(heat_flow_array[i, 1]/number_windings_heated)*scaling_factor)
+    def input_heat_flow_table(self, number_windings_heated=1.0, scaling_factor=1.0):
+        self.enter_preprocessor()
+        heat_flow_array = PolynomialFit.extract_meas_power_function()
+        self.create_dim_table(dim_name="heat_flow", dim_type="table", size1=len(heat_flow_array), size2=1, size3=1, name1="time")
+        self.fill_dim_table(dim_name="heat_flow", row=0, column=1, value=0.0)
+        for i in range(len(heat_flow_array[:, 0])):
+            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=0, value=heat_flow_array[i, 0])
+            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=(heat_flow_array[i, 1]/number_windings_heated)*scaling_factor)
 
     # functions responsible for deleting unnecessary ansys files
     def delete_old_ansys_analysis_files(self):
@@ -318,17 +318,9 @@ class Ansys(GeneralFunctions):
     def set_analysis_setting(self):
         print(self.mapdl.executeCommandToString('antype,4'))
         print(self.mapdl.executeCommandToString('trnopt,full'))
-        # print(self.mapdl.executeCommandToString('kbc,1'))
-        # print(self.mapdl.executeCommandToString('eqslv,sparse'))
-        # print(self.mapdl.executeCommandToString('bcsoption,,default'))
-        # print(self.mapdl.executeCommandToString('lumpm,0'))
         print(self.mapdl.executeCommandToString('autots,on'))
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
-        # print(self.mapdl.executeCommandToString('lnsrch,on'))
-        # print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
-        # print(self.mapdl.executeCommandToString('tintp,,,,1'))   # switches T calculation from trapezoidal
-        # integration (default) into backward Euler formulation
 
     # postprocessor commands
     def create_file(self, filename, extension):

@@ -33,6 +33,8 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         magnetic_field_list = self.input_data.material_settings.input.magnetic_field_value_list
         self.strand_equivalent_cv = []
         self.strand_equivalent_diffusivity = []
+        self.strand_equivalent_thermal_conductivity = []
+        self.strand_equivalent_resistivity = []
         self.calculate_stored_material_properties(magnetic_field_list)
         if self.input_data.material_settings.input.txt_data_output:
             self.extract_txt_data(magnetic_field_list)
@@ -129,24 +131,23 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
             t_elem = (t_1+t_2)/2.0
             cv_elem = self.winding_eq_cv(magnetic_field=mag_field, temperature=t_elem)
             elem_length = abs(im_coil_geom[i, 1] - im_coil_geom[i-1, 1])
-            elem_area = self.reduced_wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
+            elem_area = self.wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
             elem_volume = elem_area*elem_length
             elem_energy = elem_volume * cv_elem * (t_elem-ref_temperature)
             qf_energy += elem_energy
         return qf_energy
 
-    def calculate_strand_thermal_diffusivity(self, magnetic_field):
+    def calculate_winding_thermal_diffusivity(self, magnetic_field):
         """
         Returns equivalent strand thermal diffusivity array
         :param magnetic_field: magnetic field as float
         :return: numpy array; 1st column temperature as float, 2nd column: thermal diffusivity as float
         """
         diffusivity_array = np.zeros((len(self.temperature_profile), 2))
-        normal_conductor_thermal_conductivity = self.normal_conductor.calculate_thermal_conductivity(
-            magnetic_field=magnetic_field)
-        strand_cv = self.calculate_winding_eq_cv(magnetic_field=magnetic_field)
+        eq_thermal_conductivity = self.calculate_winding_eq_thermal_conductivity(magnetic_field=magnetic_field)
+        winding_cv = self.calculate_winding_eq_cv(magnetic_field=magnetic_field)
         diffusivity_array[:, 0] = self.temperature_profile
-        diffusivity_array[:, 1] = normal_conductor_thermal_conductivity[:, 1] / strand_cv[:, 1]
+        diffusivity_array[:, 1] = eq_thermal_conductivity[:, 1] / winding_cv[:, 1]
         return diffusivity_array
 
     def calculate_winding_eq_cv(self, magnetic_field):
@@ -173,6 +174,29 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         winding_eq_cv = self.f_non_superconductor*normal_conductor_cv + self.f_superconductor*superconductor_cv
         return winding_eq_cv
 
+    def calculate_winding_eq_thermal_conductivity(self, magnetic_field):
+        winding_k_array = np.zeros((len(self.temperature_profile), 2))
+        for i in range(len(self.temperature_profile)):
+            winding_k_array[i, 0] = self.temperature_profile[i]
+            winding_k_array[i, 1] = self.winding_eq_thermal_conductivity(magnetic_field,
+                                                                         temperature=self.temperature_profile[i])
+        return winding_k_array
+
+    def winding_eq_thermal_conductivity(self, magnetic_field, temperature):
+        return self.normal_conductor.thermal_conductivity(magnetic_field, temperature, self.normal_conductor.rrr) * \
+               self.f_non_superconductor
+
+    def calculate_winding_eq_resistivity(self, magnetic_field):
+        winding_rho_array = np.zeros((len(self.temperature_profile), 2))
+        for i in range(len(self.temperature_profile)):
+            winding_rho_array[i, 0] = self.temperature_profile[i]
+            winding_rho_array[i, 1] = self.winding_eq_resistivity(magnetic_field,
+                                                                  temperature=self.temperature_profile[i])
+        return winding_rho_array
+
+    def winding_eq_resistivity(self, magnetic_field, temperature):
+        return self.normal_conductor.electrical_resistivity(magnetic_field, temperature, self.normal_conductor.rrr) / self.f_non_superconductor
+
     def create_joule_heating_density_profile(self, magnetic_field, wire_diameter, current):
         """
         Returns initial Joule heating density profile as numpy array
@@ -181,7 +205,7 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         :param current: current as float
         :return: numpy array; 1st column temperature as float, 2nd column: Joule heating density as float
         """
-        wire_area = self.reduced_wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
+        wire_area = self.wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
 
         temperature_profile = MaterialProperties.create_temperature_step(
             temp_min=self.input_data.material_settings.input.min_temperature_property,
@@ -190,12 +214,11 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
                                 self.input_data.material_settings.input.min_temperature_property)*500)
         heat_gen_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
-            electrical_resistivity = self.normal_conductor.electrical_resistivity(
-                magnetic_field=magnetic_field, rrr=self.normal_conductor.rrr, temperature=temperature_profile[i])
+            eq_electrical_resistivity = self.winding_eq_resistivity(magnetic_field, temperature_profile[i])
             power_density = self.critical_current_density.calculate_joule_heating(
                 magnetic_field, current, temperature=temperature_profile[i], wire_area=wire_area,
-                normal_conductor_resistivity=electrical_resistivity,
-                superconductor_proportion=self.f_superconductor) * self.f_non_superconductor
+                normal_conductor_resistivity=eq_electrical_resistivity,
+                superconductor_proportion=self.f_superconductor)
             heat_gen_array[i, 0] = temperature_profile[i]
             heat_gen_array[i, 1] = power_density
         self.extract_joule_heating_density_profile(heat_gen_array)
@@ -223,7 +246,10 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         """
         for magnetic_field in magnetic_field_list:
             self.strand_equivalent_cv.append(self.calculate_winding_eq_cv(magnetic_field))
-            self.strand_equivalent_diffusivity.append(self.calculate_strand_thermal_diffusivity(magnetic_field))
+            self.strand_equivalent_diffusivity.append(self.calculate_winding_thermal_diffusivity(magnetic_field))
+            self.strand_equivalent_thermal_conductivity.append(
+                self.calculate_winding_eq_thermal_conductivity(magnetic_field))
+            self.strand_equivalent_resistivity.append(self.calculate_winding_eq_resistivity(magnetic_field))
 
     def extract_txt_data(self, magnetic_field_list):
         """
@@ -239,6 +265,14 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
                 self.output_directory_materials,
                 "Strand_eq_diffusivity_magnetic_field_{}.txt".format(magnetic_field_list[i]),
                 self.strand_equivalent_diffusivity[i])
+            GeneralFunctions.save_array(
+                self.output_directory_materials,
+                "Strand_eq_thermal_conductivity_magnetic_field_{}.txt".format(magnetic_field_list[i]),
+                self.strand_equivalent_thermal_conductivity[i])
+            GeneralFunctions.save_array(
+                self.output_directory_materials,
+                "Strand_eq_resistivity_magnetic_field_{}.txt".format(magnetic_field_list[i]),
+                self.strand_equivalent_resistivity[i])
 
     def extract_png_data(self, magnetic_field_list):
         """
@@ -258,3 +292,15 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
                 filename="Strand_equivalent_diffusivity_magnetic_field_{}.png".format(magnetic_field_list[i]),
                 array=self.strand_equivalent_diffusivity[i],
                 y_axis_name="thermal diffusivity - Strand, " + MaterialPropertiesUnits.thermal_diffusivity_unit)
+
+            MaterialPropertiesPlotter.plot_material_properties(
+                directory=self.output_directory_materials,
+                filename="Strand_equivalent_thermal_conductivity_magnetic_field_{}.png".format(magnetic_field_list[i]),
+                array=self.strand_equivalent_thermal_conductivity[i],
+                y_axis_name="thermal conductivity - Strand, " + MaterialPropertiesUnits.thermal_conductivity_unit)
+
+            MaterialPropertiesPlotter.plot_material_properties(
+                directory=self.output_directory_materials,
+                filename="Strand_equivalent_resistivity_magnetic_field_{}.png".format(magnetic_field_list[i]),
+                array=self.strand_equivalent_resistivity[i],
+                y_axis_name="electrical resistivity - Strand, " + MaterialPropertiesUnits.electrical_resistivity_unit)

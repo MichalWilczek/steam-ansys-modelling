@@ -27,44 +27,42 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
             self.define_element_constant(element_number=i + 1, element_constant=wire_area)
             self.define_element_density(element_number=i + 1, value=class_mat.normal_conductor.density_fake)
             superconductor_resistivity = 1.0e-16
-            normal_conductor_thermal_conductivity = \
-                class_mat.normal_conductor.calculate_thermal_conductivity(magnetic_field=magnetic_field) * \
-                class_mat.f_non_superconductor
+            winding_thermal_conductivity = class_mat.calculate_winding_eq_thermal_conductivity(magnetic_field)
             winding_volumetric_heat_capacity = class_mat.calculate_winding_eq_cv(magnetic_field=magnetic_field)
 
-            for j in range(len(normal_conductor_thermal_conductivity[:, 0])):
+            for j in range(len(winding_thermal_conductivity[:, 0])):
                 self.define_temperature_for_material_property(
-                    table_placement=j + 1, temperature=normal_conductor_thermal_conductivity[j, 0])
+                    table_placement=j + 1, temperature=winding_thermal_conductivity[j, 0])
                 self.define_element_conductivity(element_number=i + 1,
-                                                 value=normal_conductor_thermal_conductivity[j, 1])
+                                                 value=winding_thermal_conductivity[j, 1])
                 self.define_element_heat_capacity(element_number=i + 1, value=winding_volumetric_heat_capacity[j, 1])
                 if element_name == "link68":
                     self.define_element_resistivity(element_number=i + 1, value=superconductor_resistivity)
 
-    # def input_hot_spot_insulation_material_properties(self, class_mat,
-    #                                                   number_of_initially_quenched_windings=1, hot_spot_length=0.002):
-    #     strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
-    #     number_of_windings = self.input_data.geometry_settings.type_input.number_of_windings
-    #     winding_side = self.input_data.geometry_settings.type_input.winding_side
-    #     element_number = 2 * number_of_windings + 3
-    #     self.define_element_type(element_number=element_number, element_name="link33")
-    #
-    #     eff_side = (winding_side + math.pi * strand_diameter / 4.0) / 2.0
-    #     eff_area = (eff_side*0.001) * hot_spot_length * float(number_of_initially_quenched_windings)
-    #
-    #     self.define_element_constant(element_number=element_number, element_constant=eff_area)
-    #     self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
-    #     insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
-    #     insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
-    #
-    #     for j in range(len(insulation_thermal_conductivity[:, 0])):
-    #         self.define_temperature_for_material_property(
-    #             table_placement=j+1, temperature=insulation_thermal_conductivity[j, 0])
-    #         self.define_element_conductivity(
-    #             element_number=element_number, value=insulation_thermal_conductivity[j, 1])
-    #         self.define_element_heat_capacity(
-    #             element_number=element_number, value=insulation_volumetric_heat_capacity[j, 1])
-    #     return element_number
+    def input_hot_spot_insulation_material_properties(self, class_mat,
+                                                      number_of_initially_quenched_windings=1, hot_spot_length=0.002):
+        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
+        number_of_windings = self.input_data.geometry_settings.type_input.number_of_windings
+        winding_side = self.input_data.geometry_settings.type_input.winding_side
+        element_number = 2 * number_of_windings + 3
+        self.define_element_type(element_number=element_number, element_name="link33")
+
+        eff_side = (winding_side + math.pi * strand_diameter / 4.0) / 2.0
+        eff_area = (eff_side*0.001) * hot_spot_length * float(number_of_initially_quenched_windings)
+
+        self.define_element_constant(element_number=element_number, element_constant=eff_area)
+        self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
+        insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
+        insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
+
+        for j in range(len(insulation_thermal_conductivity[:, 0])):
+            self.define_temperature_for_material_property(
+                table_placement=j+1, temperature=insulation_thermal_conductivity[j, 0])
+            self.define_element_conductivity(
+                element_number=element_number, value=insulation_thermal_conductivity[j, 1])
+            self.define_element_heat_capacity(
+                element_number=element_number, value=insulation_volumetric_heat_capacity[j, 1])
+        return element_number
 
     def input_winding_quench_material_properties(self, magnetic_field_map, winding_number,
                                                  class_mat, element_name="link68"):
