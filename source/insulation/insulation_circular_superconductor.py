@@ -56,11 +56,9 @@ class InsulationCircularSuperconductor(Insulation, GeometricFunctions):
             winding_side1, winding_side2, strand_diameter)
         return element_area
 
-
-
     @staticmethod
     def calculate_strand_perimeter(strand_diameter):
-        return GeometricFunctions.calculate_circle_area(strand_diameter)
+        return GeometricFunctions.calculate_circle_perimeter(strand_diameter)
 
     @staticmethod
     def calculate_average_insulation_perimeter(winding_side1, winding_side2, strand_diameter):
