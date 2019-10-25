@@ -162,7 +162,6 @@ z=0
     winding_counter = winding_counter + 1
   *enddo
 
-
   ! winding_counter = winding_counter + 1
   reel_number = reel_number + 1
   is_reel_number_odd = mod(reel_number, 2)
@@ -206,7 +205,6 @@ z=0
         nsel,s,node,,num_node
         nsel,a,node,,nnode
         cp,next,temp,all
-        ! cp,next,temp,nnode,num_node
       *endif
     *enddo
   *enddo

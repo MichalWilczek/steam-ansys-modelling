@@ -2,7 +2,7 @@
 from source.factory.factory import Factory
 
 # creation of analysis directories
-json_file_directory = "C:\\1D_COMSOL_ANSYS_Benchmarking\\no_insulation"
+json_file_directory = "C:\\gitlab2\\Analyses\\191023_COMSOL_ANSYS_comparison\\1D_with_insulation"
 json_filename = "input.json"
 factory = Factory(json_file_directory, json_filename)
 
