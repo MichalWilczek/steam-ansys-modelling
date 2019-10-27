@@ -23,7 +23,9 @@ class InitialTemperatureGaussian(InitialTemperature):
         gaussian_array = InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(
             self.initial_temperature_profile,
             ambient_temperature=self.input_data.temperature_settings.input.temperature_init)
-        for i in range(len(gaussian_array[0, :])):
+        refined_gaussian_array = InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(
+            gaussian_array, ambient_temperature=self.input_data.temperature_settings.input.temperature_init)
+        for i in range(len(refined_gaussian_array[:, 0])):
             nodes_temp_list = self.geometry.retrieve_node_set_from_imaginary_node_number(
                 self.geometry.coil_data, self.geometry.dict_windings_planes, imaginary_node=gaussian_array[i, 0])
             ansys_nodes_temp_list = self.geometry.prepare_ansys_nodes_selection_list(nodes_temp_list)
