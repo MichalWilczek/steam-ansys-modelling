@@ -216,7 +216,7 @@ z=0
   cmsel,s,winding%i%
   allsel,below,line
   *vget,node_list_winding_%i%,node,,nlist
-  *mwrite,node_list_winding_%i%,Nodes_winding_%i%,txt
+  *mwrite,node_list_winding_%i%,Nodes_winding_without_insul_%i%,txt
   (1E20.10)
 *enddo
 
@@ -256,20 +256,18 @@ allsel
 *enddo
 
 ! definition of nodes in every plane
-*if,insulation_analysis,eq,1,then
-  tolerance_range = 1e-8
-  *do,i,1,kp_per_winding,1
-    nsel,s,node,,i
-    *get,node_num,node,0,num,max
-    *get,node_num_locx,node,node_num,loc,x
-    nsel,s,loc,x,node_num_locx-tolerance_range,node_num_locx+tolerance_range
-    *get,node_plane_count,node,,count
-    *dim,node_list_plane%i%,array,node_plane_count,1
-    *vget,node_list_plane%i%,node,,nlist
-    *mwrite,node_list_plane%i%,Nodes_plane_%i%,txt
-    (1E20.10)
-  *enddo
-*endif
+tolerance_range = 1e-8
+*do,i,1,kp_per_winding,1
+  nsel,s,node,,i
+  *get,node_num,node,0,num,max
+  *get,node_num_locx,node,node_num,loc,x
+  nsel,s,loc,x,node_num_locx-tolerance_range,node_num_locx+tolerance_range
+  *get,node_plane_count,node,,count
+  *dim,node_list_plane%i%,array,node_plane_count,1
+  *vget,node_list_plane%i%,node,,nlist
+  *mwrite,node_list_plane%i%,Nodes_plane_%i%,txt
+  (1E20.10)
+*enddo
 
 *cfopen,Nnode,txt
 *vwrite,nnode

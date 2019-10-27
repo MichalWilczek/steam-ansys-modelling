@@ -16,7 +16,8 @@ class InitialTemperatureUniform(InitialTemperature):
 
         geometry_dimensions = InitialTemperatureUniform.find_start_and_end_length_of_coil(self.geometry.coil_geometry)
         ic_zone_dimensions = InitialTemperatureUniform.set_length_of_initial_ic_temperature_zone(
-            zone_centre=self.input_data.analysis_settings.quench_init_position, zone_length=self.input_data.analysis_settings.quench_init_length,
+            zone_centre=self.input_data.analysis_settings.quench_init_position,
+            zone_length=self.input_data.analysis_settings.quench_init_length,
             geometry_dimensions=geometry_dimensions)
         ic_zone_node_min = SearchNodes.search_init_node(position=ic_zone_dimensions[0],
                                                         coil_length=self.geometry.coil_geometry)
@@ -24,8 +25,9 @@ class InitialTemperatureUniform(InitialTemperature):
                                                         coil_length=self.geometry.coil_geometry)
         self.initial_temperature_profile[(ic_zone_node_min-1):ic_zone_node_max, 1] = \
             self.input_data.temperature_settings.input.temperature_max_init_quenched_zone
-        self.plots.plot_and_save_temperature(self.output_directory, self.geometry.coil_geometry, self.initial_temperature_profile,
-                                       iteration=0, time_step=0.0)
+        self.plots.plot_and_save_temperature(
+            self.output_directory, self.geometry.coil_geometry,
+            self.initial_temperature_profile, iteration=0, time_step=0.0)
         self.save_array(self.plots.output_directory_temperature,
                         "Initial_temperature_profile.txt", self.initial_temperature_profile)
         return self.initial_temperature_profile
@@ -49,12 +51,17 @@ class InitialTemperatureUniform(InitialTemperature):
     def set_initial_temperature(self):
         geometry_dimensions = InitialTemperatureUniform.find_start_and_end_length_of_coil(self.geometry.coil_geometry)
         ic_zone_dimensions = InitialTemperatureUniform.set_length_of_initial_ic_temperature_zone(
-            zone_centre=self.input_data.analysis_settings.quench_init_position, zone_length=self.input_data.analysis_settings.quench_init_length,
+            zone_centre=self.input_data.analysis_settings.quench_init_position,
+            zone_length=self.input_data.analysis_settings.quench_init_length,
             geometry_dimensions=geometry_dimensions)
-        ic_zone_node_min = SearchNodes.search_init_node(position=ic_zone_dimensions[0], coil_length=self.geometry.coil_geometry)
-        ic_zone_node_max = SearchNodes.search_init_node(position=ic_zone_dimensions[1], coil_length=self.geometry.coil_geometry)
-        self.ansys_commands.select_nodes_in_analysis(self.geometry, x_down_node=ic_zone_node_min, x_up_node=ic_zone_node_max)
-        self.ansys_commands.set_quench_temperature(q_temperature=self.input_data.temperature_settings.input.temperature_max_init_quenched_zone)
+        ic_zone_node_min = SearchNodes.search_init_node(
+            position=ic_zone_dimensions[0], coil_length=self.geometry.coil_geometry)
+        ic_zone_node_max = SearchNodes.search_init_node(
+            position=ic_zone_dimensions[1], coil_length=self.geometry.coil_geometry)
+        self.ansys_commands.select_nodes_in_analysis(
+            self.geometry, x_down_node=ic_zone_node_min, x_up_node=ic_zone_node_max)
+        self.ansys_commands.set_initial_temperature(
+            q_temperature=self.input_data.temperature_settings.input.temperature_max_init_quenched_zone, allsel=False)
 
         self.calculate_energy_initially_deposited_inside_the_coil(
             magnetic_field_value=self.input_data.temperature_settings.input.magnetic_field_initially_quenched_winding,

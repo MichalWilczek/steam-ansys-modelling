@@ -80,15 +80,6 @@ class AnalysisLauncher(GeneralFunctions):
                 GeneralFunctions.delete_file(file, self.directory)
 
     @staticmethod
-    def copy_object_to_another_object(directory_to_copy, directory_destination):
-        """
-        Copies the folder with its files to the specified output_directory
-        :param directory_to_copy: as string
-        :param directory_destination: as string
-        """
-        shutil.copytree(directory_to_copy, directory_destination)
-
-    @staticmethod
     def check_if_object_exists_in_directory(directory, filename):
         """
         Checks whether the specified filename exists in the output_directory

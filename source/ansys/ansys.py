@@ -146,18 +146,18 @@ class Ansys(GeneralFunctions):
         for i in range(len(nodes_list)):
             self.mapdl.executeCommand("nsel,u,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1]))
 
-    # not needed anymore
-    def set_gaussian_initial_temperature_distribution(self, gaussian_temperature_distr):
-        """
-        Sets initial temperature to all nodes according to gaussian distribution curve
-        :param gaussian_temperature_distr: temperature distribution numpy array; 1st column: node number as integer,
-         2nd column: temperature as float
-        """
-        self.allsel()
-        for i in range(len(gaussian_temperature_distr[:, 0])):
-            node_number = gaussian_temperature_distr[i, 0]
-            temperature = gaussian_temperature_distr[i, 1]
-            self.mapdl.executeCommandToString("ic,{},temp,{}".format(node_number, temperature))
+    # # not needed anymore
+    # def set_gaussian_initial_temperature_distribution(self, gaussian_temperature_distr):
+    #     """
+    #     Sets initial temperature to all nodes according to gaussian distribution curve
+    #     :param gaussian_temperature_distr: temperature distribution numpy array; 1st column: node number as integer,
+    #      2nd column: temperature as float
+    #     """
+    #     self.allsel()
+    #     for i in range(len(gaussian_temperature_distr[:, 0])):
+    #         node_number = gaussian_temperature_distr[i, 0]
+    #         temperature = gaussian_temperature_distr[i, 1]
+    #         self.mapdl.executeCommandToString("ic,{},temp,{}".format(node_number, temperature))
 
     # general commands
     def create_dim_table(self, dim_name, dim_type, name1, size1, size2=" ", size3=" "):
@@ -283,12 +283,10 @@ class Ansys(GeneralFunctions):
         print(self.mapdl.executeCommandToString("time_step={}".format(iteration)))
         print(self.mapdl.executeCommandToString("time,{}".format(time_step)))
 
-    def set_initial_temperature(self, temperature):
-        self.allsel()
+    def set_initial_temperature(self, temperature, allsel=True):
+        if allsel:
+            self.allsel()
         print(self.mapdl.executeCommandToString("ic,all,temp,{}".format(temperature)))
-
-    def set_quench_temperature(self, q_temperature):
-        print(self.mapdl.executeCommandToString("ic,all,temp,{}".format(q_temperature)))
 
     def set_current(self, node_number, value):
         self.mapdl.executeCommand("f,{},amps,{}".format(node_number, value))

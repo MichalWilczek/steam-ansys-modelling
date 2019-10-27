@@ -8,25 +8,42 @@ class GeometryMulti1D(Geometry):
         Geometry.__init__(self, factory)
 
         self.files_in_directory = Geometry.make_list_of_filenames_in_directory(directory=self.directory)
-        list_windings_nodes = Geometry.find_files_with_given_word(list_files=self.files_in_directory, word="Nodes_winding")
-        self.dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=self.directory)
-        self.file_node_position = Geometry.load_file_with_winding_nodes_position(directory=self.directory, filename="Node_Position.txt")
-        self.center_plane_position = self.calculate_windings_lengths(position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
-        self.coil_data = Geometry.calculate_coil_length_data(windings_lengths=self.center_plane_position, number_of_windings=self.input_data.geometry_settings.type_input.number_of_windings)
-        self.coil_length_1d = self.retrieve_1d_imaginary_coil(directory=self.output_directory_geometry, coil_data=self.coil_data)
-        self.node_map_sorted = self.translate_domain_into_1d_cable(coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
-        self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes( windings_lengths=self.center_plane_position, number_of_windings=self.input_data.geometry_settings.type_input.number_of_windings)
+        list_windings_nodes = Geometry.find_files_with_given_word(
+            list_files=self.files_in_directory, word="Nodes_winding_without_insul")
+        self.dict_winding_nodes = self.load_files_with_windings_nodes(
+            winding_files=list_windings_nodes, directory=self.directory, key_word="winding")
+        self.file_node_position = Geometry.load_file_with_winding_nodes_position(
+            directory=self.directory, filename="Node_Position.txt")
+        self.center_plane_position = self.calculate_windings_lengths(
+            position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
+        self.coil_data = Geometry.calculate_coil_length_data(
+            windings_lengths=self.center_plane_position,
+            number_of_windings=self.input_data.geometry_settings.type_input.number_of_windings)
+        self.coil_length_1d = self.retrieve_1d_imaginary_coil(
+            directory=self.output_directory_geometry, coil_data=self.coil_data)
+        self.node_map_sorted = self.translate_domain_into_1d_cable(
+            coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
+        self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes(
+            windings_lengths=self.center_plane_position,
+            number_of_windings=self.input_data.geometry_settings.type_input.number_of_windings)
         self.im_nodes_per_winding = Geometry.number_of_im_nodes_per_winding(self.dict_imaginary_nodes)
         self.winding_node_dict = self.create_node_dict_for_each_winding()
         self.coil_geometry = self.coil_length_1d
+        list_planes_nodes = Geometry.find_files_with_given_word(
+            list_files=self.files_in_directory, word="Nodes_plane")
+        self.dict_planes_nodes = self.load_files_with_windings_nodes(
+            winding_files=list_planes_nodes, directory=self.directory, key_word="plane")
 
         if factory.input_data.geometry_settings.type_input.type_insulation_settings.insulation_analysis:
-            list_windings_nodes_insul = Geometry.find_files_with_given_word(list_files=self.files_in_directory, word="Nodes_winding_with_insul")
-            self.dict_winding_nodes_insul = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes_insul, directory=self.directory)
-            list_planes_nodes = Geometry.find_files_with_given_word(list_files=self.files_in_directory, word="Nodes_plane")
-            self.dict_winding_nodes_insul = Geometry.load_files_with_windings_nodes(winding_files=list_planes_nodes, directory=self.directory)
-
-        print("Geometry uploaded... \n________________")
+            list_windings_nodes_insul = Geometry.find_files_with_given_word(
+                list_files=self.files_in_directory, word="Nodes_winding_with_insul")
+            self.dict_winding_nodes_insul = self.load_files_with_windings_nodes(
+                winding_files=list_windings_nodes_insul, directory=self.directory, key_word="winding")
+            self.dict_windings_planes = self.create_dict_with_nodes_in_planes_in_each_winding(
+                self.dict_planes_nodes, self.dict_winding_nodes_insul)
+        else:
+            self.dict_windings_planes = self.create_dict_with_nodes_in_planes_in_each_winding(
+                self.dict_planes_nodes, self.dict_winding_nodes)
 
     def retrieve_winding_numbers_and_quenched_nodes(self, x_down_node, x_up_node):
         """
@@ -35,7 +52,8 @@ class GeometryMulti1D(Geometry):
         :param x_up_node: upper quench front nod of imaginary 1D coil as integer
         :return: dictionary; key: winding%number%, value: list of upper and lower quench front node of imaginary 1D coil
         """
-        quenched_winding_numbers = self.retrieve_quenched_winding_numbers_from_quench_fronts(self.coil_data, x_down_node, x_up_node)
+        quenched_winding_numbers = self.retrieve_quenched_winding_numbers_from_quench_fronts(
+            self.coil_data, x_down_node, x_up_node)
         dict_quenched_fronts = {}
         if len(quenched_winding_numbers) == 1:
             dict_quenched_fronts["winding"+str(quenched_winding_numbers[0])] = [x_down_node, x_up_node]
@@ -57,11 +75,14 @@ class GeometryMulti1D(Geometry):
                 value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[i])]
                 last_node_of_winding = value[-1]
                 first_node_of_winding = value[0]
-                dict_quenched_fronts["winding" + str(quenched_winding_numbers[i])] = [first_node_of_winding, last_node_of_winding]
+                dict_quenched_fronts["winding" + str(quenched_winding_numbers[i])] = \
+                    [first_node_of_winding, last_node_of_winding]
 
-            value = self.dict_imaginary_nodes["winding" + str(quenched_winding_numbers[len(quenched_winding_numbers) - 1])]
+            value = self.dict_imaginary_nodes[
+                "winding" + str(quenched_winding_numbers[len(quenched_winding_numbers) - 1])]
             first_node_of_winding = value[0]
-            dict_quenched_fronts["winding" + str(quenched_winding_numbers[len(quenched_winding_numbers) - 1])] = [first_node_of_winding, x_up_node]
+            dict_quenched_fronts["winding" + str(quenched_winding_numbers[len(quenched_winding_numbers) - 1])] = \
+                [first_node_of_winding, x_up_node]
         return dict_quenched_fronts
 
     def create_node_dict_for_each_winding(self):
@@ -88,6 +109,9 @@ class GeometryMulti1D(Geometry):
         :param winding_set: dictionary which assigns nodes to each winding
         :return: dictionary which assigns a numpy array with x, y, z positions to each winding
         """
+        n_pos_x = None
+        n_pos_y = None
+        n_pos_z = None
         winding_lengths = {}
         for key in winding_set:
             value = winding_set[key]
@@ -232,6 +256,7 @@ class GeometryMulti1D(Geometry):
     def convert_imaginary_nodes_set_into_real_nodes_1d_1d_winding_number(self, winding_number, x_down_node, x_up_node):
         """
         Returns list with real quenched nodes
+        :param winding_number: winding number as integer
         :param x_down_node: quench down front node from imaginary set as integer
         :param x_up_node: quench up front node from imaginary set as integer
         :return: list of quenched real nodes

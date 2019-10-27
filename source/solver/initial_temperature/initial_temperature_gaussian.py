@@ -23,7 +23,12 @@ class InitialTemperatureGaussian(InitialTemperature):
         gaussian_array = InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(
             self.initial_temperature_profile,
             ambient_temperature=self.input_data.temperature_settings.input.temperature_init)
-        self.ansys_commands.set_gaussian_initial_temperature_distribution(gaussian_array)
+        for i in range(len(gaussian_array[0, :])):
+            nodes_temp_list = self.geometry.retrieve_node_set_from_imaginary_node_number(
+                self.geometry.coil_data, self.geometry.dict_windings_planes, imaginary_node=gaussian_array[i, 0])
+            ansys_nodes_temp_list = self.geometry.prepare_ansys_nodes_selection_list(nodes_temp_list)
+            self.ansys_commands.select_nodes_list(ansys_nodes_temp_list)
+            self.ansys_commands.set_initial_temperature(temperature=gaussian_array[i, 1], allsel=False)
 
         self.calculate_energy_initially_deposited_inside_the_coil(
             magnetic_field_value=self.input_data.temperature_settings.input.magnetic_field_initially_quenched_winding,

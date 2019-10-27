@@ -1,6 +1,7 @@
 
 import os
 import numpy as np
+import shutil
 
 class GeneralFunctions(object):
 
@@ -159,6 +160,15 @@ class GeneralFunctions(object):
         os.chdir(directory)
         os.mkdir(foldername)
         return os.path.join(directory, foldername)
+
+    @staticmethod
+    def copy_object_to_another_object(directory_to_copy, directory_destination):
+        """
+        Copies the folder with its files to the specified output_directory
+        :param directory_to_copy: as string
+        :param directory_destination: as string
+        """
+        shutil.copytree(directory_to_copy, directory_destination)
 
     @staticmethod
     def write_line_to_file(directory, filename, input_value):
