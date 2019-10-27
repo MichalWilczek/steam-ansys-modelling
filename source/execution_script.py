@@ -30,6 +30,9 @@ preprocessor.include_class_geometry_in_class_instance(class_geometry=coil_geo)
 # input circuit creator
 circuit = factory.get_circuit_class(ansys_commands=ans, class_geometry=coil_geo, factory=factory)
 
+ans.save_analysis()
+ans.terminate_analysis()
+
 ############################
 # INITIAL TIME STEP SOLVER #
 ############################

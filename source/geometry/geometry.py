@@ -54,14 +54,15 @@ class Geometry(GeneralFunctions):
         return list_files
 
     @staticmethod
-    def find_files_with_windings_nodes(list_files):
+    def find_files_with_given_word(list_files, word):
         """
         :param list_files: list of file names as strings
+        :param word: ocurring word as string
         :return: list of files as strings with "Winding" in their names
         """
         list_winding_files = []
         for files in list_files:
-            if "Winding" in files:
+            if word in files:
                 list_winding_files.append(files)
         return list_winding_files
 
@@ -76,11 +77,20 @@ class Geometry(GeneralFunctions):
         os.chdir(directory)
         winding_set = {}
         for file in winding_files:
-            winding_text_chunk = file[8:]
+            winding_text_chunk = file[-5:]
             winding_number, extension = winding_text_chunk.split('.')
             winding = np.loadtxt(file, dtype=int)
             winding_set["winding"+winding_number] = winding
         return winding_set
+
+    @staticmethod
+    def load_files_with_nodes_in_planes(plane_files, directory):
+        os.chdir(directory)
+        plane_set = {}
+        for file in plane_files:
+            plane_text_chunk = file[12:]
+            plane_number, extension = plane_text_chunk.split('.')
+            plane_nodes = np.loadtxt(file, dtype=int)
 
     @staticmethod
     def load_file_with_winding_nodes_position(directory, filename):
@@ -125,7 +135,6 @@ class Geometry(GeneralFunctions):
     @staticmethod
     def create_dict_with_imaginary_nodes(windings_lengths, number_of_windings):
         """
-        TO BE ADDED !!!
         :param windings_lengths: dictionary which assigns a numpy array with x, y, z positions to each winding
         :param number_of_windings: number of windings as integer
         :return:

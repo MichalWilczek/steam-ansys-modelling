@@ -15,7 +15,7 @@ class Geometry2D(Geometry):
         Creates imaginary 1D coil length based on files: "Winding[number)" and "Node_Position"
         """
         files_in_directory = Geometry.make_list_of_filenames_in_directory(directory=self.directory)
-        list_windings_nodes = Geometry.find_files_with_windings_nodes(list_files=files_in_directory)
+        list_windings_nodes = Geometry.find_files_with_given_word(list_files=files_in_directory)
         self.dict_winding_nodes = Geometry.load_files_with_windings_nodes(winding_files=list_windings_nodes, directory=self.directory)
         self.file_node_position = Geometry.load_file_with_winding_nodes_position(directory=self.directory, filename="Node_Position.txt")
         self.center_plane_position = self.calculate_windings_lengths(position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
