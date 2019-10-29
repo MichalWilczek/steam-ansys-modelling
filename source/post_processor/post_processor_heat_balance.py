@@ -108,7 +108,7 @@ class PostProcessorHeatBalance(PostProcessor):
                                                  time_step=time_step,
                                                  iteration=self.iteration[0])
         res_voltage_array = np.zeros((1, 2))
-        res_voltage_array[0, 0] = self.t[0]
+        res_voltage_array[0, 0] = time_step
         res_voltage_array[0, 1] = res_voltage
         if self.iteration[0] == 1:
             self.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
