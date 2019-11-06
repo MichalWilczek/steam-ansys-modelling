@@ -108,7 +108,10 @@ class Geometry(GeneralFunctions):
             dict_temp = {}
             for key_planes_nodes in dict_planes_nodes:
                 planes_nodes = dict_planes_nodes[key_planes_nodes]
-                nodes = list(set(winding_nodes_insul) & set(planes_nodes))
+                if planes_nodes.ndim == 0:
+                    nodes = [int(planes_nodes)]
+                else:
+                    nodes = list(set(winding_nodes_insul) & set(planes_nodes))
                 dict_temp[key_planes_nodes] = nodes
             dict_in_dict_temp[key_nodes_insul] = dict_temp
         return dict_in_dict_temp
