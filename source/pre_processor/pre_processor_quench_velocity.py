@@ -25,6 +25,7 @@ class PreProcessorQuenchVelocity(PreProcessor):
                 coil_data=self.geometry.coil_data, x_down_node=qf.x_down_node, x_up_node=qf.x_up_node))
         quenched_winding_list = self.geometry.remove_repetitive_values_from_list(self.geometry.flatten_list(quenched_winding_list))
         for winding in quenched_winding_list:
+
             self.ansys_commands.input_winding_quench_material_properties(magnetic_map, class_mat=self.mat_props, winding_number=winding)
 
     def set_new_material_properties_repository(self, quench_fronts):

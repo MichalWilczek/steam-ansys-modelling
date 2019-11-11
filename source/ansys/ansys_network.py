@@ -79,26 +79,27 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
 
         magnetic_field = magnetic_field_map["winding"+str(winding_number)]
         element_number = number_of_windings + winding_number
-        self.define_element_type(element_number=element_number, element_name=element_name)
-        equivalent_winding_area = class_mat.reduced_wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
-        self.define_element_constant(element_number=element_number, element_constant=equivalent_winding_area)
-        self.define_element_density(element_number=element_number, value=class_mat.normal_conductor.density_fake)
 
-        normal_conductor_resistivity = \
-            class_mat.normal_conductor.calculate_electrical_resistivity(magnetic_field=magnetic_field)
-        normal_conductor_thermal_conductivity = \
-            class_mat.normal_conductor.calculate_thermal_conductivity(magnetic_field=magnetic_field)
+        # self.delete_element_type(element_number)
+        self.delete_material_number(material_number=element_number)
+
+        self.define_element_type(element_number=element_number, element_name=element_name)
+        wire_area = class_mat.wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
+        self.define_element_constant(element_number=element_number, element_constant=wire_area)
+        self.define_element_density(element_number=element_number, value=class_mat.normal_conductor.density_fake)
+        winding_resistivity = class_mat.calculate_winding_eq_resistivity(magnetic_field=magnetic_field)
+        winding_thermal_conductivity = class_mat.calculate_winding_eq_thermal_conductivity(magnetic_field)
         winding_volumetric_heat_capacity = class_mat.calculate_winding_eq_cv(magnetic_field=magnetic_field)
 
-        for j in range(len(normal_conductor_thermal_conductivity[:, 0])):
+        for j in range(len(winding_thermal_conductivity[:, 0])):
             self.define_temperature_for_material_property(
-                table_placement=j+1, temperature=normal_conductor_thermal_conductivity[j, 0])
+                table_placement=j+1, temperature=winding_thermal_conductivity[j, 0])
             self.define_element_conductivity(
-                element_number=element_number, value=normal_conductor_thermal_conductivity[j, 1])
+                element_number=element_number, value=winding_thermal_conductivity[j, 1])
             self.define_element_heat_capacity(
                 element_number=element_number, value=winding_volumetric_heat_capacity[j, 1])
             if element_name == "link68":
-                self.define_element_resistivity(element_number=element_number, value=normal_conductor_resistivity[j, 1])
+                self.define_element_resistivity(element_number=element_number, value=winding_resistivity[j, 1])
 
     def calculate_insulation_length(self):
 

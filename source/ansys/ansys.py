@@ -228,8 +228,14 @@ class Ansys(GeneralFunctions):
     def define_element_type(self, element_number, element_name):
         self.mapdl.executeCommand('et,{},{}'.format(element_number, element_name))
 
+    def delete_element_type(self, element_number):
+        self.mapdl.executeCommand('etdele,{}'.format(element_number))
+
     def define_element_type_with_keyopt(self, element_number, element_name, keyopt):
         self.mapdl.executeCommand('et,{},{},{}'.format(element_number, element_name, keyopt))
+
+    def delete_material_number(self, material_number):
+        self.mapdl.executeCommand('mpdele,all,{}'.format(material_number))
 
     def define_keyopt(self, element_number, keyopt_1, keyopt_2):
         self.mapdl.executeCommand('keyopt,{},{},{}'.format(element_number, keyopt_1, keyopt_2))
@@ -319,6 +325,7 @@ class Ansys(GeneralFunctions):
         print(self.mapdl.executeCommandToString('autots,on'))
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
+        print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
 
     # postprocessor commands
     def create_file(self, filename, extension):

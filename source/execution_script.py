@@ -2,7 +2,7 @@
 from source.factory.factory import Factory
 
 # creation of analysis directories
-json_file_directory = "C:\\gitlab2\\Analyses\\191023_COMSOL_ANSYS_comparison\\1D_with_insulation"
+json_file_directory = "C:\\quench_velocity_benchmarking"
 json_filename = "input.json"
 factory = Factory(json_file_directory, json_filename)
 
@@ -56,6 +56,7 @@ solver.set_solver_boundary_conditions()
 solver.enter_solver_settings()
 solver.set_time_step()
 solver.solve()
+ans.save_analysis()
 
 ####################################
 # INITIAL TIME STEP POST-PROCESSOR #
@@ -72,7 +73,6 @@ ans.enter_preprocessor()
 preprocessor.update_magnetic_field_map(postprocessor)
 preprocessor.adjust_material_properties_in_analysis(postprocessor)
 solver.end_of_time_step()
-ans.finish()
 
 ############################
 # FURTHER TIME STEP SOLVER #
@@ -93,12 +93,10 @@ for i in range(2, len(solver.time_step_vector)):
     postprocessor.estimate_quench_velocity()
     postprocessor.check_quench_state()         # estimate_quench_velocity, write_down_quench_velocity, plot_quench_state
     postprocessor.plot_quench_state_in_analysis()
-    ans.finish()
 
     ans.enter_preprocessor()
     preprocessor.update_magnetic_field_map(postprocessor)
     preprocessor.adjust_material_properties_in_analysis(postprocessor)
-    ans.finish()
     solver.end_of_time_step()
 
 postprocessor.make_gif()
