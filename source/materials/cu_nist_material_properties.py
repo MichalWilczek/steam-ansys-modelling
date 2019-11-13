@@ -46,7 +46,7 @@ class CuNISTMaterialProperties(object):
         return resistivity
 
     @staticmethod
-    def thermal_conductivity(magnetic_field, temperature, rrr, wiedermann=True):
+    def thermal_conductivity(magnetic_field, temperature, rrr, wiedermann=False):
         """
         Calculates thermal conductivity of copper according to NIST standards
         :param magnetic_field: magnetic field as float

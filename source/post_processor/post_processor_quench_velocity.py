@@ -9,6 +9,9 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
         PostProcessor.__init__(self, class_geometry, ansys_commands, v_quench, solver, input_data)
 
     def check_quench_state(self):
+        self.check_quench_state_quench_velocity()
+
+    def check_quench_state_quench_velocity(self):
         temperature_profile = self.temperature_profile
         quench_front_new = self.q_det.detect_quench(self.quench_fronts, temperature_profile,
                                                     magnetic_field_map=self.magnetic_map.im_short_mag_dict)

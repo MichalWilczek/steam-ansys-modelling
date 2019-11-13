@@ -63,9 +63,10 @@ ans.save_analysis()
 ####################################
 ans.enter_postprocessor()
 postprocessor.get_temperature_profile()      # write down temperature profile, plot temperature
+postprocessor.check_quench_state_heat_balance()
 postprocessor.estimate_coil_resistance()     # estimate resistance in ansys and python, plot resistance
 postprocessor.estimate_quench_velocity()
-postprocessor.check_quench_state()           # estimate_quench_velocity, write_down_quench_velocity, plot_quench_state
+postprocessor.check_quench_state_quench_velocity()
 postprocessor.plot_quench_state_in_analysis()
 ans.finish()
 
@@ -89,9 +90,10 @@ for i in range(2, len(solver.time_step_vector)):
 ####################################
     ans.enter_postprocessor()
     postprocessor.get_temperature_profile()    # write down temperature profile
-    postprocessor.estimate_coil_resistance()   # estimate resistance in ansys and python, plot resistance
+    postprocessor.check_quench_state_heat_balance()
+    postprocessor.estimate_coil_resistance()  # estimate resistance in ansys and python, plot resistance
     postprocessor.estimate_quench_velocity()
-    postprocessor.check_quench_state()         # estimate_quench_velocity, write_down_quench_velocity, plot_quench_state
+    postprocessor.check_quench_state_quench_velocity()
     postprocessor.plot_quench_state_in_analysis()
 
     ans.enter_preprocessor()

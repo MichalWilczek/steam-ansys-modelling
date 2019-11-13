@@ -49,7 +49,10 @@ class PostProcessor(Plots, QuenchDetect):
         Plots.save_array(directory=self.plots.output_directory_temperature, filename=plot_name, array=self.temperature_profile)
         self.quench_temperature_plots.append(temperature_plot)
 
-    def check_quench_state(self):
+    def check_quench_state_heat_balance(self):
+        pass
+
+    def check_quench_state_quench_velocity(self):
         pass
 
     def plot_quench_state_in_analysis(self):
@@ -61,9 +64,6 @@ class PostProcessor(Plots, QuenchDetect):
         self.quench_state_plots.append(quench_state_plot)
 
     def estimate_coil_resistance(self):
-        pass
-
-    def estimate_initial_quench_velocity(self):
         pass
 
     def estimate_quench_velocity(self):

@@ -25,6 +25,9 @@ class PostProcessorHeatBalance(PostProcessor):
         return x_down, x_up
 
     def check_quench_state(self):
+        self.check_quench_state_heat_balance()
+
+    def check_quench_state_heat_balance(self):
 
         time_step = [self.time_step_vector[self.iteration[0]]][0] - [self.time_step_vector[self.iteration[0]-1]][0]
         time = [self.time_step_vector[self.iteration[0]]][0]
