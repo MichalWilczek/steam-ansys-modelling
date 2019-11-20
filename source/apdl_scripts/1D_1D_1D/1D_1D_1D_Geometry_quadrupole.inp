@@ -10,7 +10,6 @@ division_per_winding = 2*division_long_side+2*division_short_side+4*division_rad
 kp_per_winding = division_per_winding + 1
 ins_elem_number = number_of_windings*2+1
 
-! feature which could be added
 x=0
 y=0
 z=0
@@ -141,7 +140,8 @@ csys,0
 
         ! get number of keypoints in one
         cmsel,s,winding%winding_counter%
-        allsel,below,line
+        ! allsel,below,line
+        allsel,below,elem
         *get,kps_winding,kp,,count
 
         ! get maximum keypoint number in the given winding
@@ -861,15 +861,30 @@ csys,0
   *enddo
 *endif
 
+! definition of winding nodes without insulation
 *do,i,1,number_of_windings
-  *dim,node_list_winding_%i%,array,division_per_winding+1,1
   cmsel,s,winding%i%
-  allsel,below,line
+  allsel,below,elem
+  *dim,node_list_winding_%i%,array,division_per_winding+1,1
   *vget,node_list_winding_%i%,node,,nlist
-  *mwrite,node_list_winding_%i%,Winding_%i%,txt
+  *mwrite,node_list_winding_%i%,Nodes_winding_without_insul_%i%,txt
   (1E20.10)
 *enddo
 
+! definition of winding nodes with insulation
+*if,insulation_analysis,eq,1,then
+  *do,i,1,number_of_windings
+    cmsel,s,winding_with_insulation%i%
+    allsel,below,elem
+    *get,node_wind_ins_count,node,,count
+    *dim,node_list_winding_ins%i%,array,node_wind_ins_count,1
+    *vget,node_list_winding_ins%i%,node,,nlist
+    *mwrite,node_list_winding_ins%i%,Nodes_winding_with_insul_%i%,txt
+    (1E20.10)
+  *enddo
+*endif
+
+! definition of node position in coordinate system
 csys,0
 allsel
 *get,nnum_windings,node,,count
@@ -881,6 +896,116 @@ allsel
 *mwrite,node_loc_windings,Node_Position,txt
 (4E20.10)
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! definition of nodes in every plane !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+test1=number_of_windings/number_of_windings_in_reel
+test2=number_of_windings_in_reel
+
+*if,test1,ge,test2,then
+  range_side = trans_dimension_winding*test1*sqrt(2)
+*else
+  range_side = trans_dimension_winding*test2*sqrt(2)
+*endif
+tolerance_range = 1e-8
+
+! set 1
+set_1_low = 1
+set_1_high = 1+kp_long_side-1
+
+! set 2
+set_2_low = set_1_high+1
+set_2_high = 1+kp_long_side+kp_radius-2
+
+! set 3
+set_3_low = set_2_high+1
+set_3_high = 1+kp_long_side+kp_radius+kp_short_side-3
+
+! set 4
+set_4_low = set_3_high+1
+set_4_high = 1+kp_long_side+2*kp_radius+kp_short_side-4
+
+! set 5
+set_5_low = set_4_high+1
+set_5_high = 1+2*kp_long_side+2*kp_radius+kp_short_side-5
+
+! set 6
+set_6_low = set_5_high+1
+set_6_high = 1+2*kp_long_side+3*kp_radius+kp_short_side-6
+
+! set 7
+set_7_low = set_6_high+1
+set_7_high =1+2*kp_long_side+3*kp_radius+2*kp_short_side-7
+
+!set 8
+set_8_low = set_7_high+1
+set_8_high = 1+2*kp_long_side+4*kp_radius+2*kp_short_side-8
+
+*do,i,1,kp_per_winding,1
+
+  nsel,s,node,,i
+  *get,node_num,node,0,num,max
+
+*if,i,ge,set_1_low,and,i,le,set_1_high,then
+  csys,0
+  *get,node_num_loc,node,node_num,loc,x
+  nsel,s,loc,x,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*elseif,i,ge,set_2_low,and,i,le,set_2_high,then
+  csys,12
+  *get,node_num_loc,node,node_num,loc,y
+  nsel,s,loc,y,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*elseif,i,ge,set_3_low,and,i,le,set_3_high,then
+  csys,0
+  *get,node_num_loc,node,node_num,loc,y
+  nsel,s,loc,y,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*elseif,i,ge,set_4_low,and,i,le,set_4_high,then
+  csys,14
+  *get,node_num_loc,node,node_num,loc,y
+  nsel,s,loc,y,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*elseif,i,ge,set_5_low,and,i,le,set_5_high,then
+  csys,0
+  *get,node_num_loc,node,node_num,loc,x
+  nsel,s,loc,x,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*elseif,i,ge,set_6_low,and,i,le,set_6_high,then
+  csys,16
+  *get,node_num_loc,node,node_num,loc,y
+  nsel,s,loc,y,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*elseif,i,ge,set_7_low,and,i,le,set_7_high,then
+  csys,0
+  *get,node_num_loc,node,node_num,loc,y
+  nsel,s,loc,y,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*elseif,i,ge,set_8_low,and,i,le,set_8_high,then
+  csys,18
+  *get,node_num_loc,node,node_num,loc,y
+  nsel,s,loc,y,node_num_loc-tolerance_range,node_num_loc+tolerance_range
+
+*endif
+
+  csys,0
+  *get,nposx,node,i,loc,x
+  *get,nposy,node,i,loc,y
+  *get,nposz,node,i,loc,z
+  clocal,20,sphe,nposx,nposy,nposz
+  csys,20
+  nsel,r,loc,x,0,range_side+tolerance_range
+
+  *get,node_plane_count,node,,count
+  *dim,node_list_plane%i%,array,node_plane_count,1
+  *vget,node_list_plane%i%,node,,nlist
+  *mwrite,node_list_plane%i%,Nodes_plane_%i%,txt
+  (1E20.10)
+*enddo
+
+! definition of number of nodes in all strands
+! altogether without insulation nodes
 *do,i,1,number_of_windings
   *if,i,eq,1,then
     cmsel,s,winding%i%
@@ -899,3 +1024,5 @@ allsel
 *vwrite,1
 (1(ES16.7))
 *cfclose
+
+! save

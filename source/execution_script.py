@@ -2,7 +2,7 @@
 from source.factory.factory import Factory
 
 # creation of analysis directories
-json_file_directory = "C:\\quench_velocity_benchmarking"
+json_file_directory = "C:\\skew_quad_analysis"
 json_filename = "input.json"
 factory = Factory(json_file_directory, json_filename)
 
@@ -29,6 +29,10 @@ coil_geo = factory.get_geometry_class(factory)
 preprocessor.include_class_geometry_in_class_instance(class_geometry=coil_geo)
 # input circuit creator
 circuit = factory.get_circuit_class(ansys_commands=ans, class_geometry=coil_geo, factory=factory)
+
+ans.save_analysis()
+ans.terminate_analysis()
+
 
 ############################
 # INITIAL TIME STEP SOLVER #

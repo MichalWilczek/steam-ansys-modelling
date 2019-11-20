@@ -18,7 +18,10 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         self.variable_file_invariable_input(data)
         data.write_text('number_of_windings =' + str(self.input_data.geometry_settings.type_input.number_of_windings))
         data.write_text('number_of_windings_in_reel =' + str(
-            self.input_data.geometry_settings.type_input.number_of_windings_in_layer))
+            self.input_data.geometry_settings.type_input.number_turns_in_layer))
+
+        # data.write_text('number_of_windings_in_reel =' + str(
+        #     self.input_data.geometry_settings.type_input.number_of_windings_in_layer))
 
         data.write_text('trans_dimension_winding =' + str(
             self.input_data.geometry_settings.type_input.winding_side * UnitConversion.milimeters_to_meters))
@@ -73,8 +76,8 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         return float(2 * (division_side1 + division_side2))
 
     def calculate_total_winding_length(self):
-        length_side1 = self.input_data.geometry_settings.type_input.type_mesh_settings.length_long_side + 1
-        length_side2 = self.input_data.geometry_settings.type_input.type_mesh_settings.length_short_side + 1
+        length_side1 = self.input_data.geometry_settings.type_input.length_long_side
+        length_side2 = self.input_data.geometry_settings.type_input.length_short_side
         return 2.0 * (length_side1 + length_side2)
 
     def calculate_insulation_element_area(self):
