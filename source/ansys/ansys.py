@@ -231,6 +231,9 @@ class Ansys(GeneralFunctions):
     def delete_element_type(self, element_number):
         self.mapdl.executeCommand('etdele,{}'.format(element_number))
 
+    def define_parameter(self, parameter_name, parameter):
+        self.mapdl.executeCommand('{}={}'.format(parameter_name, parameter))
+
     def define_element_type_with_keyopt(self, element_number, element_name, keyopt):
         self.mapdl.executeCommand('et,{},{},{}'.format(element_number, element_name, keyopt))
 

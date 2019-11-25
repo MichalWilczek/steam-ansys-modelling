@@ -14,7 +14,6 @@ class CircuitNoTransient(Circuit):
         self.ansys_commands.set_current(
             node_number="all", value=self.input_data.circuit_settings.electric_ansys_element_input.current_init)
 
-    def set_ground(self):
-        self.ansys_commands.set_ground_in_analysis(class_geometry=self.geometry)
+
 
 

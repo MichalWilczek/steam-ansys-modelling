@@ -71,9 +71,12 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         return final_radius
 
     def calculate_number_of_elements_per_winding(self):
-        division_side1 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_long_side + 1
-        division_side2 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_short_side + 1
-        return float(2 * (division_side1 + division_side2))
+        # division_side1 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_long_side + 1
+        # division_side2 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_short_side + 1
+        # return float(2 * (division_side1 + division_side2))
+        division_side1 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_long_side
+        division_side2 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_short_side
+        return float(2 * (division_side1 + division_side2) + 1)
 
     def calculate_total_winding_length(self):
         length_side1 = self.input_data.geometry_settings.type_input.length_long_side

@@ -105,9 +105,17 @@ z=0
               l,knum+1-kp_per_winding,knum+1,1
             *endif
 
-            type,ins_elem_number
-            real,ins_elem_number
-            mat,ins_elem_number
+			! application of corner nodes
+			*if,i,eq,kps_min_winding,or,i,eq,kps_max_winding,then
+				type,ins_elem_number+1
+				real,ins_elem_number+1
+				mat,ins_elem_number+1
+			*else
+				type,ins_elem_number
+				real,ins_elem_number
+				mat,ins_elem_number
+			*endif
+			
             allsel
             *get,lnum,line,,count
             lmesh,lnum

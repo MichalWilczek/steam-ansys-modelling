@@ -6,6 +6,9 @@ class Circuit(object):
         self.geometry = class_geometry
         self.input_data = factory.input_data
 
+    def set_ground(self):
+        self.ansys_commands.set_ground_in_analysis(class_geometry=self.geometry)
+
     def set_circuit_bcs_in_analysis(self):
         pass
 

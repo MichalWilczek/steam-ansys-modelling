@@ -23,10 +23,9 @@ from source.magnetic_field.magnetic_field_2D_transient import MagneticField2DTra
 from source.solver.solver_quench_velocity import SolverQuenchVelocity
 from source.solver.solver_heat_balance import SolverHeatBalance
 
-from source.circuit.circuit_therm_analysis_no_circuit import CircuitThermalAnalysisNoCircuit
-from source.circuit.circuit_electr_analysis_no_circuit import CircuitElectricAnalysisNoCircuit
-from source.circuit.circuit_electric_analysis_with_circuit_transient import CircuitElectricAnalysisWithCircuitTransient
-from source.circuit.circuit_electric_analysis_with_circuit_static import CircuitElectricAnalysisWithCircuitStatic
+from source.circuit.circuit_thermal_analysis_no_circuit import CircuitThermalAnalysisNoCircuit
+from source.circuit.circuit_electric_analysis_no_circuit import CircuitElectricAnalysisNoCircuit
+from source.circuit.circuit_electric_analysis_with_circuit import CircuitElectricAnalysisWithCircuit
 
 from source.solver.initial_temperature.initial_temperature_function import InitialTemperatureFunction
 from source.solver.initial_temperature.initial_temperature_gaussian import InitialTemperatureGaussian
@@ -161,10 +160,7 @@ class Factory(AnalysisLauncher, GeneralFunctions):
             if not self.input_data.circuit_settings.build_electric_circuit:
                 return CircuitElectricAnalysisNoCircuit(ansys_commands, class_geometry, factory)
             else:
-                if not self.input_data.circuit_settings.transient_electric_analysis:
-                    return CircuitElectricAnalysisWithCircuitStatic(ansys_commands, class_geometry, factory)
-                else:
-                    return CircuitElectricAnalysisWithCircuitTransient(ansys_commands, class_geometry, factory)
+                return CircuitElectricAnalysisWithCircuit(ansys_commands, class_geometry, factory)
 
     def get_initial_temperature_class(self, factory, ansys_commands, class_geometry, mat_props):
         if self.input_data.temperature_settings.type == "gaussian":

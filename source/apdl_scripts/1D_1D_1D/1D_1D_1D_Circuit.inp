@@ -1,0 +1,77 @@
+
+! input from Python
+! resistance_dump = 1.557
+! inductance_init = 0.5
+! current_init = 86
+
+cmsel,s,winding1
+allsel,below,elem
+*get,first_node,node,,num,min
+
+cmsel,s,winding%number_of_windings%
+allsel,below,elem
+*get,last_node,node,,num,max
+
+csys,0
+*get,first_kp_x,kp,first_node,loc,x
+*get,first_kp_y,kp,first_node,loc,y
+*get,first_kp_z,kp,first_node,loc,z
+
+*get,last_kp_x,kp,last_node,loc,x
+*get,last_kp_y,kp,last_node,loc,y
+*get,last_kp_z,kp,last_node,loc,z
+
+! create additional nodes for an electric circuit
+/prep7
+allsel
+*get,last_node_magnet,node,,count
+circ_node = last_node_magnet+1
+
+n,circ_node,first_kp_x,first_kp_y,first_kp_z-0.25
+n,circ_node+1,last_kp_x,last_kp_y,last_kp_z-0.25
+
+n,circ_node+2,first_kp_x,first_kp_y,first_kp_z-0.5
+n,circ_node+3,last_kp_x,last_kp_y,last_kp_z-0.5
+
+! dump resistor
+*get,et_num,etyp,0,num,max
+et_res_dump = et_num+10
+et,et_res_dump,circu124
+keyopt,et_res_dump,1,0
+r,et_res_dump,resistance_dump
+type,et_res_dump
+real,et_res_dump
+e,circ_node,first_node
+
+! inductor
+et_inductor = et_num+11
+et,et_inductor,circu124
+keyopt,et_inductor,1,1
+r,et_inductor,inductance_init,current_init   
+type,et_inductor
+real,et_inductor
+e,circ_node+1,last_node
+
+! independent current source
+et_curr_source = et_num+12
+et,et_curr_source,circu124
+keyopt,et_curr_source,1,3
+keyopt,et_curr_source,2,0
+r,et_curr_source,current_init
+type,et_curr_source
+real,et_curr_source
+e,circ_node+2,circ_node+3
+
+! initial voltage coupling to use an independent current source
+cp,next,volt,circ_node,circ_node+2
+cp,next,volt,circ_node+1,circ_node+3
+
+
+
+
+
+*cfopen,Process_Finished,txt
+*vwrite,1
+(1(ES16.7))
+*cfclose
+

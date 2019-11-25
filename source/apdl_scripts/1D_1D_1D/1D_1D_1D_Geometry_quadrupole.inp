@@ -206,9 +206,17 @@ csys,0
                 l,knum+1-kp_long_side,knum+1,1
               *endif
 
-              type,ins_elem_number
-              real,ins_elem_number
-              mat,ins_elem_number
+			! application of corner nodes
+			*if,i,eq,min_kp,then
+				type,ins_elem_number+1
+				real,ins_elem_number+1
+				mat,ins_elem_number+1
+			*else
+				type,ins_elem_number
+				real,ins_elem_number
+				mat,ins_elem_number
+			*endif
+
               allsel
               *get,lnum,line,,count
               lmesh,lnum
@@ -745,9 +753,17 @@ csys,0
                 l,knum+2-kp_radius,knum+1,1
               *endif
 
-              type,ins_elem_number
-              real,ins_elem_number
-              mat,ins_elem_number
+			! application of corner nodes
+			*if,i,eq,max_kp,then
+				type,ins_elem_number+1
+				real,ins_elem_number+1
+				mat,ins_elem_number+1
+			*else
+				type,ins_elem_number
+				real,ins_elem_number
+				mat,ins_elem_number
+			*endif
+
               allsel
               *get,lnum,line,,count
               lmesh,lnum

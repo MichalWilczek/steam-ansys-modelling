@@ -10,11 +10,31 @@ class AnsysMultiple1D(AnsysNetwork):
         """
         Inputs material properties for the insulation
         """
+
+        # normal insulation elements
         self.enter_preprocessor()
         element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 1
         self.define_element_type(element_number=element_number, element_name="link33")
         insulation_area = self.calculate_insulation_element_area()
         self.define_element_constant(element_number=element_number, element_constant=insulation_area)
+        self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
+        insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
+        insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
+
+        for j in range(len(insulation_thermal_conductivity[:, 0])):
+            self.define_temperature_for_material_property(
+                table_placement=j+1, temperature=insulation_thermal_conductivity[j, 0])
+            self.define_element_conductivity(
+                element_number=element_number, value=insulation_thermal_conductivity[j, 1])
+            self.define_element_heat_capacity(
+                element_number=element_number, value=insulation_volumetric_heat_capacity[j, 1])
+
+        # corner insulation elements
+        self.enter_preprocessor()
+        element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 2
+        self.define_element_type(element_number=element_number, element_name="link33")
+        insulation_area = self.calculate_insulation_element_area()
+        self.define_element_constant(element_number=element_number, element_constant=insulation_area/2.0)
         self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
         insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
         insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
