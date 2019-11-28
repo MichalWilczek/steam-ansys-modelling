@@ -93,6 +93,7 @@ for i in range(2, len(solver.time_step_vector)):
 ####################################
     ans.enter_postprocessor()
     postprocessor.get_temperature_profile()    # write down temperature profile
+    postprocessor.get_current()
     postprocessor.check_quench_state_heat_balance()
     postprocessor.estimate_coil_resistance()  # estimate resistance in ansys and python, plot resistance
     postprocessor.estimate_quench_velocity()

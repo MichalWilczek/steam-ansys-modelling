@@ -87,5 +87,7 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
 
     def get_current(self):
         path = os.path.join(self.directory, "sol_dump_resistor.inp")
-        dump_resistor_current_voltage_power = np.loadtxt(path, skiprows=6, max_rows=1, usecols=(6, 7))
+        with open(path) as myfile:
+            number_lines = int(len(myfile.readlines()))
+        dump_resistor_current_voltage_power = np.loadtxt(path, skiprows=number_lines-1, max_rows=1, usecols=(1, 2))
         self.circuit.current[0] = abs(dump_resistor_current_voltage_power[0])
