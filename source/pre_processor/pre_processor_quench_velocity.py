@@ -1,7 +1,8 @@
 
 from source.pre_processor.pre_processor import PreProcessor
+from source.factory.interpolation_functions import InterpolationFunctions
 
-class PreProcessorQuenchVelocity(PreProcessor):
+class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
 
     def __init__(self, mat_props, ansys_commands, factory):
         PreProcessor.__init__(self, mat_props, ansys_commands, factory)
@@ -45,5 +46,17 @@ class PreProcessorQuenchVelocity(PreProcessor):
                 self.ansys_commands.modify_material_number(
                     material_number=winding_number + self.input_data.geometry_settings.type_input.number_of_windings)
 
+    def start_discharge_after_qds_switch(self, class_circuit, class_postprocessor):
+        if class_circuit.check_quench_with_qds(class_postprocessor):
+            self.ansys_commands.enter_preprocessor()
+            self.ansys_commands.allsel()
+            self.ansys_commands.mapdl.executeCommand("rmodif,{},1,{}".format("et_switch_resistor", "1e-12"))
+            self.ansys_commands.mapdl.executeCommand("rmodif,{},1,{},{},{},{}".format("et_curr_source", 0, 0, 1e12, 0))
 
+    def adjust_nonlinear_inductance(self, class_circuit):
+        inductance = InterpolationFunctions.get_value_from_linear_1d_interpolation(
+            f_interpolation=class_circuit.diff_inductance_interpolation, x=class_circuit.current)[0]
+        self.ansys_commands.enter_preprocessor()
+        self.ansys_commands.allsel()
+        self.ansys_commands.mapdl.executeCommand("rmodif,{},1,{}".format("et_inductor", inductance))
 

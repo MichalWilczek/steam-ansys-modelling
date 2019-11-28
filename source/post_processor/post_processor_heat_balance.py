@@ -120,6 +120,7 @@ class PostProcessorHeatBalance(PostProcessor):
             self.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
                                     filename="Res_Voltage.txt", mydata=res_voltage_array,
                                     newfile=False)
+        self.resistive_voltage = res_voltage
 
     def make_gif(self):
         self.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif',

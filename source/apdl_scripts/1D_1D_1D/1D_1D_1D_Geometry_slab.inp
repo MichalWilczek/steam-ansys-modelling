@@ -277,6 +277,16 @@ tolerance_range = 1e-8
   (1E20.10)
 *enddo
 
+! definition of coil domain 
+*do,i,1,number_of_windings
+	*if,i,eq,1,then
+	    cmsel,s,winding_with_insulation%i%
+	*else
+		cmsel,a,winding_with_insulation%i%
+	*endif
+	cm,magnet_coil,elem
+*enddo
+
 *cfopen,Nnode,txt
 *vwrite,nnode
 (1(ES16.7))

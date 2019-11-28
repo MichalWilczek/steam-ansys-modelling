@@ -79,8 +79,8 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         return float(2 * (division_side1 + division_side2) + 1)
 
     def calculate_total_winding_length(self):
-        length_side1 = self.input_data.geometry_settings.type_input.length_long_side
-        length_side2 = self.input_data.geometry_settings.type_input.length_short_side
+        length_side1 = self.input_data.geometry_settings.type_input.length_long_side * UnitConversion.milimeters_to_meters
+        length_side2 = self.input_data.geometry_settings.type_input.length_short_side * UnitConversion.milimeters_to_meters
         return 2.0 * (length_side1 + length_side2)
 
     def calculate_insulation_element_area(self):

@@ -2,6 +2,7 @@
 from source.post_processor.post_processor import PostProcessor
 from source.post_processor.quench_velocity.quench_merge import QuenchMerge
 import numpy as np
+import os
 
 class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
 
@@ -48,13 +49,14 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
         time_step = [self.time_step_vector[self.iteration[0]]][0]
         resistive_voltage = self.geometry.load_ansys_output_one_line_txt_file(
             directory=self.directory, filename="Resistive_Voltage.txt")
-        self.plots.plot_resistive_voltage_ansys(voltage=resistive_voltage,
+        self.resistive_voltage = resistive_voltage
+        self.plots.plot_resistive_voltage_ansys(voltage=abs(resistive_voltage),
                                                 total_time=self.input_data.analysis_settings.time_total_simulation,
                                                 time_step=time_step, iteration=self.iteration[0])
 
     def plot_python_resistive_voltage(self, coil_resistance):
         time_step = [self.time_step_vector[self.iteration[0]]][0]
-        res_voltage = self.circuit.return_current_in_time_step() * coil_resistance
+        res_voltage = abs(self.circuit.return_current_in_time_step() * coil_resistance)
         self.plots.plot_resistive_voltage_python(voltage=res_voltage,
                                                  total_time=self.input_data.analysis_settings.time_total_simulation,
                                                  time_step=time_step,
@@ -83,3 +85,7 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
         # what if quench fronts meet
         self.quench_fronts = QuenchMerge.quench_merge(self.quench_fronts)
 
+    def get_current(self):
+        path = os.path.join(self.directory, "sol_dump_resistor.inp")
+        dump_resistor_current_voltage_power = np.loadtxt(path, skiprows=6, max_rows=1, usecols=(6, 7))
+        self.circuit.current[0] = abs(dump_resistor_current_voltage_power[0])

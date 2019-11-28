@@ -27,3 +27,9 @@ class PreProcessor(object):
 
     def update_magnetic_field_map(self, class_postprocessor):
         pass
+
+    def start_discharge_after_qds_switch(self, class_circuit, class_postprocessor):
+        pass
+
+    def adjust_nonlinear_inductance(self, class_circuit):
+        pass

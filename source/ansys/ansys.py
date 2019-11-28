@@ -172,6 +172,9 @@ class Ansys(GeneralFunctions):
     def select_nodes(self, node_down, node_up):
         self.mapdl.executeCommand("nsel,s,node,,{},{}".format(node_down, node_up))
 
+    def select_elements(self, element_down, element_up):
+        self.mapdl.executeCommand("esel,s,elem,,{},{}".format(element_down, element_up))
+
     def select_elem_from_nodes(self):
         self.mapdl.executeCommand("esln,s,1,all")
 
@@ -207,6 +210,9 @@ class Ansys(GeneralFunctions):
         :param dof: 'volt' for voltage or 'temp' for temperature dof
         """
         self.mapdl.executeCommand("cp,next,{},all".format(dof))
+
+    def delete_coupling_relation_between_nodes(self, cp_number):
+        self.mapdl.executeCommand("cpdele,{}".format(cp_number))
 
     def couple_interface(self, dof):
         self.mapdl.executeCommand("cpintf,{},".format(dof))
@@ -329,6 +335,13 @@ class Ansys(GeneralFunctions):
         print(self.mapdl.executeCommandToString('solcontrol,on,on'))
         print(self.mapdl.executeCommandToString('neqit,1000'))
         print(self.mapdl.executeCommandToString('rescontrol,define,none,none,1'))
+
+        # added for the external circuit
+        print(self.mapdl.executeCommandToString('kbc,1'))
+        print(self.mapdl.executeCommandToString('eqslv,sparse'))
+        print(self.mapdl.executeCommandToString('bcsoption,, default'))
+        print(self.mapdl.executeCommandToString('lumpm, 0'))
+        print(self.mapdl.executeCommandToString('lnsrch, on'))
 
     # postprocessor commands
     def create_file(self, filename, extension):

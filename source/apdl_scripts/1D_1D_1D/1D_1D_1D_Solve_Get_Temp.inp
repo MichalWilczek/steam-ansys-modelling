@@ -2,13 +2,16 @@
 allsel
 solve
 
-! ADDED NOW ... 19/10/04
+! ADDED 19/10/04
 save 
 finish
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Post Analysis !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 allsel
+cmsel,s,magnet_coil
+allsel,below,elem
 *get,maxnode,node,,num,max
+*get,minnode,node,,num,min
 *get,numnode,node,,count
 
 *dim,node_Temp,array,numnode,2
@@ -18,7 +21,7 @@ allsel
 (2E20.10)
 
 *if,electric_analysis,eq,1,then
-*get,resistive_voltage,node,1,volt
+*get,resistive_voltage,node,minnode,volt
 *cfopen,Resistive_Voltage,txt
 *vwrite,resistive_voltage
 (1(ES16.7))
@@ -52,6 +55,8 @@ allsel
 allsel
 
 /SHOW,png,,0
+cmsel,s,magnet_coil
+allsel,below,elem
 plnsol,temp
 /GFILE,1000,
 /REPLOT
@@ -61,15 +66,44 @@ plnsol,temp
 /delete,Quench001,png
 
 *if,electric_analysis,eq,1,then
-/SHOW,png,,0
-plnsol,volt
-/GFILE,1000,
-/REPLOT
-/SHOW,CLOSE
-/DEVICE,VECTOR,0
-/rename,Quench000,png,,STRCAT('Coil-Nodal-Volt',chrval(time_step)),png,
-/delete,Quench001,png
+	cmsel,s,magnet_coil
+	allsel,below,elem
+	/SHOW,png,,0
+	plnsol,volt
+	/GFILE,1000,
+	/REPLOT
+	/SHOW,CLOSE
+	/DEVICE,VECTOR,0
+	/rename,Quench000,png,,STRCAT('Coil-Nodal-Volt',chrval(time_step)),png,
+	/delete,Quench001,png
 *endif
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Circuit post-processing !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+/post26
+lines,10000    !avoid repeating headers < 1000 lines
+numvar,100     !set number of variables great than the default of 10
+ref_number = 10
+
+! Results from the dump resistor
+enum = dump_res_elem
+esol,ref_number+6,enum,,nmisc,1,pr_dump      !power
+esol,ref_number+5,enum,,smisc,1,vr_dump      !voltage
+esol,ref_number+4,enum,,smisc,2,ir_dump      !current
+/output,sol_dump_resistor,inp
+prvar,ir_dump,vr_dump,pr_dump
+/output
+
+! Results from the inductor
+enum = inductor_elem
+esol,ref_number+9,enum,,nmisc,1,pi      !power
+esol,ref_number+8,enum,,smisc,1,vi      !voltage
+esol,ref_number+7,enum,,smisc,2,ii      !current
+/output,sol_inductor,inp
+prvar,ii,vi,pi
+/output
 
 *cfopen,Process_Finished,txt
 *vwrite,1

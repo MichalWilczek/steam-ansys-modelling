@@ -5,6 +5,12 @@ class Circuit(object):
         self.ansys_commands = ansys_commands
         self.geometry = class_geometry
         self.input_data = factory.input_data
+        self.current = [self.input_data.circuit_settings.electric_ansys_element_input.current_init]
+        self.directory = factory.directory
+
+        self.qds_detection = False
+        self.qds_start_time = None
+        self.qds_current_time = None
 
     def set_ground(self):
         self.ansys_commands.set_ground_in_analysis(class_geometry=self.geometry)
@@ -21,12 +27,10 @@ class Circuit(object):
             self.ansys_commands.couple_nodes(dof="volt")
 
     def return_current_in_time_step(self):
-        return self.input_data.circuit_settings.electric_ansys_element_input.current_init
+        return self.current[0]
 
-
-
-
-
+    def check_quench_with_qds(self, class_postprocessor):
+        pass
 
 
 

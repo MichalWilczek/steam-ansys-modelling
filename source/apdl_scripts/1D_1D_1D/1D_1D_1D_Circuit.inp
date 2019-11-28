@@ -3,6 +3,7 @@
 ! resistance_dump = 1.557
 ! inductance_init = 0.5
 ! current_init = 86
+r_switch1 = 1e12
 
 cmsel,s,winding1
 allsel,below,elem
@@ -42,33 +43,50 @@ r,et_res_dump,resistance_dump
 type,et_res_dump
 real,et_res_dump
 e,circ_node,first_node
+allsel
+*get,dump_res_elem,elem,,count
 
 ! inductor
 et_inductor = et_num+11
 et,et_inductor,circu124
 keyopt,et_inductor,1,1
-r,et_inductor,inductance_init,current_init   
+r,et_inductor,inductance_init,-current_init   
 type,et_inductor
 real,et_inductor
 e,circ_node+1,last_node
+allsel
+*get,inductor_elem,elem,,count
 
 ! independent current source
 et_curr_source = et_num+12
 et,et_curr_source,circu124
 keyopt,et_curr_source,1,3
-keyopt,et_curr_source,2,0
-r,et_curr_source,current_init
+keyopt,et_curr_source,2,4
+infin_time = 10000000
+r,et_curr_source,0,current_init,infin_time,current_init
 type,et_curr_source
 real,et_curr_source
+e,circ_node+1,circ_node
+allsel
+*get,curr_source_elem,elem,,count
+
+! switch resistor
+et_switch_resistor = et_num+13
+et,et_switch_resistor,circu124
+et,et_switch_resistor,circu124
+keyopt,et_switch_resistor,1,0
+r,et_switch_resistor,r_switch1
+type,et_switch_resistor
+real,et_switch_resistor
 e,circ_node+2,circ_node+3
+allsel
+*get,switch_res_elem,elem,,count
 
-! initial voltage coupling to use an independent current source
+! initial voltage coupling to connect the circuit with the switch resistor
 cp,next,volt,circ_node,circ_node+2
+*get,cp_current_source1,cp,,max
 cp,next,volt,circ_node+1,circ_node+3
-
-
-
-
+*get,cp_current_source2,cp,,max
 
 *cfopen,Process_Finished,txt
 *vwrite,1

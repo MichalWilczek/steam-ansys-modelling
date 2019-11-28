@@ -55,18 +55,14 @@ solver.set_time_step_temperature()
 solver.set_solver_boundary_conditions()
 solver.enter_solver_settings()
 solver.set_time_step()
-
-# ans.save_analysis()
-# ans.terminate_analysis()
-
 solver.solve()
-ans.save_analysis()
 
 ####################################
 # INITIAL TIME STEP POST-PROCESSOR #
 ####################################
 ans.enter_postprocessor()
 postprocessor.get_temperature_profile()      # write down temperature profile, plot temperature
+postprocessor.get_current()
 postprocessor.check_quench_state_heat_balance()
 postprocessor.estimate_coil_resistance()     # estimate resistance in ansys and python, plot resistance
 postprocessor.estimate_quench_velocity()
@@ -77,6 +73,9 @@ ans.finish()
 ans.enter_preprocessor()
 preprocessor.update_magnetic_field_map(postprocessor)
 preprocessor.adjust_material_properties_in_analysis(postprocessor)
+# QDS verifying the quench state
+preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)
+preprocessor.adjust_nonlinear_inductance(circuit)
 solver.end_of_time_step()
 
 ############################
@@ -103,6 +102,10 @@ for i in range(2, len(solver.time_step_vector)):
     ans.enter_preprocessor()
     preprocessor.update_magnetic_field_map(postprocessor)
     preprocessor.adjust_material_properties_in_analysis(postprocessor)
+
+    # QDS verifying the quench state
+    preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)
+    preprocessor.adjust_nonlinear_inductance(circuit)
     solver.end_of_time_step()
 
 postprocessor.make_gif()

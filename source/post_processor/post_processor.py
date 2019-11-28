@@ -28,17 +28,21 @@ class PostProcessor(Plots, QuenchDetect):
         self.magnetic_map = solver.magnetic_map
         self.mat_props = solver.mat_props
         self.circuit = solver.circuit
-        self.t = solver.t
         self.time_step_vector = solver.time_step_vector
         self.iteration = solver.iteration
 
         self.min_coil_length = self.geometry.coil_geometry[0, 1]
         self.max_coil_length = self.geometry.coil_geometry[len(self.geometry.coil_geometry) - 1, 1]
 
+        self.resistive_voltage = None
+
     def get_temperature_profile(self):
         self.temperature_profile = self.ansys_commands.get_temperature_profile(
             npoints=self.npoints, class_geometry=self.geometry)
         self.plot_temperature_profile()
+
+    def get_current(self):
+        pass
 
     def plot_temperature_profile(self):
         time_step = [self.time_step_vector[self.iteration[0]]][0]
@@ -74,3 +78,4 @@ class PostProcessor(Plots, QuenchDetect):
                         directory=self.plots.output_directory_quench_state)
         self.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif',
                         directory=self.plots.output_directory_temperature)
+

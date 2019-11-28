@@ -1021,12 +1021,12 @@ set_8_high = 1+2*kp_long_side+4*kp_radius+2*kp_short_side-8
 *enddo
 
 ! definition of number of nodes in all strands
-! altogether without insulation nodes
+! altogether with insulation nodes
 *do,i,1,number_of_windings
   *if,i,eq,1,then
-    cmsel,s,winding%i%
+    cmsel,s,winding_with_insulation%i%
   *else
-    cmsel,a,winding%i%
+    cmsel,a,winding_with_insulation%i%
   *endif
   allsel,below,elem
   *get,nnode,node,,count
@@ -1035,6 +1035,16 @@ set_8_high = 1+2*kp_long_side+4*kp_radius+2*kp_short_side-8
 *vwrite,nnode
 (1(ES16.7))
 *cfclose
+
+! definition of coil domain 
+*do,i,1,number_of_windings
+	*if,i,eq,1,then
+	    cmsel,s,winding_with_insulation%i%
+	*else
+		cmsel,a,winding_with_insulation%i%
+	*endif
+	cm,magnet_coil,elem
+*enddo
 
 *cfopen,Process_Finished,txt
 *vwrite,1
