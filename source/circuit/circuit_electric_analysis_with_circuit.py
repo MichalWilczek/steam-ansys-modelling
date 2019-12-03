@@ -8,7 +8,7 @@ class CircuitElectricAnalysisWithCircuit(Circuit, InterpolationFunctions):
     def __init__(self, ansys_commands, class_geometry, factory):
         Circuit.__init__(self, ansys_commands, class_geometry, factory)
         self.diff_inductance = self.upload_differential_inductance()
-        self.diff_inductance_interpolation = InterpolationFunctions.interpolate_linear_function(
+        self.diff_inductance_interpolation = InterpolationFunctions.interpolate_linear_1d_function(
             x=self.diff_inductance[:, 0], y=self.diff_inductance[:, 1])
         self.build_circuit()
 

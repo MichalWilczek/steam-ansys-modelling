@@ -80,7 +80,10 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
             qf.return_quench_front_position(
                 initial_time=self.time_step_vector[self.iteration[0]-1],
                 final_time=self.time_step_vector[self.iteration[0]],
-                min_length=self.min_coil_length, max_length=self.max_coil_length, mag_field_map=magnetic_map)
+                min_length=self.min_coil_length,
+                max_length=self.max_coil_length,
+                mag_field_map=magnetic_map,
+                current=self.circuit.current[0])
 
         # what if quench fronts meet
         self.quench_fronts = QuenchMerge.quench_merge(self.quench_fronts)

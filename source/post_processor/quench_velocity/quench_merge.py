@@ -28,7 +28,7 @@ class QuenchMerge(object):
         :param quench_fronts: list of QuenchFront objects
         """
         for qf in quench_fronts:
-            print("{}: x_down = {}, x_up = {}".format(qf.label, qf.x_down, qf.x_up))
+            print("FRONTS BEFORE MERGING PROCEDURE -->{}: x_down = {}, x_up = {}".format(qf.label, qf.x_down, qf.x_up))
 
     @staticmethod
     def merge_quench_fronts(quench_fronts_sorted, testunit=False):
@@ -67,4 +67,5 @@ class QuenchMerge(object):
         :param quench_fronts: list of new QuenchFront objects
         """
         for qfm in quench_fronts_merged:
-            print("{}: x_down = {}, x_up = {}".format(qfm.label, qfm.x_down, qfm.x_up))
+            print("FRONTS AFTER MERGING PROCEDURE --> {}: x_down = {}, x_up = {}".format(
+                qfm.label, qfm.x_down, qfm.x_up))

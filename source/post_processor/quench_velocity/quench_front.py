@@ -34,7 +34,7 @@ class QuenchFront(SearchNodes):
         """
         self.calculate_q_front_pos_down(q_length_down, min_coil_length=min_length)
         self.calculate_q_front_pos_up(q_length_up, max_coil_length=max_length)
-        self.position_to_string()
+        print(self.position_to_string())
 
     def convert_quench_front_to_nodes(self, coil_length):
         """
@@ -43,21 +43,21 @@ class QuenchFront(SearchNodes):
         """
         self.front_down_to_node(coil_length=coil_length)
         self.front_up_to_node(coil_length=coil_length)
-        self.node_to_string()
+        print(self.node_to_string())
 
     def find_front_winding_numbers(self, coil_data):
         self.define_front_down_winding_number(coil_data=coil_data)
         self.define_front_up_winding_number(coil_data=coil_data)
-        self.winding_to_string()
+        print(self.winding_to_string())
 
     def position_to_string(self):
-        return "quench front no {}: x_down = {}, x_up = {}".format(self.label, self.x_down, self.x_up)
+        return "QUENCH FRONT NUMBER (POSITION) -->  {}: x_down = {}, x_up = {}".format(self.label, self.x_down, self.x_up)
 
     def node_to_string(self):
-        return "quench front no {}: x_down_node = {}, x_up_node = {}".format(self.label, self.x_down_node, self.x_up_node)
+        return "QUENCH FRONT NODE NUMBER --> {}: x_down_node = {}, x_up_node = {}".format(self.label, self.x_down_node, self.x_up_node)
 
     def winding_to_string(self):
-        return "quench front no {}: x_down_node is in {}, x_up_node is in {}".format(
+        return "QUENCH FRONT WINDING NUMBERS -->  {}: x_down_node is in {}, x_up_node is in {}".format(
             self.label, self.front_down_winding_numbers, self.front_up_winding_numbers)
 
     def calculate_q_front_pos_up(self, q_length, max_coil_length):
@@ -174,3 +174,13 @@ class QuenchFront(SearchNodes):
         for i in range(len(coil_data_front[:, 0])):
             self.front_down_winding_numbers.append(coil_data_front[i, 0])
         return self.front_down_winding_numbers
+
+    @staticmethod
+    def calculate_q_length(initial_time, final_time, quench_velocity):
+        """
+        Calculates quench front position after a given time
+        :param initial_time: initial time of integration as float
+        :param final_time: final time of integration as float
+        :return: quench integration length as float
+        """
+        return (final_time-initial_time)*quench_velocity

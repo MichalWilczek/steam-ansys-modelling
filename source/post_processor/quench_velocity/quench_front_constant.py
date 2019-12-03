@@ -29,18 +29,11 @@ class QuenchFrontConst(QuenchFront):
         :param min_length: minimum coil length as float
         :param max_length: maximum coil length as float
         """
-        q_length = self.calculate_q_length(initial_time, final_time)
+        q_length = self.calculate_q_length(initial_time, final_time, quench_velocity=self.q_v)
         self.calculate_quench_front_position(q_length, q_length, min_length, max_length)
         self.convert_quench_front_to_nodes(self.coil_geometry)
 
-    def calculate_q_length(self, initial_time, final_time):
-        """
-        Calculates quench front position after a given time
-        :param initial_time: initial time of integration as float
-        :param final_time: final time of integration as float
-        :return: quench integration length as float
-        """
-        return (final_time-initial_time)*self.q_v
+
 
 
 

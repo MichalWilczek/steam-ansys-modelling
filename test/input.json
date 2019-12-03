@@ -1,40 +1,35 @@
 
 {
-	"analysis_type": {
-			"type": "quench_velocity",
-			"input": {"v_quench_model": "numerical", "numerical_map_filename": "q_v_array.txt"}
-		},
+  "analysis_output_directory": "C:\\skew_quad_analysis\\output",
 
 	"analysis_settings": {
 		"quench_init_position": 0.5,
-		"quench_init_length": 0.1,
-		"time_total_simulation": 0.02,
-		"time_step_cosimulation": 0.01,
-		"time_step_min_ansys": 1.0,
-		"time_step_max_ansys": 10.0,
+		"quench_init_length": 0.2,
+		"time_total_simulation": 0.1,
+		"time_step_cosimulation": 0.0025,
+		"time_step_min_ansys": 0.1,
+		"time_step_max_ansys": 1.0,
 		"create_plots_in_output": true
 	},
 
-	"circuit_settings": {
-		"electric_ansys_elements": true,
-		"electric_ansys_element_input": {"current_init": 100.0},
-
-		"build_electric_circuit": false,
-		"build_electric_circuit_input": {},
-
-		"transient_electric_analysis": false,
-		"transient_electric_analysis_input": {}
-	},
+	"analysis_type": {
+			"type": "quench_velocity",
+			"input": {"v_quench_model": "numerical", "quench_velocity_map": "C:\\skew_quad_analysis\\input\\Quench_velocity.txt"}
+		},
 
 	"material_settings": {
 		"type": "nonlinear",
 		"input": {
+		        "current_density_formula": "low_current_jc",
 				"nonsupercond_to_supercond_ratio": 2.2,
-				"rrr": 193.0, "min_temperature_span": 1,
+				"rrr": 200.0,
+				"min_temperature_property": 1.9,
+				"max_temperature_property": 200,
+
 				"superconductor_name": "Nb-Ti",
 				"normal_conductor_name": "Cu",
 				"insulation_name": "G10",
-				"max_temperature_span": 300,
+
 				"txt_data_output": true,
 				"png_data_output": true,
 				"magnetic_field_value_list": [0.0, 3.0]
@@ -42,45 +37,50 @@
 	},
 
 	"magnetic_field_settings": {
-		"type": "2D_static",
+		"type": "constant",
 		"input": {
 				"magnetic_field_map_plot_output": false,
-				"magnetic_field_map_filename": "static_B_map.txt"}
+				"magnetic_field_value": 2.0}
 	},
+
+	"circuit_settings": {
+		"electric_ansys_elements": true,
+		"electric_ansys_element_input": {"current_init": 150.0},
+
+		"build_electric_circuit": true,
+		"transient_electric_analysis": true,
+		"transient_electric_analysis_input": {"resistance_dump": 2.0, "inductance_filename_directory": "C:\\skew_quad_analysis\\input\\Inductance.txt", "detection_voltage_qds": 0.1, "reaction_time_qds": 0.005}
+			},
 
 	"temperature_settings": {
 		"type": "gaussian",
 		"input": {
 			"temperature_init": 1.9,
-			"temperature_max_init_quenched_zone": 10.0,
+			"temperature_max_init_quenched_zone": 100.0,
 			"magnetic_field_initially_quenched_winding": 2.0}
 		},
 
 	"geometry_settings": {
-		"type": "skew_quadrupole",
 		"dimensionality": "multiple_1D",
+    "type": "skew_quadrupole",
 		"type_input": {
 			"strand_diameter": 0.7,
 			"winding_side": 0.941,
-			"coil_long_side": 413.21,
-			"coil_short_side": 126.81,
-			"coil_initial_radius": 9.15,
-			"number_turns_in_layer": 29,
-			"number_layers": 26,
-			"number_of_windings": 4,
-			"winding_number_first_in_analysis": 233,
-			"winding_number_last_in_first_layer": 234,
-			"number_of_layers_in_analysis": 2,
+			"length_long_side": 413.21,
+			"length_short_side": 126.81,
+			"geometry_radius_first_layer": 9.15,
+			"number_of_windings": 1,
+			"number_layers": 1,
+			"number_turns_in_layer": 1,
+			"winding_number_first_in_analysis": 1,
 			"type_insulation_settings": {
-				"insulation_analysis": true,
-				"insulation_analysis_input": {
-					"transverse_division_insulation": 2
-				}
+				"insulation_analysis": false,
+				"insulation_analysis_input": {"transverse_division_insulation": 6}
 			},
 			"type_mesh_settings": {
-				"division_long_side": 100,
-				"division_short_side": 30,
-				"division_radius": 5
+				"division_long_side": 42,
+				"division_short_side": 13,
+				"division_radius": 2
 			}
 		}
 	}
