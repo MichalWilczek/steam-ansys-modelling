@@ -71,29 +71,6 @@ class Geometry(GeneralFunctions):
         nodes_set.sort()
         return nodes_set
 
-    # functions for objects creation inside of Class
-    @staticmethod
-    def make_list_of_filenames_in_directory(directory):
-        """
-        :param directory: full analysis output_directory as string
-        :return: list of file names as strings
-        """
-        list_files = os.listdir(directory)
-        return list_files
-
-    @staticmethod
-    def find_files_with_given_word(list_files, word):
-        """
-        :param list_files: list of file names as strings
-        :param word: ocurring word as string
-        :return: list of files as strings with "Winding" in their names
-        """
-        list_winding_files = []
-        for files in list_files:
-            if word in files:
-                list_winding_files.append(files)
-        return list_winding_files
-
     @staticmethod
     def create_dict_with_nodes_in_planes_in_each_winding(dict_planes_nodes, dict_winding_nodes_insul):
         """

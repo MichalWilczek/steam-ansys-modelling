@@ -10,11 +10,11 @@ class WindingRemap(WindingRemapSearch):
         self.layers = self.input_data.geometry_settings.type_input.number_of_layers_in_analysis
         WindingRemapSearch.__init__(self, number_of_layers=self.layers,
                                     number_of_windings_in_layer=
-                                      self.input_data.geometry_settings.type_input.number_turns_in_layer)
+                                    self.input_data.geometry_settings.type_input.number_turns_in_layer)
 
     def map_winding_list(self):
         """
-        Creates a list of real winding numbers analyzed in the simulation
+        Creates a list of real winding numbers analysed in the simulation
         :return: list of integers
         """
         map_main_list = []
@@ -31,5 +31,5 @@ class WindingRemap(WindingRemapSearch):
                 map_main_list.append(self.neighbouring_winding_in_next_layer(map_list[j], winding_in_layer))
             map_list = new_layer_list
         map_main_list.sort()
-        print("List of windings analyzed in geometry: {}".format(map_main_list))
+        print("List of windings analysed in geometry: {}".format(map_main_list))
         return map_main_list

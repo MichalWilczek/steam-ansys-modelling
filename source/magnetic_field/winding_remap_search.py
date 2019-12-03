@@ -1,36 +1,17 @@
 
+from source.factory.general_functions import GeneralFunctions
 
-class WindingRemapSearch(object):
+
+class WindingRemapSearch(GeneralFunctions):
 
     def __init__(self, number_of_layers, number_of_windings_in_layer):
         self._number_of_layers = number_of_layers
         self._number_of_windings_in_layer = number_of_windings_in_layer
 
     @staticmethod
-    def remove_repetitive_values_from_list(mylist):
-        """
-        Removes repetitive values from list
-        :param mylist: list
-        :return: list without repetitions
-        """
-        return list(dict.fromkeys(mylist))
-
-    @staticmethod
-    def make_one_list_from_list_of_lists(list_of_lists):
-        """
-        Creates one single list out of lists of lists
-        :param list_of_lists: list of lists
-        :return: one list
-        """
-        flat_list = []
-        for list in list_of_lists:
-            for item in list:
-                flat_list.append(item)
-        return flat_list
-
-    def list_of_windings_to_analyze_without_repetitions(self, list_of_lists):
-        one_list = self.make_one_list_from_list_of_lists(list_of_lists)
-        return self.remove_repetitive_values_from_list(one_list)
+    def list_of_windings_to_analyse_without_repetitions(list_of_lists):
+        one_list = GeneralFunctions.flatten_list(list_of_lists)
+        return GeneralFunctions.remove_repetitive_values_from_list(one_list)
 
     def list_of_neighbouring_windings(self, winding_number):
         """
@@ -39,7 +20,7 @@ class WindingRemapSearch(object):
         :return: list of numbers
         """
         if winding_number > self._number_of_layers*self._number_of_windings_in_layer:
-            raise ValueError("Given winding number is to high with respect to analyzed geometry!")
+            raise ValueError("Given winding number is to high with respect to analysed geometry!")
         winding_list = []
         neigh1 = self.neighbouring_windings_in_the_same_layer(winding_number)
         neigh2 = self.neighbouring_windings_in_diff_layer(winding_number)
@@ -106,7 +87,8 @@ class WindingRemapSearch(object):
         """
         return winding_number - self.first_winding_of_given_layer(layer)
 
-    def neighbouring_winding_in_previous_layer(self, winding, which_winding_in_layer):
+    @staticmethod
+    def neighbouring_winding_in_previous_layer(winding, which_winding_in_layer):
         """
         Returns the neighbouring number of the winding from previous layer
         :param winding: winding number as integer
@@ -138,8 +120,3 @@ class WindingRemapSearch(object):
         if layer != self._number_of_layers:
             neighbouring_windings.append(self.neighbouring_winding_in_next_layer(winding_number, winding_in_layer))
         return neighbouring_windings
-
-
-
-
-

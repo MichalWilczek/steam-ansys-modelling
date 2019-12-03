@@ -18,7 +18,6 @@ from source.post_processor.quench_velocity.quench_front_numerical import QuenchF
 
 from source.magnetic_field.magnetic_field_constant import MagneticFieldConstant
 from source.magnetic_field.magnetic_field_2D_static import MagneticField2DStatic
-from source.magnetic_field.magnetic_field_2D_transient import MagneticField2DTransient
 
 from source.solver.solver_quench_velocity import SolverQuenchVelocity
 from source.solver.solver_heat_balance import SolverHeatBalance
@@ -135,8 +134,6 @@ class Factory(AnalysisLauncher, GeneralFunctions):
             return MagneticFieldConstant(factory)
         elif self.input_data.magnetic_field_settings.type == "2D_static":
             return MagneticField2DStatic(factory)
-        elif self.input_data.magnetic_field_settings.type == "2D_transient":
-            return MagneticField2DTransient(factory)
         else:
             raise ValueError("Class MagneticField does not exist")
 

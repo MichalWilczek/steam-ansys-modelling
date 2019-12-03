@@ -176,3 +176,33 @@ class GeneralFunctions(object):
         os.chdir(directory)
         with open(path, "w") as file:
             file.write(input_value)
+
+    @staticmethod
+    def make_list_of_filenames_in_directory(directory):
+        """
+        :param directory: full analysis output_directory as string
+        :return: list of file names as strings
+        """
+        list_files = os.listdir(directory)
+        return list_files
+
+    @staticmethod
+    def find_files_with_given_word(list_files, word):
+        """
+        :param list_files: list of file names as strings
+        :param word: ocurring word as string
+        :return: list of files as strings with "Winding" in their names
+        """
+        list_winding_files = []
+        for files in list_files:
+            if word in files:
+                list_winding_files.append(files)
+        return list_winding_files
+
+    @staticmethod
+    def count_number_of_occurencies_of_substring_in_list(list_of_strings, substring):
+        counter = 0
+        for name in list_of_strings:
+            if substring in name:
+                counter += 1
+        return counter
