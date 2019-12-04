@@ -19,10 +19,6 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         data.write_text('number_of_windings =' + str(self.input_data.geometry_settings.type_input.number_of_windings))
         data.write_text('number_of_windings_in_reel =' + str(
             self.input_data.geometry_settings.type_input.number_turns_in_layer))
-
-        # data.write_text('number_of_windings_in_reel =' + str(
-        #     self.input_data.geometry_settings.type_input.number_of_windings_in_layer))
-
         data.write_text('trans_dimension_winding =' + str(
             self.input_data.geometry_settings.type_input.winding_side * UnitConversion.milimeters_to_meters))
         data.write_text('division_long_side =' + str(
@@ -52,7 +48,7 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         Inputs prepared file with geometry to ANSYS environment
         :param filename: geometry file name as string
         """
-        self.input_file(filename=filename, extension='inp', directory=self.ansys_input_directory)
+        self.input_file(filename=filename, extension='inp', directory=self.ansys_input_directory, waiting_time=10)
 
     def calculate_initial_radius(self):
         winding_radius_step = self.input_data.geometry_settings.type_input.winding_side * \
@@ -71,9 +67,6 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         return final_radius
 
     def calculate_number_of_elements_per_winding(self):
-        # division_side1 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_long_side + 1
-        # division_side2 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_short_side + 1
-        # return float(2 * (division_side1 + division_side2))
         division_side1 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_long_side
         division_side2 = self.input_data.geometry_settings.type_input.type_mesh_settings.division_short_side
         return float(2 * (division_side1 + division_side2) + 1)

@@ -73,7 +73,7 @@ ans.finish()
 ans.enter_preprocessor()
 postprocessor.update_magnetic_field()
 preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
-preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor)
+preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor, circuit)
 # QDS verifying the quench state
 preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)
 preprocessor.adjust_nonlinear_inductance(circuit)
@@ -104,7 +104,7 @@ for i in range(2, len(solver.time_step_vector)):
     ans.enter_preprocessor()
     postprocessor.update_magnetic_field()
     preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
-    preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor)
+    preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor, circuit)
 
     # QDS verifying the quench state
     preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)

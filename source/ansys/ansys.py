@@ -184,10 +184,10 @@ class Ansys(GeneralFunctions):
     def allsel_below(self, domain):
         print(self.mapdl.executeCommandToString("allsel,below,{}".format(domain)))
 
-    def input_file(self, filename, extension, directory):
+    def input_file(self, filename, extension, directory, waiting_time=1):
         print(self.mapdl.executeCommandToString("/input,{},{},{}".format(filename, extension, directory)))
         self.make_python_wait_until_ansys_finishes(filename='Process_Finished.txt', directory=self.directory)
-        time.sleep(1)
+        time.sleep(waiting_time)
         self.delete_file(filename='Process_Finished.txt', directory=self.directory)
         print("File uploaded... \n---------------")
 

@@ -19,11 +19,12 @@ class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
         self.create_new_resistive_materials_dependent_on_mag_field(quench_fronts, magnetic_map=im_short_mag_dict)
         self.set_new_material_properties_repository(quench_fronts)
 
-    def adjust_material_properties_in_non_quenched_zone(self, class_postprocessor):
-        self.ansys_commands.input_winding_non_quenched_material_properties(
-            magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
-            class_mat=self.mat_props,
-            element_name="link68")
+    def adjust_material_properties_in_non_quenched_zone(self, class_postprocessor, class_circuit):
+        if class_circuit.qds_detection is True:
+            self.ansys_commands.input_winding_non_quenched_material_properties(
+                magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
+                class_mat=self.mat_props,
+                element_name="link68")
 
     def create_new_resistive_materials_dependent_on_mag_field(self, quench_fronts, magnetic_map):
         quenched_winding_list = []

@@ -25,7 +25,7 @@ class PreProcessor(object):
     def adjust_material_properties_in_quenched_zone(self, class_postprocessor):
         pass
 
-    def adjust_material_properties_in_non_quenched_zone(self, class_postprocessor):
+    def adjust_material_properties_in_non_quenched_zone(self, class_postprocessor, class_circuit) :
         pass
 
     def start_discharge_after_qds_switch(self, class_circuit, class_postprocessor):

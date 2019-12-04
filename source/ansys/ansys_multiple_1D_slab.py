@@ -47,7 +47,6 @@ class AnsysMultiple1DSlab(AnsysMultiple1D, UnitConversion, InsulationCircularSup
 
     def calculate_number_of_elements_per_winding(self):
         return float(self.input_data.geometry_settings.type_input.type_mesh_settings.division_per_winding)
-        # return float(self.input_data.geometry_settings.type_input.type_mesh_settings.division_per_winding + 1)
 
     def calculate_insulation_element_area(self):
         winding_length = self.calculate_total_winding_length()

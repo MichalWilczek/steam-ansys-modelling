@@ -19,7 +19,6 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
         """
         strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
 
-        self.enter_preprocessor()
         for i in range(len(magnetic_field_map.keys())):
 
             self.delete_material_number(material_number=str(i + 1))
@@ -82,8 +81,6 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
 
         magnetic_field = magnetic_field_map["winding"+str(winding_number)]
         element_number = number_of_windings + winding_number
-
-        # self.delete_element_type(element_number)
         self.delete_material_number(material_number=element_number)
 
         self.define_element_type(element_number=element_number, element_name=element_name)

@@ -1,8 +1,8 @@
 
 ! input from Python
-! resistance_dump = 1.557
-! inductance_init = 0.5
-! current_init = 86
+! resistance_dump
+! inductance_init
+! current_init
 r_switch1 = 1e12
 
 cmsel,s,winding1
