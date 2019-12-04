@@ -94,3 +94,6 @@ class PostProcessorQuenchVelocity(PostProcessor, QuenchMerge):
             number_lines = int(len(myfile.readlines()))
         dump_resistor_current_voltage_power = np.loadtxt(path, skiprows=number_lines-1, max_rows=1, usecols=(1, 2))
         self.circuit.current[0] = abs(dump_resistor_current_voltage_power[0])
+
+    def update_magnetic_field(self):
+        self.magnetic_map.update_magnetic_field_during_analysis(current=self.circuit.current[0])

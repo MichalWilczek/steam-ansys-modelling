@@ -206,3 +206,9 @@ class GeneralFunctions(object):
             if substring in name:
                 counter += 1
         return counter
+
+    @staticmethod
+    def find_nearest_in_numpy_array(array, value):
+        array = np.asarray(array)
+        idx = (np.abs(array - value)).argmin()
+        return array[idx]

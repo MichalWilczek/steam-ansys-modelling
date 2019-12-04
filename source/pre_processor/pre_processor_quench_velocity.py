@@ -13,11 +13,17 @@ class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
         if self.input_data.geometry_settings.type_input.type_insulation_settings.insulation_analysis:
             self.ansys_commands.input_insulation_material_properties(class_mat=self.mat_props)
 
-    def adjust_material_properties_in_analysis(self, class_postprocessor):
+    def adjust_material_properties_in_quenched_zone(self, class_postprocessor):
         quench_fronts = class_postprocessor.quench_fronts
         im_short_mag_dict = class_postprocessor.magnetic_map.im_short_mag_dict
         self.create_new_resistive_materials_dependent_on_mag_field(quench_fronts, magnetic_map=im_short_mag_dict)
         self.set_new_material_properties_repository(quench_fronts)
+
+    def adjust_material_properties_in_non_quenched_zone(self, class_postprocessor):
+        self.ansys_commands.input_winding_non_quenched_material_properties(
+            magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
+            class_mat=self.mat_props,
+            element_name="link68")
 
     def create_new_resistive_materials_dependent_on_mag_field(self, quench_fronts, magnetic_map):
         quenched_winding_list = []
@@ -33,6 +39,7 @@ class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
         for qf in quench_fronts:
             quench_dict = self.geometry.retrieve_winding_numbers_and_quenched_nodes(
                 x_down_node=qf.x_down_node, x_up_node=qf.x_up_node)
+
             for key in quench_dict:
                 winding_number = int(float(key[7:]))
                 self.ansys_commands.select_nodes_in_analysis_mag(
@@ -53,10 +60,15 @@ class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
             self.ansys_commands.mapdl.executeCommand("rmodif,{},1,{}".format("et_switch_resistor", "1e-12"))
             self.ansys_commands.mapdl.executeCommand("rmodif,{},1,{},{},{},{}".format("et_curr_source", 0, 0, 1e12, 0))
 
+    @staticmethod
+    def inductance_to_string(inductance):
+        return "-------------\nINDUCTANCE AT CURRENT TIME STEP EQUALS: {} H\n-------------".format(inductance)
+
     def adjust_nonlinear_inductance(self, class_circuit):
         inductance = InterpolationFunctions.get_value_from_linear_1d_interpolation(
             f_interpolation=class_circuit.diff_inductance_interpolation, x=class_circuit.current)[0]
         self.ansys_commands.enter_preprocessor()
         self.ansys_commands.allsel()
         self.ansys_commands.mapdl.executeCommand("rmodif,{},1,{}".format("et_inductor", inductance))
+        print(self.inductance_to_string(inductance))
 

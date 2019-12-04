@@ -22,10 +22,10 @@ class PreProcessor(object):
     def include_class_geometry_in_class_instance(self, class_geometry):
         self.geometry = class_geometry
 
-    def adjust_material_properties_in_analysis(self, class_postprocessor):
+    def adjust_material_properties_in_quenched_zone(self, class_postprocessor):
         pass
 
-    def update_magnetic_field_map(self, class_postprocessor):
+    def adjust_material_properties_in_non_quenched_zone(self, class_postprocessor):
         pass
 
     def start_discharge_after_qds_switch(self, class_circuit, class_postprocessor):

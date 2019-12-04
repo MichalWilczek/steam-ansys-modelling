@@ -70,6 +70,9 @@ class PostProcessor(Plots, QuenchDetect):
     def estimate_coil_resistance(self):
         pass
 
+    def update_magnetic_field(self):
+        pass
+
     def estimate_quench_velocity(self):
         pass
 

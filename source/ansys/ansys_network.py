@@ -21,6 +21,9 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
 
         self.enter_preprocessor()
         for i in range(len(magnetic_field_map.keys())):
+
+            self.delete_material_number(material_number=str(i + 1))
+
             magnetic_field = magnetic_field_map["winding" + str(i + 1)]
             wire_area = class_mat.wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
             self.define_element_type(element_number=i + 1, element_name=element_name)

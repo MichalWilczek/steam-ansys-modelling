@@ -45,7 +45,7 @@ postprocessor = factory.get_postprocessor_class(class_geometry=coil_geo, ansys_c
                                                 v_quench=v_quench, solver=solver, factory=factory)
 postprocessor.check_quench_state()
 postprocessor.plot_quench_state_in_analysis()
-preprocessor.adjust_material_properties_in_analysis(postprocessor)
+preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
 solver.end_of_time_step()
 
 ans.enter_solver()
@@ -71,8 +71,9 @@ postprocessor.plot_quench_state_in_analysis()
 ans.finish()
 
 ans.enter_preprocessor()
-preprocessor.update_magnetic_field_map(postprocessor)
-preprocessor.adjust_material_properties_in_analysis(postprocessor)
+postprocessor.update_magnetic_field()
+preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
+preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor)
 # QDS verifying the quench state
 preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)
 preprocessor.adjust_nonlinear_inductance(circuit)
@@ -101,8 +102,9 @@ for i in range(2, len(solver.time_step_vector)):
     postprocessor.plot_quench_state_in_analysis()
 
     ans.enter_preprocessor()
-    preprocessor.update_magnetic_field_map(postprocessor)
-    preprocessor.adjust_material_properties_in_analysis(postprocessor)
+    postprocessor.update_magnetic_field()
+    preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
+    preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor)
 
     # QDS verifying the quench state
     preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)
