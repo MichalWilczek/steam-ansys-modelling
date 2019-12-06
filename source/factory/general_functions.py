@@ -98,14 +98,7 @@ class GeneralFunctions(object):
         while exists is False:
             exists = os.path.isfile(path)
             if exists and GeneralFunctions.file_length(filename, analysis_directory=directory) == file_length:
-                os.chdir(directory)
-                with open('Process_Finished.txt', 'r') as f:
-                    file_input = int(float(f.read()))
-                if file_input == 1:
-                    f.close()
-                    break
-                else:
-                    exists = False
+                return True
             else:
                 exists = False
 

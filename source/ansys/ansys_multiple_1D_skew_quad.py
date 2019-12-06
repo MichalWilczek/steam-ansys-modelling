@@ -2,7 +2,6 @@
 from source.ansys.ansys_multiple_1D import AnsysMultiple1D
 from source.factory.unit_conversion import UnitConversion
 from source.insulation.insulation_circular_superconductor import InsulationCircularSuperconductor
-from source.magnetic_field.winding_remap_search import WindingRemapSearch
 import time
 
 class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircularSuperconductor):
@@ -56,13 +55,7 @@ class AnsysMultiple1DSkewQuad(AnsysMultiple1D, UnitConversion, InsulationCircula
         initial_radius = self.input_data.geometry_settings.type_input.geometry_radius_first_layer * \
             UnitConversion.milimeters_to_meters
 
-        layers = self.input_data.geometry_settings.type_input.number_layers
-        turns_in_layer = self.input_data.geometry_settings.type_input.number_turns_in_layer
-        first_turn_in_analysis = self.input_data.geometry_settings.type_input.winding_number_first_in_analysis
-
-        layer_winding_search = WindingRemapSearch(number_of_layers=layers, number_of_windings_in_layer=turns_in_layer)
-        layer_to_count = layer_winding_search.in_which_layer_is_winding(first_turn_in_analysis)
-
+        layer_to_count = self.input_data.geometry_settings.type_input.which_layer_first_in_analysis
         final_radius = initial_radius + (float(layer_to_count) - 1.0) * winding_radius_step
         return final_radius
 

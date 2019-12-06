@@ -1,9 +1,7 @@
 
 from ansys_corba import CORBA
 from source.ansys.ansys_table import Table
-from source.solver.initial_temperature.polynomial_fit import PolynomialFit
 from source.factory.general_functions import GeneralFunctions
-import time
 import os
 
 class Ansys(GeneralFunctions):
@@ -67,15 +65,6 @@ class Ansys(GeneralFunctions):
     def input_heat_generation_on_windings(self, winding_number):
         dim_name = "%heatgen_" + winding_number[7:] + "%"
         self.set_heat_generation_in_nodes(node_number="all", value=dim_name)
-
-    def input_heat_flow_table(self, number_windings_heated=1.0, scaling_factor=1.0):
-        self.enter_preprocessor()
-        heat_flow_array = PolynomialFit.extract_meas_power_function()
-        self.create_dim_table(dim_name="heat_flow", dim_type="table", size1=len(heat_flow_array), size2=1, size3=1, name1="time")
-        self.fill_dim_table(dim_name="heat_flow", row=0, column=1, value=0.0)
-        for i in range(len(heat_flow_array[:, 0])):
-            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=0, value=heat_flow_array[i, 0])
-            self.fill_dim_table(dim_name="heat_flow", row=i + 1, column=1, value=(heat_flow_array[i, 1]/number_windings_heated)*scaling_factor)
 
     # functions responsible for deleting unnecessary ansys files
     def delete_old_ansys_analysis_files(self):
@@ -146,19 +135,6 @@ class Ansys(GeneralFunctions):
         for i in range(len(nodes_list)):
             self.mapdl.executeCommand("nsel,u,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1]))
 
-    # # not needed anymore
-    # def set_gaussian_initial_temperature_distribution(self, gaussian_temperature_distr):
-    #     """
-    #     Sets initial temperature to all nodes according to gaussian distribution curve
-    #     :param gaussian_temperature_distr: temperature distribution numpy array; 1st column: node number as integer,
-    #      2nd column: temperature as float
-    #     """
-    #     self.allsel()
-    #     for i in range(len(gaussian_temperature_distr[:, 0])):
-    #         node_number = gaussian_temperature_distr[i, 0]
-    #         temperature = gaussian_temperature_distr[i, 1]
-    #         self.mapdl.executeCommandToString("ic,{},temp,{}".format(node_number, temperature))
-
     # general commands
     def create_dim_table(self, dim_name, dim_type, name1, size1, size2=" ", size3=" "):
         self.mapdl.executeCommand("*dim,{},{},{},{},{},{}".format(dim_name, dim_type, size1, size2, size3, name1))
@@ -186,10 +162,10 @@ class Ansys(GeneralFunctions):
 
     def input_file(self, filename, extension, directory, waiting_time=1):
         print(self.mapdl.executeCommandToString("/input,{},{},{}".format(filename, extension, directory)))
-        self.make_python_wait_until_ansys_finishes(filename='Process_Finished.txt', directory=self.directory)
-        time.sleep(waiting_time)
-        self.delete_file(filename='Process_Finished.txt', directory=self.directory)
-        print("File uploaded... \n---------------")
+        end_process = self.make_python_wait_until_ansys_finishes(filename='Process_Finished.txt', directory=self.directory)
+        if end_process:
+            self.delete_file(filename='Process_Finished.txt', directory=self.directory)
+            print("File uploaded... \n---------------")
 
     def terminate_analysis(self):
         self.mapdl.terminate()

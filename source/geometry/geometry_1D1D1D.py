@@ -230,14 +230,17 @@ class GeometryMulti1D(Geometry):
         :return: 2-column numpy array; 1-imaginary node number as float, 2-node temperature as float
         """
         imaginary_1d_temperature = np.zeros((len(self.coil_length_1d), 2))
+
         for i in range(len(self.coil_length_1d)):
-            node_list_for_imaginary_node = self.node_map_sorted[np.where(self.node_map_sorted[:, 0] == i+1)][:, 1]
+
+            node_list_for_imaginary_node = self.node_map_sorted[np.where(self.node_map_sorted[:, 0] == i + 1)][:, 1]
             node_temperature_array = np.zeros((len(node_list_for_imaginary_node), 2))
+
             for j in range(len(node_list_for_imaginary_node)):
                 node_temperature_array[j, 0] = node_list_for_imaginary_node[j]
                 node_temperature_array[j, 1] = temperature_profile[np.where(temperature_profile[:, 0] ==
                                                                             node_list_for_imaginary_node[j])][:, 1]
-            imaginary_1d_temperature[i, 0] = self.node_map_sorted[i, 1]
+            imaginary_1d_temperature[i, 0] = self.node_map_sorted[np.where(node_temperature_array[0, 0] == self.node_map_sorted[:, 1])][0, 0]
             imaginary_1d_temperature[i, 1] = np.max(node_temperature_array[:, 1])
         return imaginary_1d_temperature
 

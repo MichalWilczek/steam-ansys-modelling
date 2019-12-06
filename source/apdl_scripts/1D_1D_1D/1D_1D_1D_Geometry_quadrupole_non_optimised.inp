@@ -138,7 +138,7 @@ csys,0
         *dim,insulation_tip_nodes_array%winding_counter%,array,kp_per_winding*4,1,1
         node_ins_tip_counter = 1
 
-        ! get number of keypoints in one winding
+        ! get number of keypoints in one
         cmsel,s,winding%winding_counter%
         ! allsel,below,line
         allsel,below,elem
@@ -150,13 +150,9 @@ csys,0
         *get,kps_max_winding,kp,,num,max
         *get,kps_min_winding,kp,,num,min
 
-        ! get the number of current elements to name the insulation of the winding
-        allsel
-        *get,current_elem_insulation,elem,,count
-        first_elem_insulation = current_elem_insulation+1
-
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        !!!! k  creates four sides of the insulation layer !!!!!!!!!!!!!!!!!!!!!!
+        !!!! k is creates four sides of the insulation layer !!!!!!!!!!!!!!!!!!!!
+        !!!! j is creates the longitudinal elements of each insulation layer !!!!
         !!!! i creates each layer element separately !!!!!!!!!!!!!!!!!!!!!!!!!!!!
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -173,7 +169,7 @@ csys,0
           y_insulation = 0
           z_insulation = 0
 
-          j=1
+          *do,j,1,trans_division_insulation,1
 
             *do,i,min_kp,max_kp,1
 
@@ -181,22 +177,34 @@ csys,0
               *get,knum,kp,,count
 
               csys,coord_syst_counter
-              *get,kposx,kp,i,loc,x
-              *get,kposy,kp,i,loc,y
-              *get,kposz,kp,i,loc,z
+
+              *if,j,eq,1,then
+                *get,kposx,kp,i,loc,x
+                *get,kposy,kp,i,loc,y
+                *get,kposz,kp,i,loc,z
+              *else
+                *get,kposx,kp,knum+1-kp_long_side,loc,x
+                *get,kposy,kp,knum+1-kp_long_side,loc,y
+                *get,kposz,kp,knum+1-kp_long_side,loc,z
+              *endif
 
               *if,k,eq,1,then
-                y_insulation = + eq_trans_dimension_insulation
+                y_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,2,then
-                y_insulation = - eq_trans_dimension_insulation
+                y_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *endif
 
               k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-              l,i,knum+1,trans_division_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+1-kp_long_side,knum+1,1
+              *endif
 
 			! application of corner nodes
 			*if,i,eq,min_kp,then
@@ -214,13 +222,22 @@ csys,0
               lmesh,lnum
 
               !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
 
             *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_long_side,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
         *enddo
         coord_syst_counter = coord_syst_counter + 1
 
@@ -237,29 +254,42 @@ csys,0
           y_insulation = 0
           z_insulation = 0
 
-          j=1
+          *do,j,1,trans_division_insulation,1
+
             *do,i,min_kp,max_kp,1
 
               allsel
               *get,knum,kp,,count
 
               csys,coord_syst_counter
-              *get,kposx,kp,i,loc,x    ! r-axis
-              *get,kposy,kp,i,loc,y    ! theta-axis
-              *get,kposz,kp,i,loc,z    ! z-axis
+
+              *if,j,eq,1,then
+                *get,kposx,kp,i,loc,x    ! r-axis
+                *get,kposy,kp,i,loc,y    ! theta-axis
+                *get,kposz,kp,i,loc,z    ! z-axis
+              *else
+                *get,kposx,kp,knum+2-kp_radius,loc,x
+                *get,kposy,kp,knum+2-kp_radius,loc,y
+                *get,kposz,kp,knum+2-kp_radius,loc,z
+              *endif
 
               *if,k,eq,1,then
-                x_insulation = + eq_trans_dimension_insulation
+                x_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,2,then
-                x_insulation = - eq_trans_dimension_insulation
+                x_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *endif
 
               k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-              l,i,knum+1,trans_division_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+2-kp_radius,knum+1,1
+              *endif
 
               type,ins_elem_number
               real,ins_elem_number
@@ -269,13 +299,22 @@ csys,0
               lmesh,lnum
 
               !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
 
             *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_radius+1,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
         *enddo
         coord_syst_counter = coord_syst_counter + 1
 
@@ -292,233 +331,7 @@ csys,0
           y_insulation = 0
           z_insulation = 0
 
-          j=1
-
-            *do,i,min_kp,max_kp,1
-
-              allsel
-              *get,knum,kp,,count
-
-              csys,coord_syst_counter
-              *get,kposx,kp,i,loc,x
-              *get,kposy,kp,i,loc,y
-              *get,kposz,kp,i,loc,z
-
-              *if,k,eq,1,then
-                y_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,2,then
-                y_insulation = - eq_trans_dimension_insulation
-              *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
-              *endif
-
-              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-              l,i,knum+1,1,trans_division_insulation
-
-              type,ins_elem_number
-              real,ins_elem_number
-              mat,ins_elem_number
-              allsel
-              *get,lnum,line,,count
-              lmesh,lnum
-
-              !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
-
-            *enddo
-        *enddo
-        coord_syst_counter = coord_syst_counter + 1
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! SECOND RADIUS OF THE WINIDNG !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        min_kp = max_kp + 1
-        max_kp = kps_min_winding+kp_long_side+2*kp_radius+kp_short_side-4
-
-        *do,k,1,4,1
-
-          x_insulation = 0
-          y_insulation = 0
-          z_insulation = 0
-
-          j=1
-
-            *do,i,min_kp,max_kp,1
-
-              allsel
-              *get,knum,kp,,count
-
-              csys,coord_syst_counter
-              *get,kposx,kp,i,loc,x    ! r-axis
-              *get,kposy,kp,i,loc,y    ! theta-axis
-              *get,kposz,kp,i,loc,z    ! z-axis
-
-              *if,k,eq,1,then
-                x_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,2,then
-                x_insulation = - eq_trans_dimension_insulation
-              *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
-              *endif
-
-              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-              l,i,knum+1,trans_division_insulation
-
-              type,ins_elem_number
-              real,ins_elem_number
-              mat,ins_elem_number
-              allsel
-              *get,lnum,line,,count
-              lmesh,lnum
-
-              !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
-
-            *enddo
-        *enddo
-        coord_syst_counter = coord_syst_counter + 1
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! SECOND LONG SIDE OF THE WINDING !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        min_kp = max_kp + 1
-        max_kp = kps_min_winding+2*kp_long_side+2*kp_radius+kp_short_side-5
-
-        *do,k,1,4,1
-
-          x_insulation = 0
-          y_insulation = 0
-          z_insulation = 0
-
-          j=1
-
-            *do,i,min_kp,max_kp,1
-
-              allsel
-              *get,knum,kp,,count
-
-              csys,coord_syst_counter
-
-              *get,kposx,kp,i,loc,x
-              *get,kposy,kp,i,loc,y
-              *get,kposz,kp,i,loc,z
-
-              *if,k,eq,1,then
-                y_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,2,then
-                y_insulation = - eq_trans_dimension_insulation
-              *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
-              *endif
-
-              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-              l,i,knum+1,trans_division_insulation
-
-              type,ins_elem_number
-              real,ins_elem_number
-              mat,ins_elem_number
-              allsel
-              *get,lnum,line,,count
-              lmesh,lnum
-
-              !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
-
-            *enddo
-        *enddo
-        coord_syst_counter = coord_syst_counter + 1
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! THIRD RADIUS OF THE WINIDNG !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        min_kp = max_kp + 1
-        max_kp = kps_min_winding+2*kp_long_side+3*kp_radius+kp_short_side-6
-
-        *do,k,1,4,1
-
-          x_insulation = 0
-          y_insulation = 0
-          z_insulation = 0
-
-          j=1
-
-            *do,i,min_kp,max_kp,1
-
-              allsel
-              *get,knum,kp,,count
-
-              csys,coord_syst_counter
-
-              *get,kposx,kp,i,loc,x    ! r-axis
-              *get,kposy,kp,i,loc,y    ! theta-axis
-              *get,kposz,kp,i,loc,z    ! z-axis
-
-              *if,k,eq,1,then
-                x_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,2,then
-                x_insulation = - eq_trans_dimension_insulation
-              *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
-              *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
-              *endif
-
-              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-              l,i,knum+1,trans_division_insulation
-
-              type,ins_elem_number
-              real,ins_elem_number
-              mat,ins_elem_number
-              allsel
-              *get,lnum,line,,count
-              lmesh,lnum
-
-              !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
-
-            *enddo
-        *enddo
-        coord_syst_counter = coord_syst_counter + 1
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        ! SECOND SHORT SIDE OF THE WINDING !
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        min_kp = max_kp + 1
-        max_kp = kps_min_winding+2*kp_long_side+3*kp_radius+2*kp_short_side-7
-
-        *do,k,1,4,1
-
-          x_insulation = 0
-          y_insulation = 0
-          z_insulation = 0
-
-          j=1
+          *do,j,1,trans_division_insulation,1
 
             *do,i,min_kp,max_kp,1
 
@@ -538,17 +351,22 @@ csys,0
               *endif
 
               *if,k,eq,1,then
-                y_insulation = + eq_trans_dimension_insulation
+                y_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,2,then
-                y_insulation = - eq_trans_dimension_insulation
+                y_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *endif
 
               k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-              l,i,knum+1,trans_division_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+2-kp_short_side,knum+1,1
+              *endif
 
               type,ins_elem_number
               real,ins_elem_number
@@ -558,13 +376,330 @@ csys,0
               lmesh,lnum
 
               !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
 
             *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_short_side+1,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
+        *enddo
+        coord_syst_counter = coord_syst_counter + 1
+
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! SECOND RADIUS OF THE WINIDNG !
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        min_kp = max_kp + 1
+        max_kp = kps_min_winding+kp_long_side+2*kp_radius+kp_short_side-4
+
+        *do,k,1,4,1
+
+          x_insulation = 0
+          y_insulation = 0
+          z_insulation = 0
+
+          *do,j,1,trans_division_insulation,1
+
+            *do,i,min_kp,max_kp,1
+
+              allsel
+              *get,knum,kp,,count
+
+              csys,coord_syst_counter
+
+              *if,j,eq,1,then
+                *get,kposx,kp,i,loc,x    ! r-axis
+                *get,kposy,kp,i,loc,y    ! theta-axis
+                *get,kposz,kp,i,loc,z    ! z-axis
+              *else
+                *get,kposx,kp,knum+2-kp_radius,loc,x
+                *get,kposy,kp,knum+2-kp_radius,loc,y
+                *get,kposz,kp,knum+2-kp_radius,loc,z
+              *endif
+
+              *if,k,eq,1,then
+                x_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,2,then
+                x_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,3,then
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,4,then
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *endif
+
+              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+2-kp_radius,knum+1,1
+              *endif
+
+              type,ins_elem_number
+              real,ins_elem_number
+              mat,ins_elem_number
+              allsel
+              *get,lnum,line,,count
+              lmesh,lnum
+
+              !! get the tip node number for further coupling purposes
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
+
+            *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_radius+1,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
+        *enddo
+        coord_syst_counter = coord_syst_counter + 1
+
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! SECOND LONG SIDE OF THE WINDING !
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        min_kp = max_kp + 1
+        max_kp = kps_min_winding+2*kp_long_side+2*kp_radius+kp_short_side-5
+
+        *do,k,1,4,1
+
+          x_insulation = 0
+          y_insulation = 0
+          z_insulation = 0
+
+          *do,j,1,trans_division_insulation,1
+
+            *do,i,min_kp,max_kp,1
+
+              allsel
+              *get,knum,kp,,count
+
+              csys,coord_syst_counter
+
+              *if,j,eq,1,then
+                *get,kposx,kp,i,loc,x
+                *get,kposy,kp,i,loc,y
+                *get,kposz,kp,i,loc,z
+              *else
+                *get,kposx,kp,knum+2-kp_long_side,loc,x
+                *get,kposy,kp,knum+2-kp_long_side,loc,y
+                *get,kposz,kp,knum+2-kp_long_side,loc,z
+              *endif
+
+              *if,k,eq,1,then
+                y_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,2,then
+                y_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,3,then
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,4,then
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *endif
+
+              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+2-kp_long_side,knum+1,1
+              *endif
+
+              type,ins_elem_number
+              real,ins_elem_number
+              mat,ins_elem_number
+              allsel
+              *get,lnum,line,,count
+              lmesh,lnum
+
+              !! get the tip node number for further coupling purposes
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
+
+            *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_long_side+1,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
+        *enddo
+        coord_syst_counter = coord_syst_counter + 1
+
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! THIRD RADIUS OF THE WINIDNG !
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        min_kp = max_kp + 1
+        max_kp = kps_min_winding+2*kp_long_side+3*kp_radius+kp_short_side-6
+
+        *do,k,1,4,1
+
+          x_insulation = 0
+          y_insulation = 0
+          z_insulation = 0
+
+          *do,j,1,trans_division_insulation,1
+
+            *do,i,min_kp,max_kp,1
+
+              allsel
+              *get,knum,kp,,count
+
+              csys,coord_syst_counter
+
+              *if,j,eq,1,then
+                *get,kposx,kp,i,loc,x    ! r-axis
+                *get,kposy,kp,i,loc,y    ! theta-axis
+                *get,kposz,kp,i,loc,z    ! z-axis
+              *else
+                *get,kposx,kp,knum+2-kp_radius,loc,x
+                *get,kposy,kp,knum+2-kp_radius,loc,y
+                *get,kposz,kp,knum+2-kp_radius,loc,z
+              *endif
+
+              *if,k,eq,1,then
+                x_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,2,then
+                x_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,3,then
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,4,then
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *endif
+
+              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+2-kp_radius,knum+1,1
+              *endif
+
+              type,ins_elem_number
+              real,ins_elem_number
+              mat,ins_elem_number
+              allsel
+              *get,lnum,line,,count
+              lmesh,lnum
+
+              !! get the tip node number for further coupling purposes
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
+
+            *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_radius+1,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
+        *enddo
+        coord_syst_counter = coord_syst_counter + 1
+
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! SECOND SHORT SIDE OF THE WINDING !
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        min_kp = max_kp + 1
+        max_kp = kps_min_winding+2*kp_long_side+3*kp_radius+2*kp_short_side-7
+
+        *do,k,1,4,1
+
+          x_insulation = 0
+          y_insulation = 0
+          z_insulation = 0
+
+          *do,j,1,trans_division_insulation,1
+
+            *do,i,min_kp,max_kp,1
+
+              allsel
+              *get,knum,kp,,count
+
+              csys,coord_syst_counter
+
+              *if,j,eq,1,then
+                *get,kposx,kp,i,loc,x
+                *get,kposy,kp,i,loc,y
+                *get,kposz,kp,i,loc,z
+              *else
+                *get,kposx,kp,knum+2-kp_short_side,loc,x
+                *get,kposy,kp,knum+2-kp_short_side,loc,y
+                *get,kposz,kp,knum+2-kp_short_side,loc,z
+              *endif
+
+              *if,k,eq,1,then
+                y_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,2,then
+                y_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,3,then
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
+              *elseif,k,eq,4,then
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
+              *endif
+
+              k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+2-kp_short_side,knum+1,1
+              *endif
+
+              type,ins_elem_number
+              real,ins_elem_number
+              mat,ins_elem_number
+              allsel
+              *get,lnum,line,,count
+              lmesh,lnum
+
+              !! get the tip node number for further coupling purposes
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
+
+            *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_short_side+1,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
         *enddo
         coord_syst_counter = coord_syst_counter + 1
 
@@ -581,7 +716,7 @@ csys,0
           y_insulation = 0
           z_insulation = 0
 
-          j=1
+          *do,j,1,trans_division_insulation,1
 
             *do,i,min_kp,max_kp,1
 
@@ -589,22 +724,34 @@ csys,0
               *get,knum,kp,,count
 
               csys,coord_syst_counter
-              *get,kposx,kp,i,loc,x    ! r-axis
-              *get,kposy,kp,i,loc,y    ! theta-axis
-              *get,kposz,kp,i,loc,z    ! z-axis
+
+              *if,j,eq,1,then
+                *get,kposx,kp,i,loc,x    ! r-axis
+                *get,kposy,kp,i,loc,y    ! theta-axis
+                *get,kposz,kp,i,loc,z    ! z-axis
+              *else
+                *get,kposx,kp,knum+2-kp_radius,loc,x
+                *get,kposy,kp,knum+2-kp_radius,loc,y
+                *get,kposz,kp,knum+2-kp_radius,loc,z
+              *endif
 
               *if,k,eq,1,then
-                x_insulation = + eq_trans_dimension_insulation
+                x_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,2,then
-                x_insulation = - eq_trans_dimension_insulation
+                x_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,3,then
-                z_insulation = + eq_trans_dimension_insulation
+                z_insulation = + eq_trans_dimension_insulation/trans_division_insulation
               *elseif,k,eq,4,then
-                z_insulation = - eq_trans_dimension_insulation
+                z_insulation = - eq_trans_dimension_insulation/trans_division_insulation
               *endif
 
               k,knum+1,kposx+x_insulation,kposy+y_insulation,kposz+z_insulation
-               l,i,knum+1,trans_division_insulation
+
+              *if,j,eq,1,then
+                l,i,knum+1,1
+              *else
+                l,knum+2-kp_radius,knum+1,1
+              *endif
 
 			! application of corner nodes
 			*if,i,eq,max_kp,then
@@ -622,20 +769,46 @@ csys,0
               lmesh,lnum
 
               !! get the tip node number for further coupling purposes
-              ksel,s,kp,,knum+1
-              nslk,s
-              *get,num_node,node,,num,max
-              insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
-              node_ins_tip_counter = node_ins_tip_counter + 1
+              *if,j,eq,trans_division_insulation,then
+                ksel,s,kp,,knum+1
+                nslk,s
+                *get,num_node,node,,num,max
+                insulation_tip_nodes_array%winding_counter%(node_ins_tip_counter) = num_node
+                node_ins_tip_counter = node_ins_tip_counter + 1
+              *endif
 
             *enddo
+
+            allsel
+            *get,enum,elem,,count
+            esel,s,elem,,enum-division_radius+1,enum
+            cm,insulation_layer%j%_side%k%_cord%coord_syst_counter%,elem
+
+          *enddo
+        *enddo
+
+        ! create named selection for each insulation layer of every winding
+        *do,l,1,trans_division_insulation,1
+          *do,n,first_coord_syst,coord_syst_counter
+            *do,m,1,4,1
+              *if,m,eq,1,and,n,eq,first_coord_syst,then
+                cmsel,s,insulation_layer%l%_side%m%_cord%n%
+              *else
+                cmsel,a,insulation_layer%l%_side%m%_cord%n%
+              *endif
+            *enddo
+          *enddo
+          cm,insulation_layer%l%_winding%winding_counter%,elem
         *enddo
 
         ! create named selection for entire insulation of every winding
-        ! get the number of current elements to name the insulation of the winding
-        allsel
-        *get,last_elem_insulation,elem,,count
-        esel,s,elem,,first_elem_insulation,last_elem_insulation
+        *do,l,1,trans_division_insulation,1
+          *if,l,eq,1,then
+            cmsel,s,insulation_layer%l%_winding%winding_counter%
+          *else
+            cmsel,a,insulation_layer%l%_winding%winding_counter%
+          *endif
+        *enddo
         cm,insulation_winding%winding_counter%,elem
 
         ! create named selection of winding with insulation
@@ -649,10 +822,6 @@ csys,0
         cm,winding_with_insulation_nodes%winding_counter%,node
 
       *endif
-      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      !!! END OF CODE FOR INSULATION CREATION !!!
-      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     x = x
     *if,is_reel_number_odd,ne,0,then
       z = z + trans_dimension_winding

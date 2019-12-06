@@ -19,7 +19,7 @@ class Geometry(GeneralFunctions):
     @staticmethod
     def retrieve_quenched_winding_numbers_from_quench_fronts(coil_data, x_down_node, x_up_node):
         """
-        Returns number of windings that containt the given quench front
+        Returns number of windings that contains the given quench front
         :param coil_data: 4-column numpy array; 1st column: winding number, 2nd column: real node number,
         3rd column: imaginary node number, 4th column: length at the given imaginary node number
         :param x_down_node: imaginary lower front of quench front as integer
@@ -113,17 +113,7 @@ class Geometry(GeneralFunctions):
             winding_number = int("".join(winding_number_list))
             winding = np.loadtxt(file, dtype=int)
             winding_set[key_word+str(winding_number)] = winding
-        # foldername = filename.split("_" + str(winding_number))[0]
-        # self.copy_geometry_files_to_geometry_directory(foldername, winding_files)
         return winding_set
-
-    # DON'T DELETE --> THIS CODE IS SUPPOSED TO COPY IMPORTED TXT FILES TO OUTPUT DIRECTORY
-    # def copy_geometry_files_to_geometry_directory(self, foldername, files_list):
-    #     GeneralFunctions.create_folder_in_directory(self.output_directory_geometry, foldername)
-    #     for filename in files_list:
-    #         filename_directory = os.path.join(self.directory, filename)
-    #         GeneralFunctions.copy_object_to_another_object(filename_directory, self.output_directory_geometry)
-    #         GeneralFunctions.delete_file(filename, self.directory)
 
     @staticmethod
     def load_file_with_winding_nodes_position(directory, filename):

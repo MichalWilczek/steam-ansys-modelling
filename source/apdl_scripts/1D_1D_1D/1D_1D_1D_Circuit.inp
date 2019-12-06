@@ -3,6 +3,7 @@
 ! resistance_dump
 ! inductance_init
 ! current_init
+
 r_switch1 = 1e12
 
 cmsel,s,winding1
@@ -14,13 +15,13 @@ allsel,below,elem
 *get,last_node,node,,num,max
 
 csys,0
-*get,first_kp_x,kp,first_node,loc,x
-*get,first_kp_y,kp,first_node,loc,y
-*get,first_kp_z,kp,first_node,loc,z
+*get,first_kp_x,node,first_node,loc,x
+*get,first_kp_y,node,first_node,loc,y
+*get,first_kp_z,node,first_node,loc,z
 
-*get,last_kp_x,kp,last_node,loc,x
-*get,last_kp_y,kp,last_node,loc,y
-*get,last_kp_z,kp,last_node,loc,z
+*get,last_kp_x,node,last_node,loc,x
+*get,last_kp_y,node,last_node,loc,y
+*get,last_kp_z,node,last_node,loc,z
 
 ! create additional nodes for an electric circuit
 /prep7
@@ -93,3 +94,4 @@ cp,next,volt,circ_node+1,circ_node+3
 (1(ES16.7))
 *cfclose
 
+save

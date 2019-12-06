@@ -1,18 +1,16 @@
 
 from source.magnetic_field.magnetic_field import MagneticField
-from source.magnetic_field.winding_remap import WindingRemap
 from source.factory.general_functions import GeneralFunctions
 from source.factory.interpolation_functions import InterpolationFunctions
 from source.factory.unit_conversion import UnitConversion
 import os
 import numpy as np
 
-
-class MagneticFieldMap(MagneticField, InterpolationFunctions, WindingRemap, UnitConversion):
+class MagneticFieldMap(MagneticField, InterpolationFunctions, UnitConversion):
 
     def __init__(self, factory):
         MagneticField.__init__(self, factory)
-        WindingRemap.__init__(self, factory)
+        self.layers = self.input_data.geometry_settings.type_input.number_layers
         self.magnetic_field_map_directory = factory.input_data.magnetic_field_settings.\
             input.magnetic_field_map_repository
         self.mag_map_interpolation = self.get_magnetic_interpolation_function()
@@ -70,41 +68,6 @@ class MagneticFieldMap(MagneticField, InterpolationFunctions, WindingRemap, Unit
         return x_pos, y_pos, current_array, b_field_array
 
     @staticmethod
-    def create_wind_real_number_list(winding_list):
-        """
-        Creates list of windings taken into consideration in analysis
-        :param winding_list: list of integers
-        :return: list of strings, winding%winding_number%
-        """
-        return MagneticFieldMap.create_list_with_winding_names(winding_list)
-
-    @staticmethod
-    def create_list_with_winding_names(list_numbers):
-        """
-        Returns the following list of strings; winding%winding_number%
-        :param list_numbers: list of integers
-        :return: list of strings
-        """
-        winding_list = []
-        for item in list_numbers:
-            winding_list.append("winding" + str(item))
-        return winding_list
-
-    @staticmethod
-    def shorten_mag_map_dict(mag_map, winding_name_list):
-        """
-        Returns dictionary with only windings taken into analysis
-        :param mag_map: full dictionary with assigned magnetic field
-        :param winding_name_list: list of strings with winding names taken into analysis
-        :return: reduced magnetic field map dictionary
-        """
-        new_mag_map = {}
-        for name in winding_name_list:
-            value = mag_map[name]
-            new_mag_map[name] = value[2]
-        return new_mag_map
-
-    @staticmethod
     def winding_y_pos_list(winding_side, number_turns_in_layer):
         """
         Creates a horizontal array with y-position of a consecutive magnet layer
@@ -124,13 +87,12 @@ class MagneticFieldMap(MagneticField, InterpolationFunctions, WindingRemap, Unit
         array = np.arange(init_pos_x, winding_side*number_layers+init_pos_x, winding_side)
         return array
 
-    @staticmethod
-    def make_winding_pos_x(winding_side, number_turns_in_layer, number_layers):
+    def make_winding_pos_x(self, winding_side, number_turns_in_layer, number_layers):
         """
         Creates vertical array where each row represents x_position of a winding in numerical order
         :return: numpy array, 1st column x_pos of winding as float
         """
-        init_pos_x = winding_side / 2.0
+        init_pos_x = float(self.input_data.geometry_settings.type_input.which_layer_first_in_analysis - 1)* winding_side + winding_side / 2.0
         pos_x = np.zeros((number_turns_in_layer * number_layers, 1))
         wind_counter_x = 1
         for i in range(number_layers):
@@ -140,8 +102,7 @@ class MagneticFieldMap(MagneticField, InterpolationFunctions, WindingRemap, Unit
             init_pos_x += winding_side
         return pos_x
 
-    @staticmethod
-    def make_winding_pos_y(winding_side, number_turns_in_layer, number_layers):
+    def make_winding_pos_y(self, winding_side, number_turns_in_layer, number_layers):
         """
         Creates vertical array where each row represents y_position of a winding in numerical order
         :return: numpy array, 1st column y_pos of winding as float
@@ -149,7 +110,8 @@ class MagneticFieldMap(MagneticField, InterpolationFunctions, WindingRemap, Unit
         pos_y = np.zeros((number_turns_in_layer * number_layers, 1))
         wind_counter_y = 1
         for i in range(0, number_layers, 2):
-            init_pos_y1 = winding_side / 2.0
+            init_pos_y1 = float(self.input_data.geometry_settings.type_input.which_turn_first_in_analysis - 1) * \
+                          winding_side + winding_side / 2.0
             for j in range(number_turns_in_layer):
                 pos_y[wind_counter_y - 1] = init_pos_y1
                 init_pos_y1 += winding_side
@@ -157,7 +119,9 @@ class MagneticFieldMap(MagneticField, InterpolationFunctions, WindingRemap, Unit
             wind_counter_y += number_turns_in_layer
         wind_counter_y = number_turns_in_layer
         for i in range(0, number_layers-1, 2):
-            init_pos_y2 = winding_side / 2.0 + (float(number_turns_in_layer)-1)*winding_side
+            init_pos_y2 = winding_side / 2.0 + (float(number_turns_in_layer) - 1) * winding_side + \
+                          float(self.input_data.geometry_settings.type_input.which_turn_first_in_analysis - 1)* \
+                          winding_side
             for j in range(number_turns_in_layer):
                 pos_y[wind_counter_y] = init_pos_y2
                 if j != number_turns_in_layer - 1:
@@ -165,6 +129,4 @@ class MagneticFieldMap(MagneticField, InterpolationFunctions, WindingRemap, Unit
                 wind_counter_y += 1
             wind_counter_y += number_turns_in_layer
         return pos_y
-
-
 
