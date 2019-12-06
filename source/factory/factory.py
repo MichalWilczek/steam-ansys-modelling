@@ -10,7 +10,6 @@ from source.geometry.geometry_2D import Geometry2D
 
 from source.ansys.ansys_multiple_1D_skew_quad import AnsysMultiple1DSkewQuad
 from source.ansys.ansys_multiple_1D_slab import AnsysMultiple1DSlab
-from source.ansys.ansys_2D import Ansys2D
 
 from source.post_processor.quench_velocity.quench_front import QuenchFront
 from source.post_processor.quench_velocity.quench_front_constant import QuenchFrontConst
@@ -104,8 +103,6 @@ class Factory(AnalysisLauncher, GeneralFunctions):
         elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
                 self.input_data.geometry_settings.type == "slab":
             return AnsysMultiple1DSlab(factory, ansys_input_directory=self.get_ansys_scripts_directory())
-        elif self.input_data.geometry_settings.dimensionality == "2D":
-            return Ansys2D(factory, ansys_input_directory=self.get_ansys_scripts_directory())
         else:
             raise ValueError("The specified geometry type and dimensionality do not exist at the same time")
 
