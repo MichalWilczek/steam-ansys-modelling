@@ -1,10 +1,9 @@
 
-import math
 from source.ansys.ansys import Ansys
 from source.factory.unit_conversion import UnitConversion
-from source.insulation.insulation_circular_superconductor import InsulationCircularSuperconductor
+from source.insulation.insulation import Insulation
 
-class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
+class AnsysNetwork(Ansys, UnitConversion, Insulation):
 
     def __init__(self, factory, ansys_input_directory):
         Ansys.__init__(self, factory, ansys_input_directory)
@@ -18,11 +17,8 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
         :param element_name: ansys 1D element name to be input
         """
         strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
-
         for i in range(len(magnetic_field_map.keys())):
-
             self.delete_material_number(material_number=str(i + 1))
-
             magnetic_field = magnetic_field_map["winding" + str(i + 1)]
             wire_area = class_mat.wire_area(strand_diameter * UnitConversion.milimeters_to_meters)
             self.define_element_type(element_number=i + 1, element_name=element_name)
@@ -40,31 +36,6 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
                 self.define_element_heat_capacity(element_number=i + 1, value=winding_volumetric_heat_capacity[j, 1])
                 if element_name == "link68":
                     self.define_element_resistivity(element_number=i + 1, value=superconductor_resistivity)
-
-    def input_hot_spot_insulation_material_properties(self, class_mat,
-                                                      number_of_initially_quenched_windings=1, hot_spot_length=0.002):
-        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
-        number_of_windings = self.input_data.geometry_settings.type_input.number_of_windings
-        winding_side = self.input_data.geometry_settings.type_input.winding_side
-        element_number = 2 * number_of_windings + 3
-        self.define_element_type(element_number=element_number, element_name="link33")
-
-        eff_side = (winding_side + math.pi * strand_diameter / 4.0) / 2.0
-        eff_area = (eff_side*0.001) * hot_spot_length * float(number_of_initially_quenched_windings)
-
-        self.define_element_constant(element_number=element_number, element_constant=eff_area)
-        self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
-        insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
-        insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
-
-        for j in range(len(insulation_thermal_conductivity[:, 0])):
-            self.define_temperature_for_material_property(
-                table_placement=j+1, temperature=insulation_thermal_conductivity[j, 0])
-            self.define_element_conductivity(
-                element_number=element_number, value=insulation_thermal_conductivity[j, 1])
-            self.define_element_heat_capacity(
-                element_number=element_number, value=insulation_volumetric_heat_capacity[j, 1])
-        return element_number
 
     def input_winding_quench_material_properties(self, magnetic_field_map, winding_number,
                                                  class_mat, element_name="link68"):
@@ -102,17 +73,11 @@ class AnsysNetwork(Ansys, UnitConversion, InsulationCircularSuperconductor):
                 self.define_element_resistivity(element_number=element_number, value=winding_resistivity[j, 1])
 
     def calculate_insulation_length(self):
-
-        strand_diameter = \
-            self.input_data.geometry_settings.type_input.strand_diameter * UnitConversion.milimeters_to_meters
-        winding_side = self.input_data.geometry_settings.type_input.winding_side * UnitConversion.milimeters_to_meters
-
-        eff_insulation_length = InsulationCircularSuperconductor.return_eff_insulation_length(
-            winding_side1=winding_side, winding_side2=winding_side, strand_diameter=strand_diameter)
-
-        return eff_insulation_length
+        return Insulation.get_insulation_side(
+            small_circle=self.input_data.geometry_settings.type_input.strand_diameter *
+                         UnitConversion.milimeters_to_meters,
+            large_circle=self.input_data.geometry_settings.type_input.strand_diameter_with_insulation
+                         * UnitConversion.milimeters_to_meters)
 
     def get_temperature_profile(self, class_geometry, npoints):
-        temperature_profile_1d = class_geometry.load_temperature_and_map_onto_1d_cable(
-            directory=self.directory, npoints=npoints)
-        return temperature_profile_1d
+        return class_geometry.load_temperature_and_map_onto_1d_cable(directory=self.directory, npoints=npoints)

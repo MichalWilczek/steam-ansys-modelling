@@ -11,4 +11,5 @@ class PreProcessorHeatBalance(PreProcessor):
             magnetic_map, class_mat=self.mat_props, element_name="link33")
         if self.input_data.geometry_settings.type_input.type_insulation_settings.insulation_analysis:
             self.ansys_commands.input_insulation_material_properties(class_mat=self.mat_props)
+            self.ansys_commands.input_point_mass_material_properties(class_mat=self.mat_props)
 

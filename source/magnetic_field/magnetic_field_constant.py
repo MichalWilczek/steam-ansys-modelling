@@ -1,10 +1,10 @@
 
-from source.magnetic_field.magnetic_field_map import MagneticFieldMap
+from source.magnetic_field.magnetic_field import MagneticField
 
-class MagneticFieldConstant(MagneticFieldMap):
+class MagneticFieldConstant(MagneticField):
 
     def __init__(self, factory):
-        MagneticFieldMap.__init__(self, factory)
+        MagneticField.__init__(self, factory)
         self.im_short_mag_dict = self.assign_magnetic_field_to_geometry()
 
     def assign_magnetic_field_to_geometry(self):

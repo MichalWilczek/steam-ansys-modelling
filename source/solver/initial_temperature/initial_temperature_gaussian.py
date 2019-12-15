@@ -75,8 +75,9 @@ class InitialTemperatureGaussian(InitialTemperature):
 
     def define_gaussian_temperature_distribution_array(self, imaginary_1d_geometry, magnetic_field):
         """
-        Defines imaginary IC gaussian distribution temeperature for imaginary 1D coil geometry
+        Defines imaginary IC gaussian distribution temperature for imaginary 1D coil geometry
         :param imaginary_1d_geometry: 2-column numpy array; 1-imaginary node number, 2-node position in meters
+        :param magnetic_field:
         """
         gaussian_distribution_array = np.zeros((len(imaginary_1d_geometry[:, 0]), 2))
         for i in range(len(imaginary_1d_geometry[:, 0])):
@@ -84,6 +85,6 @@ class InitialTemperatureGaussian(InitialTemperature):
             temp = self.calculate_node_gaussian_temperature(position=position, magnetic_field=magnetic_field)
             gaussian_distribution_array[i, 0] = imaginary_1d_geometry[i, 0]
             gaussian_distribution_array[i, 1] = temp
-        self.plots.plot_and_save_temperature(self.output_directory, self.geometry.coil_geometry, gaussian_distribution_array,
-                                       iteration=0, time_step=0.0)
+        self.plots.plot_and_save_temperature(self.output_directory, self.geometry.coil_geometry,
+                                             gaussian_distribution_array, iteration=0, time_step=0.0)
         return gaussian_distribution_array

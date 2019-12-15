@@ -877,6 +877,24 @@ set_8_high = 1+2*kp_long_side+4*kp_radius+2*kp_short_side-8
 	cm,magnet_coil,elem
 *enddo
 
+! definition of point heat capacities
+*if,create_point_thermal_capacity,eq,1,then
+    *do,i,1,number_of_windings
+        *if,i,eq,1,then
+            cmsel,s,winding_line%i%
+        *else
+            cmsel,a,winding_line%i%
+        *endif
+        cm,magnet_coil_without_insulation,line
+    *enddo
+    cmsel,s,magnet_coil_without_insulation
+    allsel,below,line
+    type,ins_elem_number+2
+    real,ins_elem_number+2
+    mat,ins_elem_number+2
+    kmesh,all
+*endif
+
 *cfopen,Process_Finished,txt
 *vwrite,1
 (1(ES16.7))

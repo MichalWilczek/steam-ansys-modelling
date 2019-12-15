@@ -50,10 +50,9 @@ class CircuitElectricAnalysisWithCircuit(Circuit, InterpolationFunctions):
                     print(self.qds_to_string(time_step=self.qds_current_time))
                     return True
 
-    def detect_qds_duration_time(self, qds_start_time, qds_current_time, epsilon=0.00001):
+    def detect_qds_duration_time(self, qds_start_time, qds_current_time):
         qds_duration_time = qds_current_time - qds_start_time
-        if abs(qds_duration_time - self.input_data.circuit_settings.transient_electric_analysis_input.
-                reaction_time_qds) <= epsilon:
+        if qds_duration_time >= self.input_data.circuit_settings.transient_electric_analysis_input.reaction_time_qds:
             self.qds_detection = True
             return True
         else:

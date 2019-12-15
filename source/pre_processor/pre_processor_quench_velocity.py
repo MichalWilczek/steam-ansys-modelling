@@ -12,6 +12,7 @@ class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
             magnetic_map, class_mat=self.mat_props, element_name="link68")
         if self.input_data.geometry_settings.type_input.type_insulation_settings.insulation_analysis:
             self.ansys_commands.input_insulation_material_properties(class_mat=self.mat_props)
+            self.ansys_commands.input_point_mass_material_properties(class_mat=self.mat_props)
 
     def adjust_material_properties_in_quenched_zone(self, class_postprocessor):
         quench_fronts = class_postprocessor.quench_fronts

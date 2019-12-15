@@ -292,6 +292,24 @@ tolerance_range = 1e-8
 (1(ES16.7))
 *cfclose
 
+! definition of point heat capacities
+*if,create_point_thermal_capacity,eq,1,then
+    *do,i,1,number_of_windings
+        *if,i,eq,1,then
+            cmsel,s,winding%i%
+        *else
+            cmsel,a,winding%i%
+        *endif
+        cm,magnet_coil_without_insulation,line
+    *enddo
+    cmsel,s,magnet_coil_without_insulation
+    allsel,below,line
+    type,ins_elem_number+2
+    real,ins_elem_number+2
+    mat,ins_elem_number+2
+    kmesh,all
+*endif
+
 *cfopen,Process_Finished,txt
 *vwrite,1
 (1(ES16.7))

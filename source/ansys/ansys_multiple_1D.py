@@ -6,17 +6,41 @@ class AnsysMultiple1D(AnsysNetwork):
     def __init__(self, factory, ansys_input_directory):
         AnsysNetwork.__init__(self, factory, ansys_input_directory)
 
+    def check_if_point_mass_is_applied(self):
+        if self.input_data.geometry_settings.type_input.strand_to_strand_contact_correction_factor == 1.0 and \
+                self.input_data.geometry_settings.type_input.resin_filling_factor <= 10e-10:
+            return False
+        else:
+            return True
+
+    def input_point_mass_material_properties(self, class_mat, element_name="mass71"):
+        self.enter_preprocessor()
+        element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 3
+        self.define_element_type(element_number=element_number, element_name=element_name)
+        self.define_element_constant(element_number=element_number, element_constant="point_mass_volume")
+        # real constant interpreted as volume with density and specific heat defined as material properties
+        self.define_keyopt(element_number, keyopt_1=3, keyopt_2=0)
+        # heat generation independent of temperature
+        self.define_keyopt(element_number, keyopt_1=4, keyopt_2=0)
+        self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
+
+        cv_array = class_mat.insulation.calculate_volumetric_heat_capacity()
+        for j in range(len(cv_array[:, 0])):
+            self.define_temperature_for_material_property(table_placement=j+1, temperature=cv_array[j, 0])
+            self.define_element_heat_capacity(element_number=element_number, value=cv_array[j, 1])
+        return element_number
+
     def input_insulation_material_properties(self, class_mat):
         """
         Inputs material properties for the insulation
         """
-
         # normal insulation elements
         self.enter_preprocessor()
         element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 1
         self.define_element_type(element_number=element_number, element_name="link33")
-        insulation_area = self.calculate_insulation_element_area()
-        self.define_element_constant(element_number=element_number, element_constant=insulation_area)
+        self.define_element_constant(
+            element_number=element_number,
+            element_constant=self.calculate_insulation_element_area())
         self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
         insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
         insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
@@ -33,8 +57,9 @@ class AnsysMultiple1D(AnsysNetwork):
         self.enter_preprocessor()
         element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 2
         self.define_element_type(element_number=element_number, element_name="link33")
-        insulation_area = self.calculate_insulation_element_area()
-        self.define_element_constant(element_number=element_number, element_constant=insulation_area/2.0)
+        self.define_element_constant(
+            element_number=element_number,
+            element_constant=str(self.calculate_insulation_element_area()/2))
         self.define_element_density(element_number=element_number, value=class_mat.insulation.density_fake)
         insulation_thermal_conductivity = class_mat.insulation.calculate_thermal_conductivity()
         insulation_volumetric_heat_capacity = class_mat.insulation.calculate_volumetric_heat_capacity()
