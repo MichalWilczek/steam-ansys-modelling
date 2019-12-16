@@ -63,3 +63,10 @@ class CircuitElectricAnalysisWithCircuit(Circuit, InterpolationFunctions):
             return True
         else:
             return False
+
+    def check_if_magnet_is_discharged(self):
+        if self.current[0] < self.input_data.circuit_settings.transient_electric_analysis_input.current_discharge_criterion:
+            return True
+        else:
+            return False
+

@@ -34,7 +34,6 @@ class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
                 coil_data=self.geometry.coil_data, x_down_node=qf.x_down_node, x_up_node=qf.x_up_node))
         quenched_winding_list = self.geometry.remove_repetitive_values_from_list(self.geometry.flatten_list(quenched_winding_list))
         for winding in quenched_winding_list:
-
             self.ansys_commands.input_winding_quench_material_properties(magnetic_map, class_mat=self.mat_props, winding_number=winding)
 
     def set_new_material_properties_repository(self, quench_fronts):
@@ -48,6 +47,13 @@ class PreProcessorQuenchVelocity(PreProcessor, InterpolationFunctions):
                     winding_number=key, x_down_node=qf.x_down_node,
                     x_up_node=qf.x_up_node, class_geometry=self.geometry)
                 self.ansys_commands.select_elem_from_nodes()
+
+                # ADDED TO TAKE INTO ACCOUNT MASS ELEMENTS !!!
+                if self.input_data.geometry_settings.type_input.strand_to_strand_contact_correction_factor < 1.0:
+                    self.ansys_commands.unselect_element_type_from_set_of_elements(
+                        element_number_to_unselect=2*self.input_data.
+                            geometry_settings.type_input.number_of_windings + 3)
+
                 self.ansys_commands.modify_material_type(
                     element_number=winding_number + self.input_data.geometry_settings.type_input.number_of_windings)
                 self.ansys_commands.modify_material_constant(

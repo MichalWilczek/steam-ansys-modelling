@@ -2,6 +2,7 @@
 from source.solver.time_step import TimeStep
 from source.factory.unit_conversion import UnitConversion
 from source.post_processor.quench_detection import QuenchDetect
+from source.factory.general_functions import GeneralFunctions
 
 class Solver(TimeStep, QuenchDetect, UnitConversion):
 
@@ -22,10 +23,25 @@ class Solver(TimeStep, QuenchDetect, UnitConversion):
         self.magnetic_map = mag_map
 
         self.iteration = [0]
-        self.time_step_vector = TimeStep.linear_time_stepping(
-            time_step=self.input_data.analysis_settings.time_step_cosimulation,
-            total_time=self.input_data.analysis_settings.time_total_simulation)
+        self.time_step_vector = self.create_time_step_vector()
         self.t = [self.time_step_vector[self.iteration[0]]]
+
+    def create_time_step_vector(self):
+
+        discharge_statement = hasattr(self.input_data.circuit_settings.transient_electric_analysis_input, "magnet_discharge_current")
+        no_discharge_statement = hasattr(self.input_data.analysis_settings, "time_total_simulation")
+
+        if discharge_statement is True and no_discharge_statement is False:
+            return TimeStep.linear_time_stepping(
+                time_step=self.input_data.analysis_settings.time_step_cosimulation,
+                total_time=self.input_data.analysis_settings.time_step_cosimulation)
+        elif discharge_statement is False and no_discharge_statement is True:
+            return TimeStep.linear_time_stepping(
+                time_step=self.input_data.analysis_settings.time_step_cosimulation,
+                total_time=self.input_data.analysis_settings.time_total_simulation)
+        else:
+            return ValueError("Please decide whether you input total simulation time or "
+                              "the discharge statement for current")
 
     def time_to_string(self):
         print("------------------------------------------------------\

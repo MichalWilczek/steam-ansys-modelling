@@ -6,15 +6,6 @@ import shutil
 class GeneralFunctions(object):
 
     @staticmethod
-    def check_if_object_exists(instance):
-        try:
-            instance
-        except NameError:
-            return False
-        else:
-            return True
-
-    @staticmethod
     def file_length(filename, analysis_directory):
         """
         :param filename: filename with extension as string

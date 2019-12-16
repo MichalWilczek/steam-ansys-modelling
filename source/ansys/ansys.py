@@ -97,6 +97,12 @@ class Ansys(GeneralFunctions):
         for i in range(len(nodes_list)):
             self.mapdl.executeCommand("nsel,u,node,,{},{}".format(nodes_list[i][0], nodes_list[i][1]))
 
+    def unselect_element_type_from_set_of_elements(self, element_number_to_unselect):
+        """
+        :param element_number_to_unselect:
+        """
+        self.mapdl.executeCommand("esel,u,type,,{}".format(element_number_to_unselect))
+
     # general commands
     def create_dim_table(self, dim_name, dim_type, name1, size1, size2=" ", size3=" "):
         self.mapdl.executeCommand("*dim,{},{},{},{},{},{}".format(dim_name, dim_type, size1, size2, size3, name1))
