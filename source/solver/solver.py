@@ -90,4 +90,4 @@ class Solver(TimeStep, QuenchDetect, UnitConversion):
 
     def restart_analysis(self):
         self.ansys_commands.restart_analysis()
-        
+
