@@ -1,11 +1,11 @@
 
 import numpy as np
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.general_functions import GeneralFunctions
 from source.materials.material_properties_plotter import MaterialPropertiesPlotter
 from source.materials.g10_nist_material_properties import G10NISTMaterialProperties
 from source.materials.material_properties_units import MaterialPropertiesUnits
 
-class G10MaterialProperties(GeneralFunctions, MaterialPropertiesUnits, G10NISTMaterialProperties):
+class G10MaterialProperties(G10NISTMaterialProperties):
 
     def __init__(self, temperature_profile, txt_output=False, png_output=False, output_directory=None):
         self.temperature_profile = temperature_profile

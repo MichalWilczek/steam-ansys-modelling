@@ -1,4 +1,5 @@
 
+from source.post_processor.plots import Plots
 from source.post_processor.post_processor import PostProcessor
 import numpy as np
 
@@ -59,24 +60,28 @@ class PostProcessorHeatBalance(PostProcessor):
                 q_v_time_array[0, 1] = 0.0
                 q_v_time_array[0, 2] = 0.0
 
-        # write down quench velocity
+        self.write_down_quench_velocity_to_file(q_v_time_array)
+        for qf in quench_front_new:
+            self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label,
+                                          class_geometry=self.geometry)]
+
+    def write_down_quench_velocity_to_file(self, q_v_time_array):
         if self.iteration[0] == 1:
-            self.write_line_in_file(directory=self.plots.output_directory_quench_state,
-                                    filename="Q_V_array.txt", mydata=q_v_time_array)
+            Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
+                                     filename="Q_V_array.txt", mydata=q_v_time_array)
         elif self.iteration[0] > 1:
-            self.write_line_in_file(directory=self.plots.output_directory_quench_state,
-                                    filename="Q_V_array.txt", mydata=q_v_time_array,
-                                    newfile=False)
-        for qf in quench_front_new:
-            self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label,
-                                          class_geometry=self.geometry)]
+            Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
+                                     filename="Q_V_array.txt", mydata=q_v_time_array,
+                                     newfile=False)
 
-        for qf in quench_front_new:
-            self.quench_fronts = [self.qf(x_down=qf[0], x_up=qf[1], label=self.quench_label,
-                                          class_geometry=self.geometry)]
+    def estimate_resistive_voltage(self):
+        self.resistive_voltage = self.calculate_resistive_voltage()
+        self.write_down_resistive_voltage_to_file(self.resistive_voltage)
+        self.plot_resistive_voltage()
 
-    def estimate_coil_resistance(self):
-        self.plot_resistive_voltage(self.calculate_coil_resistance())
+    def calculate_resistive_voltage(self):
+        coil_resistance = self.calculate_coil_resistance()
+        return coil_resistance * self.circuit.return_current_in_time_step()
 
     def calculate_coil_resistance(self):
         quenched_winding_list = []
@@ -103,25 +108,6 @@ class PostProcessorHeatBalance(PostProcessor):
             coil_resistance += qf_resistance
         return coil_resistance
 
-    def plot_resistive_voltage(self, coil_resistance):
-        time_step = [self.time_step_vector[self.iteration[0]]][0]
-        res_voltage = self.circuit.return_current_in_time_step() * coil_resistance
-        self.plots.plot_resistive_voltage_python(voltage=res_voltage,
-                                                 total_time=self.input_data.analysis_settings.time_total_simulation,
-                                                 time_step=time_step,
-                                                 iteration=self.iteration[0])
-        res_voltage_array = np.zeros((1, 2))
-        res_voltage_array[0, 0] = time_step
-        res_voltage_array[0, 1] = res_voltage
-        if self.iteration[0] == 1:
-            self.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
-                                    filename="Res_Voltage.txt", mydata=res_voltage_array)
-        else:
-            self.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
-                                    filename="Res_Voltage.txt", mydata=res_voltage_array,
-                                    newfile=False)
-        self.resistive_voltage = res_voltage
-
     def make_gif(self):
-        self.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif',
-                        directory=self.plots.output_directory_temperature)
+        Plots.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif',
+                         directory=self.plots.output_directory_temperature)

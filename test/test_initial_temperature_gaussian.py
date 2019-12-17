@@ -1,7 +1,7 @@
 
 import unittest
 import numpy as np
-from source.solver.initial_temperature.initial_temperature_gaussian import InitialTemperatureGaussian
+from source.physics.initial_temperature.initial_temperature_gaussian import InitialTemperatureGaussian
 
 class TestInitialTemperatureGaussian(unittest.TestCase):
 

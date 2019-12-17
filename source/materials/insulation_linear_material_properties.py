@@ -1,10 +1,10 @@
 
 import numpy as np
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.general_functions import GeneralFunctions
 from source.materials.material_properties_units import MaterialPropertiesUnits
 from source.materials.material_properties_plotter import MaterialPropertiesPlotter
 
-class InsulationLinearMaterialProperties(GeneralFunctions, MaterialPropertiesUnits, MaterialPropertiesPlotter):
+class InsulationLinearMaterialProperties(MaterialPropertiesPlotter):
 
     density = 1000.0    # [kg/m3]
 
@@ -12,7 +12,7 @@ class InsulationLinearMaterialProperties(GeneralFunctions, MaterialPropertiesUni
         self.temperature_profile = temperature_profile
         self.output_directory = output_directory
         if txt_output or png_output:
-            if output_directory is None :
+            if output_directory is None:
                 raise TypeError("Please, specify the output directory.")
             self.cv = None
             self.k = None

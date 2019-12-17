@@ -1,14 +1,15 @@
 
 import numpy as np
 from source.geometry.geometry import Geometry
+from source.common_functions.general_functions import GeneralFunctions
 
 class GeometryMulti1D(Geometry):
 
     def __init__(self, factory):
         Geometry.__init__(self, factory)
 
-        self.files_in_directory = Geometry.make_list_of_filenames_in_directory(directory=self.directory)
-        list_windings_nodes = Geometry.find_files_with_given_word(
+        self.files_in_directory = GeneralFunctions.make_list_of_filenames_in_directory(directory=self.directory)
+        list_windings_nodes = GeneralFunctions.find_files_with_given_word(
             list_files=self.files_in_directory, word="Nodes_winding_without_insul")
         self.dict_winding_nodes = self.load_files_with_windings_nodes(
             winding_files=list_windings_nodes, directory=self.directory, key_word="winding")
@@ -29,13 +30,13 @@ class GeometryMulti1D(Geometry):
         self.im_nodes_per_winding = Geometry.number_of_im_nodes_per_winding(self.dict_imaginary_nodes)
         self.winding_node_dict = self.create_node_dict_for_each_winding()
         self.coil_geometry = self.coil_length_1d
-        list_planes_nodes = Geometry.find_files_with_given_word(
+        list_planes_nodes = GeneralFunctions.find_files_with_given_word(
             list_files=self.files_in_directory, word="Nodes_plane")
         self.dict_planes_nodes = self.load_files_with_windings_nodes(
             winding_files=list_planes_nodes, directory=self.directory, key_word="plane")
 
         if factory.input_data.geometry_settings.type_input.type_insulation_settings.insulation_analysis:
-            list_windings_nodes_insul = Geometry.find_files_with_given_word(
+            list_windings_nodes_insul = GeneralFunctions.find_files_with_given_word(
                 list_files=self.files_in_directory, word="Nodes_winding_with_insul")
             self.dict_winding_nodes_insul = self.load_files_with_windings_nodes(
                 winding_files=list_windings_nodes_insul, directory=self.directory, key_word="winding")
@@ -240,7 +241,8 @@ class GeometryMulti1D(Geometry):
                 node_temperature_array[j, 0] = node_list_for_imaginary_node[j]
                 node_temperature_array[j, 1] = temperature_profile[np.where(temperature_profile[:, 0] ==
                                                                             node_list_for_imaginary_node[j])][:, 1]
-            imaginary_1d_temperature[i, 0] = self.node_map_sorted[np.where(node_temperature_array[0, 0] == self.node_map_sorted[:, 1])][0, 0]
+            imaginary_1d_temperature[i, 0] = self.node_map_sorted[np.where(node_temperature_array[0, 0] ==
+                                                                           self.node_map_sorted[:, 1])][0, 0]
             imaginary_1d_temperature[i, 1] = np.max(node_temperature_array[:, 1])
         return imaginary_1d_temperature
 
@@ -252,7 +254,7 @@ class GeometryMulti1D(Geometry):
         :param filename: filename as string with temperature profile
         :returns: 2-column numpy array; 1-imaginary node number as float, 2-node temperature as float
         """
-        temperature_profile = self.load_file(directory=directory, npoints=npoints, filename=filename)
+        temperature_profile = GeneralFunctions.load_file(directory=directory, npoints=npoints, filename=filename)
         coil_temperature_1d = self.map_temperature_into_1d_cable(temperature_profile=temperature_profile)
         return coil_temperature_1d
 

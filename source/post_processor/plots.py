@@ -1,12 +1,12 @@
 
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.general_functions import GeneralFunctions
 import numpy as np
 import matplotlib.pyplot as plt
 import imageio
 import os
 
 
-class Plots(GeneralFunctions):
+class Plots(object):
 
     def __init__(self, factory):
         self.output_directory = factory.output_directory
@@ -17,101 +17,34 @@ class Plots(GeneralFunctions):
         self.output_directory_temperature = GeneralFunctions.create_folder_in_directory(
             self.output_directory, "temperature_profile_output")
 
-        self.voltage_plot_ansys = None
-        self.voltage_fig_ansys = plt.figure()
-        self.voltage_plot_python = None
-
-    def plot_resistive_voltage_ansys(self, total_time, voltage, time_step, iteration):
+    def plot_resistive_voltage(self, time_vector, voltage_vector, additional_description):
         """
         Plots resistive voltage as a function of time
-        :param voltage: voltage value as float
-        :param time_step: time step as float
-        :param iteration: iteration number as integer
+        :param time_vector:
+        :param voltage_vector:
+        :param additional_description:
         """
-        additional_descr = "ansys"
         os.chdir(self.output_directory_resistive_voltage)
-        if iteration == 1:
-            self.voltage_fig_ansys = plt.figure()
-            self.voltage_plot_ansys = self.voltage_fig_ansys.add_subplot(111)
-            self.voltage_plot_ansys.set_xlabel('Time [s]')
-            self.voltage_plot_ansys.set_ylabel('Voltage [V]')
-            self.voltage_plot_ansys.set_xlim(0, total_time + 0.01)
-            self.voltage_plot_ansys.set_ylim(0, 0.5)
-            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
-            plt.grid(True)
-        else:
-            self.voltage_plot_ansys.plot(time_step, voltage, 'o', markersize=5, color="b")
-        plt.show()
-        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
-        self.voltage_fig_ansys.savefig(filename)
-
-    def plot_resistive_voltage_python(self, total_time, voltage, time_step, iteration):
-        """
-        Plots resistive voltage as a function of time
-        :param voltage: voltage value as float
-        :param time_step: time step as float
-        :param iteration: iteration number as integer
-        """
-        additional_descr = "python"
-        os.chdir(self.output_directory_resistive_voltage)
-        if iteration == 1:
-            self.voltage_fig_python = None
-            self.voltage_fig_python = plt.figure()
-            self.voltage_plot_python = self.voltage_fig_python.add_subplot(111)
-            self.voltage_plot_python.set_xlabel('Time [s]')
-            self.voltage_plot_python.set_ylabel('Voltage [V]')
-            self.voltage_plot_python.set_xlim(0, total_time + 0.01)
-            self.voltage_plot_python.set_ylim(0, 0.5)
-            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
-            plt.grid(True)
-        else:
-            self.voltage_plot_python.plot(time_step, voltage, 'o', markersize=5, color="b")
-        plt.show()
-        filename = "resistive_voltage_{}_{}.png".format(iteration, additional_descr)
-        self.voltage_fig_python.savefig(filename)
-
-    @staticmethod
-    def plot_quench_state(coil_length, quench_fronts, time_step):
-        """
-        Plots quench state
-        :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
-        :param quench_fronts: list of QuenchFront objects
-        :param time_step: time step as float
-        """
-        time_step = round(time_step, 4)
-        max_coil_length = coil_length[len(coil_length) - 1, 1]
-        min_coil_length = coil_length[0, 1]
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.set_xlabel('Position [m]')
-        ax.set_ylabel('Quench state')
-        ax.set_ylim(0, 1.1)
-        plt.title("Time step: {} s".format(time_step))
-        plt.xlim(min_coil_length, max_coil_length)
-        plt.ylim(0, 2)
-        if len(quench_fronts) != 0:
-            for j in range(len(quench_fronts)):
-                x_down = quench_fronts[j].x_down
-                x_up = quench_fronts[j].x_up
-                if j == 0 and len(quench_fronts) != 1:
-                    x_set = [min_coil_length, x_down, x_down, x_up, x_up]
-                    y_set = [0, 0, 1, 1, 0]
-                elif j == 0 and len(quench_fronts) == 1:
-                    x_set = [min_coil_length, x_down, x_down, x_up, x_up, max_coil_length]
-                    y_set = [0, 0, 1, 1, 0, 0]
-                elif j != 0 and j == len(quench_fronts)-1:
-                    x_set = [quench_fronts[j-1].x_up, x_down, x_down, x_up, x_up, max_coil_length]
-                    y_set = [0, 0, 1, 1, 0, 0]
-                else:
-                    x_set = [quench_fronts[j-1].x_up, x_down, x_down, x_up, x_up]
-                    y_set = [0, 0, 1, 1, 0]
-                plt.plot(x_set, y_set, '-', marker='8', markersize=8, linewidth=5, color='b')
-        else:
-            x_set = [min_coil_length, max_coil_length]
-            y_set = [0, 0]
-            plt.plot(x_set, y_set, '-', marker='8', markersize=8, linewidth=5, color='b')
-
+        ax.set_xlabel('Time [s]')
+        ax.set_ylabel('Voltage [V]')
+        ax.plot(time_vector, voltage_vector)
         plt.grid(True)
+        plt.show()
+        filename = "resistive_voltage_{}.png".format(additional_description)
+        fig.savefig(filename)
+        return fig
+
+    @staticmethod
+    def plot_quench_state(quench_state_array):
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.set_xlabel('Position, m')
+        ax.set_ylabel('Quench state')
+        ax.plot(quench_state_array[:, 0], quench_state_array[:, 1])
+        plt.grid(True)
+        plt.show()
         return fig
 
     @staticmethod
@@ -135,7 +68,7 @@ class Plots(GeneralFunctions):
         fig.savefig(filename)
         return filename
 
-    def plot_and_save_quench_state(self, coil_length, quench_fronts, iteration, time_step):
+    def plot_and_save_quench_state(self, quench_state_array, iteration):
         """
         Plots and saves quench state plot
         :param coil_length: coil length numpy array; 1st column - node number, 2nd column position in [m]
@@ -144,7 +77,7 @@ class Plots(GeneralFunctions):
         :param iteration: simulation iteration as integer
         """
         os.chdir(self.output_directory_quench_state)
-        fig = self.plot_quench_state(coil_length=coil_length, quench_fronts=quench_fronts, time_step=time_step)
+        fig = self.plot_quench_state(quench_state_array)
         filename = Plots.save_quench_state_plot(fig=fig, iteration=iteration)
         return filename
 
@@ -182,7 +115,7 @@ class Plots(GeneralFunctions):
         plt.grid(True)
         plt.show()
         if os.path.isfile(filename):
-            Plots.delete_file(directory=directory, filename=filename)
+            GeneralFunctions.delete_file(directory=directory, filename=filename)
         return fig
 
     @staticmethod
@@ -210,5 +143,3 @@ class Plots(GeneralFunctions):
         fig = Plots.plot_temperature(coil_length, directory, temperature_profile_1d, time_step, filename)
         saved_file = Plots.save_temperature_plot(fig=fig, iteration=iteration)
         return saved_file
-
-

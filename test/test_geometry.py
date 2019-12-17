@@ -8,7 +8,7 @@
 # class TestGeometry(unittest.TestCase):
 
 
-# output_directory = "C:\\gitlab\\steam-ansys-modelling\\source\\APDL\\3D_Mapping_Input_Files"
+# output_directory = "C:\\gitlab\\steam-ansys_interface-modelling\\source\\APDL\\3D_Mapping_Input_Files"
 # geo_ansys = Geometry(file_directory=output_directory)
 #
 # temperature_profile = geo_ansys.load_temperature_and_map_onto_1d_cable(npoints=5736, output_directory=output_directory)

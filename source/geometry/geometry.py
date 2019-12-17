@@ -1,9 +1,9 @@
 
 import os
 import numpy as np
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.general_functions import GeneralFunctions
 
-class Geometry(GeneralFunctions):
+class Geometry(object):
 
     def __init__(self, factory):
         self.input_data = factory.input_data
@@ -93,7 +93,8 @@ class Geometry(GeneralFunctions):
             dict_in_dict_temp[key_nodes_insul] = dict_temp
         return dict_in_dict_temp
 
-    def load_files_with_windings_nodes(self, winding_files, directory, key_word):
+    @staticmethod
+    def load_files_with_windings_nodes(winding_files, directory, key_word):
         """
         Assigns a node number matrix (n x m in which n-plane number and m-node numbers in each winding)to each winding
         :param winding_files: list of files with windings' nodes numbers as integers
@@ -251,3 +252,11 @@ class Geometry(GeneralFunctions):
             item = float(item)
             final_list.append(item)
         return final_list[0]
+
+    @staticmethod
+    def create_quench_state_array(coil_length_array, quench_fronts_list):
+        quench_state_array = np.zeros((len(coil_length_array[:, 0]), 2))
+        quench_state_array[:, 0] = coil_length_array[:, 1]
+        for quench_front in quench_fronts_list:
+            quench_state_array[quench_front.x_down_node-1:quench_front.x_up_node, 1] = 1
+        return quench_state_array

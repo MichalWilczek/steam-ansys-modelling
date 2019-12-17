@@ -1,10 +1,10 @@
 
 import numpy as np
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.general_functions import GeneralFunctions
 from source.materials.material_properties_units import MaterialPropertiesUnits
 from source.materials.material_properties_plotter import MaterialPropertiesPlotter
 
-class WindingLinearMaterialProperties(GeneralFunctions, MaterialPropertiesUnits, MaterialPropertiesPlotter):
+class WindingLinearMaterialProperties(MaterialPropertiesPlotter):
 
     density = 6000.0          # [kg/m3]
     density_fake = 1.0        # [kg/m3]

@@ -1,10 +1,10 @@
 
-from source.factory.factory import Factory
+from source.analysis_engine.analysis_factory import AnalysisFactory
 
 # creation of analysis directories
 json_file_directory = "C:\\skew_quad_analysis"
 json_filename = "input.json"
-factory = Factory(json_file_directory, json_filename)
+factory = AnalysisFactory(json_file_directory, json_filename)
 
 ######################################################
 # DEFINITION OF INITIAL INSTANCES TO RUN THE PROGRAMME
@@ -45,7 +45,7 @@ postprocessor = factory.get_postprocessor_class(class_geometry=coil_geo, ansys_c
                                                 v_quench=v_quench, solver=solver, factory=factory)
 postprocessor.check_quench_state()
 postprocessor.plot_quench_state_in_analysis()
-preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
+preprocessor.adjust_material_properties_in_quenched_zone(postprocessor, solver)
 solver.end_of_time_step()
 
 ans.enter_solver()
@@ -61,28 +61,32 @@ solver.solve()
 # INITIAL TIME STEP POST-PROCESSOR #
 ####################################
 ans.enter_postprocessor()
-postprocessor.get_temperature_profile()      # write down temperature profile, plot temperature
+postprocessor.get_temperature_profile()          # write down temperature profile, plot temperature
 postprocessor.get_current()
 postprocessor.check_quench_state_heat_balance()
-postprocessor.estimate_coil_resistance()     # estimate resistance in ansys and python, plot resistance
+postprocessor.estimate_resistive_voltage()       # estimate resistance, plot resistance
 postprocessor.estimate_quench_velocity()
 postprocessor.check_quench_state_quench_velocity()
 postprocessor.plot_quench_state_in_analysis()
 ans.finish()
 
+solver.check_if_analysis_is_finished()
 ans.enter_preprocessor()
 postprocessor.update_magnetic_field()
-preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
-preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor, circuit)
+preprocessor.adjust_material_properties_in_quenched_zone(postprocessor, solver)
+preprocessor.adjust_material_properties_with_current_discharge(postprocessor, solver, circuit)
+
 # QDS verifying the quench state
 preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)
 preprocessor.adjust_nonlinear_inductance(circuit)
+
 solver.end_of_time_step()
 
 ############################
 # FURTHER TIME STEP SOLVER #
 ############################
-for i in range(2, len(solver.time_step_vector)):
+while solver.end_of_analysis is False:
+    solver.set_next_time_step()
     ans.enter_solver()
     solver.restart_analysis()
     solver.set_time_step()
@@ -93,18 +97,19 @@ for i in range(2, len(solver.time_step_vector)):
 # FURTHER TIME STEP POST-PROCESSOR #
 ####################################
     ans.enter_postprocessor()
-    postprocessor.get_temperature_profile()    # write down temperature profile
+    postprocessor.get_temperature_profile()       # write down temperature profile
     postprocessor.get_current()
     postprocessor.check_quench_state_heat_balance()
-    postprocessor.estimate_coil_resistance()  # estimate resistance in ansys and python, plot resistance
+    postprocessor.estimate_resistive_voltage()    # estimate resistance, plot resistance
     postprocessor.estimate_quench_velocity()
     postprocessor.check_quench_state_quench_velocity()
     postprocessor.plot_quench_state_in_analysis()
 
+    solver.check_if_analysis_is_finished()
     ans.enter_preprocessor()
     postprocessor.update_magnetic_field()
-    preprocessor.adjust_material_properties_in_quenched_zone(postprocessor)
-    preprocessor.adjust_material_properties_in_non_quenched_zone(postprocessor, circuit)
+    preprocessor.adjust_material_properties_in_quenched_zone(postprocessor, solver)
+    preprocessor.adjust_material_properties_with_current_discharge(postprocessor, solver, circuit)
 
     # QDS verifying the quench state
     preprocessor.start_discharge_after_qds_switch(circuit, postprocessor)

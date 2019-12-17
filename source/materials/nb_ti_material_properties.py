@@ -1,12 +1,12 @@
 
 import numpy as np
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.general_functions import GeneralFunctions
 from source.materials.material_properties_plotter import MaterialPropertiesPlotter
 from source.materials.nb_ti_cudi_material_properties import NbTiCUDIMaterialProperties
 from source.materials.material_properties_units import MaterialPropertiesUnits
 
 
-class NbTiMaterialProperties(GeneralFunctions, MaterialPropertiesUnits, NbTiCUDIMaterialProperties):
+class NbTiMaterialProperties(NbTiCUDIMaterialProperties):
 
     a0 = 1.7
     a1 = 2.33 * 10.0 ** 9.0

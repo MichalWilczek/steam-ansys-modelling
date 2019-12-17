@@ -17,15 +17,15 @@ class PreProcessor(object):
         pass
 
     def define_geometry(self):
-        self.ansys_commands.input_geometry()
+        self.ansys_commands.upload_apdl_geometry_input_file()
 
     def include_class_geometry_in_class_instance(self, class_geometry):
         self.geometry = class_geometry
 
-    def adjust_material_properties_in_quenched_zone(self, class_postprocessor):
+    def adjust_material_properties_in_quenched_zone(self, class_postprocessor, class_solver):
         pass
 
-    def adjust_material_properties_in_non_quenched_zone(self, class_postprocessor, class_circuit) :
+    def adjust_material_properties_with_current_discharge(self, class_postprocessor, class_solver, class_circuit):
         pass
 
     def start_discharge_after_qds_switch(self, class_circuit, class_postprocessor):

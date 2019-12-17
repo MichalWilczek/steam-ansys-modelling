@@ -1,12 +1,12 @@
 
 import numpy as np
-from source.factory.unit_conversion import UnitConversion
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.unit_conversion import UnitConversion
+from source.common_functions.general_functions import GeneralFunctions
 from source.materials.material_properties_plotter import MaterialPropertiesPlotter
 from source.materials.material_properties_units import MaterialPropertiesUnits
 from source.geometry.geometric_functions import GeometricFunctions
 
-class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertiesUnits, MaterialPropertiesPlotter):
+class MaterialProperties(MaterialPropertiesPlotter):
 
     def __init__(self, factory, output_directory_materials):
 
@@ -36,9 +36,9 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         self.strand_equivalent_thermal_conductivity = []
         self.strand_equivalent_resistivity = []
         self.calculate_stored_material_properties(magnetic_field_list)
-        if self.input_data.material_settings.input.txt_data_output:
+        if self.input_data.material_settings.input.txt_material_output:
             self.extract_txt_data(magnetic_field_list)
-        if self.input_data.material_settings.input.png_data_output:
+        if self.input_data.material_settings.input.png_material_output:
             self.extract_png_data(magnetic_field_list)
 
     def ratio_superconductor(self):
@@ -195,7 +195,8 @@ class MaterialProperties(GeneralFunctions, GeometricFunctions, MaterialPropertie
         return winding_rho_array
 
     def winding_eq_resistivity(self, magnetic_field, temperature):
-        return self.normal_conductor.electrical_resistivity(magnetic_field, temperature, self.normal_conductor.rrr) / self.f_non_superconductor
+        return self.normal_conductor.electrical_resistivity(magnetic_field, temperature, self.normal_conductor.rrr) / \
+               self.f_non_superconductor
 
     def create_joule_heating_density_profile(self, magnetic_field, wire_diameter, current):
         """

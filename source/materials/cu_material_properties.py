@@ -1,13 +1,12 @@
 
-from source.factory.general_functions import GeneralFunctions
+from source.common_functions.general_functions import GeneralFunctions
 from source.materials.material_properties_plotter import MaterialPropertiesPlotter
 from source.materials.cu_nist_material_properties import CuNISTMaterialProperties
 from source.materials.material_properties_units import MaterialPropertiesUnits
 import numpy as np
 
 
-class CuMaterialProperties(GeneralFunctions, MaterialPropertiesUnits,
-                           MaterialPropertiesPlotter, CuNISTMaterialProperties):
+class CuMaterialProperties(MaterialPropertiesPlotter, CuNISTMaterialProperties):
 
     def __init__(self, temperature_profile, rrr,
                  txt_output=False, png_output=False, output_directory=None, magnetic_field_list=None):
