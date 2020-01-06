@@ -2,7 +2,7 @@
 from source.analysis_engine.analysis_factory import AnalysisFactory
 
 # creation of analysis directories
-json_file_directory = "D:\\miwilcze\\skew_quad_analysis"
+json_file_directory = "C:\\skew_quad_analysis"
 json_filename = "input.json"
 factory = AnalysisFactory(json_file_directory, json_filename)
 
@@ -92,7 +92,7 @@ solver.end_of_time_step()
 # FURTHER TIME STEP SOLVER #
 ############################
 while solver.end_of_analysis is False:
-    solver.set_next_time_step()
+    solver.set_next_time_step(postprocessor)
     ans.enter_solver()
     solver.restart_analysis()
     solver.set_time_step()

@@ -34,9 +34,13 @@ class Solver(object):
     def check_if_analysis_is_finished(self):
         self.end_of_analysis = self.circuit.check_if_analysis_is_finished(self.time_step_vector[self.iteration[0]])
 
-    def set_next_time_step(self):
+    def set_next_time_step(self, class_postprocessor):
         last_time_window = self.time_step_vector[-1]
-        self.time_step_vector.append(last_time_window+self.input_data.analysis_settings.time_step_cosimulation)
+        if class_postprocessor.is_all_coil_quenched is False:
+            new_time_window = last_time_window + self.input_data.analysis_settings.time_step_cosimulation
+        else:
+            new_time_window = last_time_window + self.input_data.analysis_settings.time_step_cosimulation_after_all_coil_quenched
+        self.time_step_vector.append(new_time_window)
 
     def time_to_string(self):
         print("------------------------------------------------------\

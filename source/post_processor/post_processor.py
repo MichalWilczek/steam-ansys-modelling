@@ -39,6 +39,7 @@ class PostProcessor(QuenchDetect):
         self.max_coil_length = self.geometry.coil_geometry[len(self.geometry.coil_geometry) - 1, 1]
 
         self.resistive_voltage = None
+        self.is_all_coil_quenched = False
 
     def get_temperature_profile(self):
         self.temperature_profile = self.ansys_commands.get_temperature_profile(
@@ -71,17 +72,28 @@ class PostProcessor(QuenchDetect):
     def plot_quench_state_in_analysis(self):
         iteration = self.iteration[0]
 
-        quench_state_array = self.geometry.create_quench_state_array(
-            coil_length_array=self.geometry.coil_geometry,
-            quench_fronts_list=self.quench_fronts)
-        GeneralFunctions.save_array(directory=self.plots.output_directory_quench_state,
-                                    filename="quench_state_{}.txt".format(self.iteration[0]),
-                                    array=quench_state_array)
+        if self.is_all_coil_quenched is False:
+            quench_state_array = self.geometry.create_quench_state_array(
+                coil_length_array=self.geometry.coil_geometry,
+                quench_fronts_list=self.quench_fronts)
+            GeneralFunctions.save_array(directory=self.plots.output_directory_quench_state,
+                                        filename="quench_state_{}.txt".format(self.iteration[0]),
+                                        array=quench_state_array)
 
-        if self.input_data.analysis_type.input.png_quench_state_output:
-            quench_state_plot = self.plots.plot_and_save_quench_state(
-                quench_state_array, iteration=iteration)
-            self.quench_state_plots.append(quench_state_plot)
+            self.is_all_coil_quenched = self.check_if_entire_coil_quenched(quench_state_array)
+
+            if self.input_data.analysis_type.input.png_quench_state_output :
+                quench_state_plot = self.plots.plot_and_save_quench_state(
+                    quench_state_array, iteration=iteration)
+                self.quench_state_plots.append(quench_state_plot)
+
+    @staticmethod
+    def check_if_entire_coil_quenched(quench_state_array):
+        binary_quench_state = quench_state_array[:, 1]
+        if 0 in binary_quench_state:
+            return False
+        else:
+            return True
 
     def estimate_coil_resistance(self):
         pass

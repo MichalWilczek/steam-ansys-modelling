@@ -27,7 +27,7 @@ class PreProcessorQuenchVelocity(PreProcessor):
             self.set_new_material_properties_repository(class_postprocessor.quench_fronts)
 
             # material assignment in a non-quenched zone
-            if class_circuit.qds_detection is True:
+            if class_circuit.qds_detection is True and class_postprocessor.is_all_coil_quenched is False:
                 self.ansys_commands.input_winding_non_quenched_material_properties(
                     magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
                     class_mat=self.mat_props,
@@ -35,22 +35,23 @@ class PreProcessorQuenchVelocity(PreProcessor):
 
     def adjust_material_properties_in_quenched_zone(self, class_postprocessor, class_solver):
         if class_solver.end_of_analysis is False:
+            if class_postprocessor.is_all_coil_quenched is False:
+                if class_solver.iteration[0] == 0:
+                    windings_set = class_postprocessor.quenched_windings_list
+                elif class_postprocessor.new_winding_quenched is False:
+                    windings_set = []
+                elif class_postprocessor.new_winding_quenched is True:
+                    windings_set = class_postprocessor.quenched_windings_list_new
+                else:
+                    raise ValueError("Class postprocessor needs to be redefined")
 
-            if class_solver.iteration[0] == 0:
-                windings_set = class_postprocessor.quenched_windings_list
-            elif class_postprocessor.new_winding_quenched is False:
-                windings_set = []
-            elif class_postprocessor.new_winding_quenched is True:
-                windings_set = class_postprocessor.quenched_windings_list_new
-            else:
-                raise ValueError("Class postprocessor needs to be redefined")
-
-            for winding in windings_set:
-                self.ansys_commands.input_winding_quench_material_properties(
-                    magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
-                    class_mat=self.mat_props,
-                    winding_number=GeneralFunctions.extract_number_from_string(winding))
-        self.set_new_material_properties_repository(class_postprocessor.quench_fronts)
+                for winding in windings_set:
+                    self.ansys_commands.input_winding_quench_material_properties(
+                        magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
+                        class_mat=self.mat_props,
+                        winding_number=GeneralFunctions.extract_number_from_string(winding))
+            if class_postprocessor.is_all_coil_quenched is False :
+                self.set_new_material_properties_repository(class_postprocessor.quench_fronts)
 
     def set_new_material_properties_repository(self, quench_fronts):
         for qf in quench_fronts:
