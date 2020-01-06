@@ -286,6 +286,7 @@ class Ansys(object):
         print(self.mapdl.executeCommandToString('kbc,1'))
         print(self.mapdl.executeCommandToString('eqslv,sparse'))
         print(self.mapdl.executeCommandToString('bcsoption,, default'))
+        # print(self.mapdl.executeCommandToString('dspoption,default,incore'))
         print(self.mapdl.executeCommandToString('lumpm, 0'))
         print(self.mapdl.executeCommandToString('lnsrch, on'))
 

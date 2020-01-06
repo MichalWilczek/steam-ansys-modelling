@@ -1,6 +1,7 @@
 
 from source.post_processor.post_processor import PostProcessor
 from source.physics.quench_velocity.quench_merge import QuenchMerge
+from source.common_functions.general_functions import GeneralFunctions
 import numpy as np
 import os
 
@@ -8,6 +9,9 @@ class PostProcessorQuenchVelocity(PostProcessor):
 
     def __init__(self, class_geometry, ansys_commands, v_quench, solver, input_data):
         PostProcessor.__init__(self, class_geometry, ansys_commands, v_quench, solver, input_data)
+        self.quenched_windings_list = []
+        self.quenched_windings_list_new = []
+        self.new_winding_quenched = False
 
     def check_quench_state(self):
         self.check_quench_state_quench_velocity()
@@ -16,14 +20,40 @@ class PostProcessorQuenchVelocity(PostProcessor):
         temperature_profile = self.temperature_profile
         quench_fronts_new = self.q_det.detect_quench(self.quench_fronts, temperature_profile,
                                                      magnetic_field_map=self.magnetic_map.im_short_mag_dict)
+        self.quenched_windings_list_new = []
         self.quench_fronts_new = []
-        for qf in quench_fronts_new:
-            self.quench_fronts_new.append(self.qf(x_down=qf[0], x_up=qf[1],
+
+        for qf_new in quench_fronts_new:
+            self.quench_fronts_new.append(self.qf(x_down=qf_new[0], x_up=qf_new[1],
                                                   label=self.quench_label,
                                                   factory=self.factory,
                                                   class_geometry=self.geometry))
+            self.quenched_windings_list_new.extend(list(self.geometry.retrieve_winding_numbers_and_quenched_nodes(
+                x_down_node=self.quench_fronts_new[-1].x_down_node,
+                x_up_node=self.quench_fronts_new[-1].x_up_node).keys()))
             self.quench_label += 1
+
+        for qf in self.quench_fronts:
+            self.quenched_windings_list_new.extend(list(self.geometry.retrieve_winding_numbers_and_quenched_nodes(
+                x_down_node=qf.x_down_node,
+                x_up_node=qf.x_up_node).keys()))
+        self.quenched_windings_list_new = GeneralFunctions.remove_duplicate_strings_from_list(self.quenched_windings_list_new)
+        self.quenched_windings_list_new.sort()
+
+        self.check_if_new_winding_quenched()
+        self.quenched_windings_list.extend(self.quenched_windings_list_new)
+        self.quenched_windings_list = GeneralFunctions.remove_duplicate_strings_from_list(self.quenched_windings_list)
+        self.quenched_windings_list.sort()
         self.quench_fronts.extend(self.quench_fronts_new)
+
+    def check_if_new_winding_quenched(self):
+        new_set_material_quenched = list(set(self.quenched_windings_list_new) -
+                                         set(self.quenched_windings_list))
+        if len(new_set_material_quenched) > 0:
+            self.new_winding_quenched = True
+            self.quenched_windings_list_new = new_set_material_quenched
+        else:
+            self.new_winding_quenched = False
 
     def estimate_resistive_voltage(self):
         self.resistive_voltage = self.calculate_resistive_voltage()

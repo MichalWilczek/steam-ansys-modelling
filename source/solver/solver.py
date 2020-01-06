@@ -32,7 +32,7 @@ class Solver(object):
             total_time=self.input_data.analysis_settings.time_step_cosimulation)
 
     def check_if_analysis_is_finished(self):
-        self.end_of_analysis = self.circuit.check_if_analysis_is_finished()
+        self.end_of_analysis = self.circuit.check_if_analysis_is_finished(self.time_step_vector[self.iteration[0]])
 
     def set_next_time_step(self):
         last_time_window = self.time_step_vector[-1]

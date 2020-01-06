@@ -19,10 +19,12 @@ class PreProcessorQuenchVelocity(PreProcessor):
         if class_circuit.estimate_current_drop() is True and class_solver.end_of_analysis is False:
 
             # material assignment in a quenched zone
-            quench_fronts = class_postprocessor.quench_fronts
-            im_short_mag_dict = class_postprocessor.magnetic_map.im_short_mag_dict
-            self.create_new_resistive_materials_dependent_on_mag_field(quench_fronts, magnetic_map=im_short_mag_dict)
-            self.set_new_material_properties_repository(quench_fronts)
+            for winding in class_postprocessor.quenched_windings_list:
+                self.ansys_commands.input_winding_quench_material_properties(
+                    magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
+                    class_mat=self.mat_props,
+                    winding_number=GeneralFunctions.extract_number_from_string(winding))
+            self.set_new_material_properties_repository(class_postprocessor.quench_fronts)
 
             # material assignment in a non-quenched zone
             if class_circuit.qds_detection is True:
@@ -33,24 +35,22 @@ class PreProcessorQuenchVelocity(PreProcessor):
 
     def adjust_material_properties_in_quenched_zone(self, class_postprocessor, class_solver):
         if class_solver.end_of_analysis is False:
-            quench_fronts_new = class_postprocessor.quench_fronts_new
-            quench_fronts = class_postprocessor.quench_fronts
-            im_short_mag_dict = class_postprocessor.magnetic_map.im_short_mag_dict
-            self.create_new_resistive_materials_dependent_on_mag_field(quench_fronts_new, magnetic_map=im_short_mag_dict)
-            self.set_new_material_properties_repository(quench_fronts)
 
-    def create_new_resistive_materials_dependent_on_mag_field(self, quench_fronts, magnetic_map):
-        quenched_winding_list = []
-        for qf in quench_fronts:
-            quenched_winding_list.append(self.geometry.retrieve_quenched_winding_numbers_from_quench_fronts(
-                coil_data=self.geometry.coil_data, x_down_node=qf.x_down_node, x_up_node=qf.x_up_node))
-        quenched_winding_list = GeneralFunctions.remove_repetitive_values_from_list(
-            GeneralFunctions.flatten_list(quenched_winding_list))
-        for winding in quenched_winding_list:
-            self.ansys_commands.input_winding_quench_material_properties(
-                magnetic_map,
-                class_mat=self.mat_props,
-                winding_number=winding)
+            if class_solver.iteration[0] == 0:
+                windings_set = class_postprocessor.quenched_windings_list
+            elif class_postprocessor.new_winding_quenched is False:
+                windings_set = []
+            elif class_postprocessor.new_winding_quenched is True:
+                windings_set = class_postprocessor.quenched_windings_list_new
+            else:
+                raise ValueError("Class postprocessor needs to be redefined")
+
+            for winding in windings_set:
+                self.ansys_commands.input_winding_quench_material_properties(
+                    magnetic_field_map=class_postprocessor.magnetic_map.im_short_mag_dict,
+                    class_mat=self.mat_props,
+                    winding_number=GeneralFunctions.extract_number_from_string(winding))
+        self.set_new_material_properties_repository(class_postprocessor.quench_fronts)
 
     def set_new_material_properties_repository(self, quench_fronts):
         for qf in quench_fronts:

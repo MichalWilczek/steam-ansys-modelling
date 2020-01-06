@@ -3,6 +3,7 @@ import numpy as np
 from source.common_functions.interpolation_functions import InterpolationFunctions
 from source.physics.circuit.circuit import Circuit
 
+
 class CircuitElectricAnalysisWithCircuit(Circuit):
 
     def __init__(self, ansys_commands, class_geometry, factory):
@@ -40,6 +41,7 @@ class CircuitElectricAnalysisWithCircuit(Circuit):
         resistive_voltage = abs(class_postprocessor.resistive_voltage)
         time_step_vector = class_postprocessor.time_step_vector
         if not self.check_if_qds_was_applied():
+
             if self.qds_start_time is None and resistive_voltage >= self.input_data.circuit_settings.\
                     transient_electric_analysis_input.detection_voltage_qds:
                 self.qds_start_time = time_step_vector[class_postprocessor.iteration[0]]
@@ -49,9 +51,10 @@ class CircuitElectricAnalysisWithCircuit(Circuit):
                     transient_electric_analysis_input.detection_voltage_qds:
                 self.qds_current_time = time_step_vector[class_postprocessor.iteration[0]]
 
-            if self.detect_qds_duration_time(self.qds_start_time, self.qds_current_time):
-                print(self.qds_to_string(time_step=self.qds_current_time))
-                return True
+                # if self.detect_qds_duration_time(self.qds_start_time, self.qds_current_time):
+                if self.detect_qds_duration_time(self.qds_start_time, self.qds_current_time):
+                    print(self.qds_to_string(time_step=self.qds_current_time))
+                    return True
 
     def detect_qds_duration_time(self, qds_start_time, qds_current_time):
         qds_duration_time = qds_current_time - qds_start_time
@@ -67,7 +70,7 @@ class CircuitElectricAnalysisWithCircuit(Circuit):
         else:
             return False
 
-    def check_if_analysis_is_finished(self, **kwargs):
+    def check_if_analysis_is_finished(self, *args, **kwargs):
         if self.current[0] < self.input_data.circuit_settings.transient_electric_analysis_input.\
                 current_discharge_criterion:
             return True

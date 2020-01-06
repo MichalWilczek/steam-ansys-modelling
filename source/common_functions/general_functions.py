@@ -202,3 +202,18 @@ class GeneralFunctions(object):
         comma_index = str(float_number).find('.')
         number_digits = len(str(float_number)[comma_index:])-1
         return number_digits
+
+    @staticmethod
+    def extract_number_from_string(name):
+        number_list = []
+        for letter in name:
+            if letter.isdigit():
+                number_list.append(int(float(letter)))
+
+        string_number_list = [str(i) for i in number_list]
+        final_number = int("".join(string_number_list))
+        return final_number
+
+    @staticmethod
+    def remove_duplicate_strings_from_list(list_strings):
+        return list(set(list_strings))

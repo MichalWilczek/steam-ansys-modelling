@@ -38,4 +38,5 @@ class MagneticFieldPlotting(object):
         fig.colorbar(sm, ticks=np.linspace(Vmin, Vmax, int(discretisation_number / 5)),
                      boundaries=np.arange(Vmin - Vrange * 0.05, Vmax + Vrange * 0.05, Vrange/10),
                      label='Magnetic Field [T]')
+        plt.savefig(fname="test.png", dpi=200)
         plt.show()
