@@ -2,6 +2,7 @@
 import os
 import numpy as np
 import shutil
+import time
 
 class GeneralFunctions(object):
 
@@ -72,6 +73,7 @@ class GeneralFunctions(object):
         """
         path = os.path.join(directory, filename)
         if os.path.isfile(path):
+            time.sleep(0.5)
             os.remove(path)
         else:
             print("Error: {} file not found".format(path))

@@ -14,6 +14,11 @@ x=0
 y=0
 z=0
 
+! account for the center of the winding, not their sides
+long_side = long_side + trans_dimension_winding
+short_side = short_side + trans_dimension_winding
+radius = radius + trans_dimension_winding/2
+
 winding_counter = 1
 csys,0
 clocal,12,cylin,long_side,0,0
@@ -895,9 +900,10 @@ set_8_high = 1+2*kp_long_side+4*kp_radius+2*kp_short_side-8
     kmesh,all
 *endif
 
-*cfopen,Process_Finished,txt
-*vwrite,1
-(1(ES16.7))
-*cfclose
+*dim,process_finished,array,1,1,1
+process_finished(1) = 1
+*mwrite,process_finished,Process_Finished,txt
+(1E20.10)
+*del,process_finished
 
 save

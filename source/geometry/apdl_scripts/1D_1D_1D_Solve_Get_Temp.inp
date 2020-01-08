@@ -105,9 +105,11 @@ esol,ref_number+7,enum,,smisc,2,ii      !current
 prvar,ii,vi,pi
 /output
 
-*cfopen,Process_Finished,txt
-*vwrite,1
-(1(ES16.7))
-*cfclose
+*dim,process_finished,array,1,1,1
+process_finished(1) = 1
+*mwrite,process_finished,Process_Finished,txt
+(1E20.10)
+*del,process_finished
 
 *del,node_Temp
+
