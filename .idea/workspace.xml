@@ -2,63 +2,61 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/source/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/analysis_engine/analysis_factory.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/analysis_engine/analysis_launcher.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ansys_interface/ansys.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_slab.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_table.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/common_functions/interpolation_functions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/common_functions/unit_conversion.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/cu_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/cu_nist_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/g10_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/g10_nist_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/insulation_linear_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/material_properties_plotter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/material_properties_units.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/nb_ti_cudi_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/nb_ti_jc_low_current.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/nb_ti_jc_russenschuck.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/nb_ti_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/materials/winding_linear_material_properties.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/circuit/circuit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_with_circuit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/circuit/circuit_thermal_analysis_no_circuit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_gaussian.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_uniform.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_2D_static.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_constant.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_map.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_plotting.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/quench_velocity/nodes_search.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_detection.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_constant.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_numerical.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_merge.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_velocity_map.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/physics/time_stepping/time_step.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/post_processor/plots.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/post_processor/post_processor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/post_processor/post_processor_quench_velocity.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/pre_processor/pre_processor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/pre_processor/pre_processor_heat_balance.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/pre_processor/pre_processor_quench_velocity.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/solver/solver.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/solver/solver_heat_balance.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/source/solver/solver_quench_velocity.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/analysis_engine/analysis_factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/analysis_engine/analysis_launcher.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_slab.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_table.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/common_functions/general_functions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/common_functions/interpolation_functions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/common_functions/unit_conversion.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Geometry_High_Order_Corrector.inp" beforeDir="false" afterPath="$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Geometry_High_Order_Corrector.inp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/cu_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/cu_nist_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/g10_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/g10_nist_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/insulation_linear_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/material_properties_plotter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/material_properties_units.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/nb_ti_cudi_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/nb_ti_jc_low_current.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/nb_ti_jc_russenschuck.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/nb_ti_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/winding_linear_material_properties.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/circuit/circuit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_with_circuit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/circuit/circuit_thermal_analysis_no_circuit.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_gaussian.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_uniform.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_2D_static.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_constant.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_map.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_plotting.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/nodes_search.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_detection.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_constant.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_numerical.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_merge.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_velocity_map.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/time_stepping/time_step.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/post_processor/plots.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/post_processor/post_processor.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/post_processor/post_processor_quench_velocity.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/pre_processor/pre_processor.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/pre_processor/pre_processor_heat_balance.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/pre_processor/pre_processor_quench_velocity.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/solver/solver.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/solver/solver_heat_balance.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/solver/solver_quench_velocity.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +104,7 @@
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$nb_ti_jc_low_current.coverage" NAME="nb_ti_jc_low_current Coverage Results" MODIFIED="1571749703556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/materials" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$test_script.coverage" NAME="test_script Coverage Results" MODIFIED="1562052596153" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$winding_remap.coverage" NAME="winding_remap Coverage Results" MODIFIED="1566730416857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
-    <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script.coverage" NAME="execution_script Coverage Results" MODIFIED="1578412715560" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
+    <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script.coverage" NAME="execution_script Coverage Results" MODIFIED="1578487607088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script_power_source.coverage" NAME="execution_script_power_source Coverage Results" MODIFIED="1567441505408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/Execution_Scripts" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$test_initial_temperature_gaussian.coverage" NAME="test_initial_temperature_gaussian Coverage Results" MODIFIED="1570182208231" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script_power_source_no_current.coverage" NAME="execution_script_power_source_no_current Coverage Results" MODIFIED="1566493718687" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/Execution_Scripts" />
@@ -138,10 +136,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/source/execution_script.py">
+        <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="97" column="26" selection-start-line="97" selection-start-column="26" selection-end-line="97" selection-end-column="26" />
+            <state relative-caret-position="544">
+              <caret line="32" column="40" selection-start-line="32" selection-start-column="40" selection-end-line="32" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -157,18 +155,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>magnet_dis</find>
-      <find>GeneralFunctions</find>
-      <find>UnitConversion</find>
-      <find>Insulation</find>
-      <find>find_files_with_given_word</find>
-      <find>MagneticFieldPlotting</find>
-      <find>SearchNodes</find>
-      <find>QuenchMerge</find>
-      <find>Plots</find>
-      <find>QuenchDetect</find>
-      <find>create</find>
-      <find>save_arra</find>
       <find>write_</find>
       <find>input_ge</find>
       <find>plot_resistive_voltage</find>
@@ -187,6 +173,18 @@
       <find>create_time_step_vector</find>
       <find>circuit</find>
       <find>set_next_time_step</find>
+      <find>get_temperature_profile</find>
+      <find>load_temperature_and_map_onto_1d_cable</find>
+      <find>Insulation</find>
+      <find>merge</find>
+      <find>GeneralFunctions</find>
+      <find>QuenchDetect</find>
+      <find>QuenchMerge</find>
+      <find>SearchNodes</find>
+      <find>Plots</find>
+      <find>v_quench</find>
+      <find>ansys_commands</find>
+      <find>self.mat_props</find>
     </findStrings>
     <replaceStrings>
       <replace>input_data.geometry_type.dimensionality</replace>
@@ -518,14 +516,7 @@
       <workItem from="1576493054199" duration="35245000" />
       <workItem from="1576678625682" duration="2357000" />
       <workItem from="1576861285353" duration="3825000" />
-      <workItem from="1578319550866" duration="18984000" />
-    </task>
-    <task id="LOCAL-00075" summary="Start of README creation">
-      <created>1570465372228</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1570465372228</updated>
+      <workItem from="1578319550866" duration="41427000" />
     </task>
     <task id="LOCAL-00076" summary="Start of README creation">
       <created>1570465738353</created>
@@ -863,7 +854,14 @@
       <option name="project" value="LOCAL" />
       <updated>1578327115553</updated>
     </task>
-    <option name="localTasksCounter" value="124" />
+    <task id="LOCAL-00124" summary="Commit of debugged code for deleting the file Process_Finished.txt">
+      <created>1578487460250</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1578487460250</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -899,7 +897,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1509603000" />
+    <option name="totallyTimeSpent" value="1532046000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -912,14 +910,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14552239" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16791044" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.6011111" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" visible="true" weight="0.34111112" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.34111112" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946696" weight="0.44777778" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -974,7 +971,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="README update" />
     <MESSAGE value="README update on the definition of material properties" />
     <MESSAGE value="Update of APDL scripts for geometry creation. &#10;Update of insulation calculation in Ansys Class." />
     <MESSAGE value="Commit of a debugged quench velocity calculation algorithm for heat balance computation" />
@@ -999,7 +995,8 @@
     <MESSAGE value="Commit of the code with an updated material properties assignment. The code is ready for multi-strand 3D analyses of the skew quadrupole." />
     <MESSAGE value="Commit of the version with an updated quench propagation module" />
     <MESSAGE value="Commit of an optimised programme for the material update when the entire coil has quenched." />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit of an optimised programme for the material update when the entire coil has quenched." />
+    <MESSAGE value="Commit of debugged code for deleting the file Process_Finished.txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit of debugged code for deleting the file Process_Finished.txt" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1131,103 +1128,8 @@ ans.terminate_analysis()</expression-string>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_velocity_map.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="37" column="65" lean-forward="true" selection-start-line="37" selection-start-column="65" selection-end-line="37" selection-end-column="65" />
-          <folding>
-            <element signature="e#1#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_detection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="61" column="46" selection-start-line="61" selection-start-column="46" selection-end-line="61" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/solver/initial_temperature/polynomial_fit.py" />
-    <entry file="file://$PROJECT_DIR$/source/solver/initial_temperature/initial_temperature_power_input.py" />
-    <entry file="file://$PROJECT_DIR$/source/solver/initial_temperature/initial_temperature_function.py" />
-    <entry file="file://$PROJECT_DIR$/source/factory/__init__.py" />
-    <entry file="file://$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_uniform.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
-          <folding>
-            <element signature="e#1#85#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2414">
-          <caret line="142" column="16" selection-start-line="142" selection-start-column="16" selection-end-line="142" selection-end-column="16" />
-          <folding>
-            <element signature="e#1#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1003">
-          <caret line="59" column="47" lean-forward="true" selection-start-line="59" selection-start-column="47" selection-end-line="59" selection-end-column="48" />
-          <folding>
-            <element signature="e#1#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_slab.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="43" column="13" lean-forward="true" selection-start-line="43" selection-start-column="8" selection-end-line="43" selection-end-column="39" />
-          <folding>
-            <element signature="e#1#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/analysis_engine/analysis_launcher.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="87" column="24" selection-start-line="87" selection-start-column="24" selection-end-line="87" selection-end-column="24" />
-          <folding>
-            <element signature="e#1#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/materials/nb_ti_jc_russenschuck.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/materials/nb_ti_jc_low_current.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1">
-          <folding>
-            <element signature="e#1#12#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/materials/nb_ti_cudi_material_properties.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/materials/material_properties_units.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/materials/material_properties_plotter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#1#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/materials/insulation_linear_material_properties.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -1295,16 +1197,6 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/materials/material_properties.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="40" column="63" selection-start-line="40" selection-start-column="63" selection-end-line="40" selection-end-column="63" />
-          <folding>
-            <element signature="e#1#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/analysis_engine/analysis_factory.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
@@ -1322,24 +1214,10 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_front_numerical.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="488">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/site-packages/matplotlib/pyplot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="202">
           <caret line="474" selection-start-line="474" selection-end-line="474" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/geometry/geometry.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="262" selection-start-line="262" selection-end-line="262" />
         </state>
       </provider>
     </entry>
@@ -1349,16 +1227,6 @@ ans.terminate_analysis()</expression-string>
           <caret line="48" selection-start-line="48" selection-end-line="48" />
           <folding>
             <element signature="e#1#71#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="66" lean-forward="true" selection-start-line="66" selection-end-line="66" />
-          <folding>
-            <element signature="e#1#46#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1394,13 +1262,6 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="782">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_plotting.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="714">
@@ -1417,19 +1278,6 @@ ans.terminate_analysis()</expression-string>
           <caret line="28" column="32" lean-forward="true" selection-start-line="28" selection-start-column="32" selection-end-line="28" selection-end-column="32" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_with_circuit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1241">
-          <caret line="79" column="39" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="39" />
-          <folding>
-            <element signature="e#1#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/source/solver/solver_heat_balance.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -1451,33 +1299,6 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor_quench_velocity.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="733">
-          <caret line="93" selection-start-line="93" selection-end-line="93" />
-          <folding>
-            <element signature="e#1#63#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="61" selection-start-line="61" selection-end-line="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="631">
-          <caret line="41" column="33" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="33" />
-          <folding>
-            <element signature="e#1#73#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/solver/solver.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
@@ -1493,15 +1314,216 @@ ans.terminate_analysis()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Geometry_High_Order_Corrector.inp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+        <state relative-caret-position="705">
+          <caret line="905" column="9" lean-forward="true" selection-start-line="905" selection-start-column="9" selection-end-line="905" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/execution_script.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="10" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_table.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2168">
+          <caret line="142" column="16" selection-start-line="142" selection-start-column="16" selection-end-line="142" selection-end-column="16" />
+          <folding>
+            <element signature="e#1#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_slab.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="51" lean-forward="true" selection-start-line="21" selection-start-column="51" selection-end-line="21" selection-end-column="51" />
+          <folding>
+            <element signature="e#1#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit_thermal_analysis_no_circuit.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_with_circuit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/materials/material_properties.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="680">
+          <caret line="40" column="63" selection-start-line="40" selection-start-column="63" selection-end-line="40" selection-end-column="63" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/materials/nb_ti_jc_low_current.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#1#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/materials/material_properties_plotter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#1#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_velocity_map.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_front_numerical.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="41" column="27" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
+          <folding>
+            <element signature="e#1#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_front_constant.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-15">
+          <caret line="62" column="63" lean-forward="true" selection-start-line="62" selection-start-column="63" selection-end-line="62" selection-end-column="63" />
+          <folding>
+            <element signature="e#1#46#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/geometry/geometry.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4454">
+          <caret line="262" selection-start-line="262" selection-end-line="262" />
+          <folding>
+            <element signature="e#1#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_merge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1207">
+          <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_front.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+          <folding>
+            <element signature="e#1#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor_quench_velocity.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
-          <caret line="97" column="26" selection-start-line="97" selection-start-column="26" selection-end-line="97" selection-end-column="26" />
+          <caret line="9" column="63" selection-start-line="9" selection-start-column="55" selection-end-line="9" selection-end-column="63" />
+          <folding>
+            <element signature="e#1#63#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+          <folding>
+            <element signature="e#1#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_detection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2074">
+          <caret line="122" column="53" selection-start-line="122" selection-start-column="53" selection-end-line="122" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/geometry/geometry_1D1D1D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="45" column="55" selection-start-line="45" selection-start-column="55" selection-end-line="45" selection-end-column="55" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-356">
+          <caret line="3" column="31" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Solve_Get_Temp.inp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="297">
+          <caret line="57" column="19" lean-forward="true" selection-start-line="57" selection-start-column="19" selection-end-line="57" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="80" column="6" selection-start-line="80" selection-start-column="6" selection-end-line="80" selection-end-column="6" />
+          <folding>
+            <element signature="e#1#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="32" column="40" selection-start-line="32" selection-start-column="40" selection-end-line="32" selection-end-column="40" />
         </state>
       </provider>
     </entry>
