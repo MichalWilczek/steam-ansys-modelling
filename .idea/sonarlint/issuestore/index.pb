@@ -175,3 +175,5 @@ B
 source/__init__.py,c\e\ce6c867ac62ff405fbff9dd373f139613a442dcf
 [
 +source/ansys_interface/ansys_multiple_1D.py,5\c\5ca9a8531de54055f2dfcd3f83ac7d4f9fb380c8
+I
+source/hot_spot_editor.py,b\8\b801aa92d7d2d381283f78da3bd1983402853717

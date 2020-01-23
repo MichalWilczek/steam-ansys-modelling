@@ -6,7 +6,7 @@
 In order to run the script, the user should have the installed version of ANSYS APDL.
 
 ##### Analysis Settings
-The first part of configuration corresponds to definition of basic simulation settings. 
+The first part of configuration corresponds to definition of basic simulation settings.
 ```json
 {"analysis_settings": {
     "quench_init_position": 0.5,

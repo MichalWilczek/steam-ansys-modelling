@@ -82,7 +82,7 @@ class PostProcessor(QuenchDetect):
 
             self.is_all_coil_quenched = self.check_if_entire_coil_quenched(quench_state_array)
 
-            if self.input_data.analysis_type.input.png_quench_state_output :
+            if self.input_data.analysis_type.input.png_quench_state_output:
                 quench_state_plot = self.plots.plot_and_save_quench_state(
                     quench_state_array, iteration=iteration)
                 self.quench_state_plots.append(quench_state_plot)

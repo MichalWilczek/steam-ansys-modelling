@@ -28,7 +28,7 @@ class Plots(object):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.set_xlabel('Time [s]')
-        ax.set_ylabel('Voltage [V]')
+        ax.set_ylabel('V_res, V')
         ax.plot(time_vector, voltage_vector)
         plt.grid(True)
         plt.show()
@@ -40,9 +40,10 @@ class Plots(object):
     def plot_quench_state(quench_state_array):
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.set_xlabel('Position, m')
+        ax.set_xlabel('L_coil, m')
         ax.set_ylabel('Quench state')
-        ax.plot(quench_state_array[:, 0], quench_state_array[:, 1])
+        ax.set_yticks(ticks=[0, 1])
+        ax.plot(quench_state_array[:, 0], quench_state_array[:, 1], linewidth=1.5)
         plt.grid(True)
         plt.show()
         return fig
@@ -58,13 +59,13 @@ class Plots(object):
                 np.savetxt(f, mydata, delimiter=' ')
 
     @staticmethod
-    def save_quench_state_plot(fig, iteration):
+    def save_quench_state_plot(fig, iteration, filename="quench_state_"):
         """
         Saves quench state plot
         :param fig: quench plot as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        filename = "quench_state_{}.png".format(iteration)
+        filename = "{}{}.png".format(filename, iteration)
         fig.savefig(filename)
         return filename
 
@@ -108,9 +109,9 @@ class Plots(object):
         length_node_temp_array = np.column_stack((coil_length, temperature_profile_1d[:, 1]))
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.set_xlabel('Position [m]')
-        ax.set_ylabel('Temperature [K]')
-        plt.title("Time step: {} s".format(time_step))
+        ax.set_xlabel('L_coil, m')
+        ax.set_ylabel('T, K')
+        plt.title("t = {} s".format(time_step))
         ax.plot(length_node_temp_array[:, 1], length_node_temp_array[:, 2])
         plt.grid(True)
         plt.show()
