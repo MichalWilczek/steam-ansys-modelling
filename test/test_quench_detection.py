@@ -43,8 +43,13 @@ class TestQuenchDetection(unittest.TestCase):
     DIRECTORY = os.path.join(CWD, 'quench_detection')
 
     def setUp(self):
-        self.class_geometry = VirtualGeometry(division=100, filename="File_Position.txt", directory=TestQuenchDetection.DIRECTORY)
-        self.quench_detect = QuenchDetect(class_geometry=self.class_geometry, npoints=TestQuenchDetection.NPOINTS, mat_props=None, testunit=True)
+        self.class_geometry = VirtualGeometry(division=100,
+                                              filename="File_Position.txt",
+                                              directory=TestQuenchDetection.DIRECTORY)
+        self.quench_detect = QuenchDetect(class_geometry=self.class_geometry,
+                                          npoints=TestQuenchDetection.NPOINTS,
+                                          mat_props=None,
+                                          testunit=True)
 
     def test_1_find_one_quench_zone(self):
         q_pos_vector = [QuenchFront(x_down=0.2, x_up=0.7, label=1, class_geometry=self.class_geometry,
@@ -54,8 +59,12 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
             quench_fronts.front_up_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
-        temperature_profile = Geometry.load_1d_temperature(filename="1_find_one_quench_zone.txt", directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
-        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile, magnetic_field_map=None)
+        temperature_profile = Geometry.load_1d_temperature(filename="1_find_one_quench_zone.txt",
+                                                           directory=TestQuenchDetection.DIRECTORY,
+                                                           npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector,
+                                                  temperature_profile=temperature_profile,
+                                                  magnetic_field_map=None)
         expected_result = [[1.85, 3.05]]
         self.assertEqual(first=result, second=expected_result)
 
@@ -67,8 +76,12 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
             quench_fronts.front_up_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
-        temperature_profile = Geometry.load_1d_temperature(filename="2_find_multiple_quench_zones.txt", directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
-        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile, magnetic_field_map=None)
+        temperature_profile = Geometry.load_1d_temperature(filename="2_find_multiple_quench_zones.txt",
+                                                           directory=TestQuenchDetection.DIRECTORY,
+                                                           npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector,
+                                                  temperature_profile=temperature_profile,
+                                                  magnetic_field_map=None)
         expected_result = [[0.0, 0.0], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [5.0, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -80,8 +93,12 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
             quench_fronts.front_up_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
-        temperature_profile = Geometry.load_1d_temperature(filename="3_find_multiple_quench_zones.txt", directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
-        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile, magnetic_field_map=None)
+        temperature_profile = Geometry.load_1d_temperature(filename="3_find_multiple_quench_zones.txt",
+                                                           directory=TestQuenchDetection.DIRECTORY,
+                                                           npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector,
+                                                  temperature_profile=temperature_profile,
+                                                  magnetic_field_map=None)
         expected_result = [[0.0, 0.0], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [5.0, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -93,8 +110,12 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
             quench_fronts.front_up_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
-        temperature_profile = Geometry.load_1d_temperature(filename="4_find_multiple_quench_zones.txt", directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
-        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile, magnetic_field_map=None)
+        temperature_profile = Geometry.load_1d_temperature(filename="4_find_multiple_quench_zones.txt",
+                                                           directory=TestQuenchDetection.DIRECTORY,
+                                                           npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector,
+                                                  temperature_profile=temperature_profile,
+                                                  magnetic_field_map=None)
         expected_result = [[0.0, 0.0], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [5.0, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -106,8 +127,12 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
             quench_fronts.front_up_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
-        temperature_profile = Geometry.load_1d_temperature(filename="5_find_multiple_quench_zones.txt", directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
-        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile, magnetic_field_map=None)
+        temperature_profile = Geometry.load_1d_temperature(filename="5_find_multiple_quench_zones.txt",
+                                                           directory=TestQuenchDetection.DIRECTORY,
+                                                           npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector,
+                                                  temperature_profile=temperature_profile,
+                                                  magnetic_field_map=None)
         expected_result = [[0.0, 0.05], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [2.2, 2.7], [4.95, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)
 
@@ -121,7 +146,11 @@ class TestQuenchDetection(unittest.TestCase):
         for quench_fronts in q_pos_vector:
             quench_fronts.front_down_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
             quench_fronts.front_up_to_node(coil_length=self.class_geometry.coil_geometry, initial_search=True)
-        temperature_profile = Geometry.load_1d_temperature(filename="6_find_multiple_quench_zones.txt", directory=TestQuenchDetection.DIRECTORY, npoints=TestQuenchDetection.NPOINTS)
-        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector, temperature_profile=temperature_profile, magnetic_field_map=None)
+        temperature_profile = Geometry.load_1d_temperature(filename="6_find_multiple_quench_zones.txt",
+                                                           directory=TestQuenchDetection.DIRECTORY,
+                                                           npoints=TestQuenchDetection.NPOINTS)
+        result = self.quench_detect.detect_quench(input_quench_front_vector=q_pos_vector,
+                                                  temperature_profile=temperature_profile,
+                                                  magnetic_field_map=None)
         expected_result = [[0.0, 0.05], [1.35, 1.4], [1.8, 1.8], [1.9, 1.9], [4.95, 5.0]]
         unittest.TestCase().assertEqual(first=result, second=expected_result)

@@ -36,31 +36,45 @@ class TestSearchNodes(unittest.TestCase):
     SMALL_EPSILON = 0.0000001
 
     def setUp(self):
-        self.coil_geometry = create_1d_coil_geometry(division=100, filename="File_Position_101nodes_1m.txt", directory=TestSearchNodes.DIRECTORY)
+        self.coil_geometry = create_1d_coil_geometry(division=100,
+                                                     filename="File_Position_101nodes_1m.txt",
+                                                     directory=TestSearchNodes.DIRECTORY)
 
     # tests for function search_init_node
     def test_search_init_node_large_epsilon(self):
         position = [0.0, 0.2001, 0.5001, 0.8001, 1.0]
         expected_result = [1, 21, 51, 81, 101]
         for x in range(len(position)):
-            result = SearchNodes.search_init_node(position=position[x], coil_length=self.coil_geometry, epsilon=TestSearchNodes.LARGE_EPSILON)
+            result = SearchNodes.search_init_node(position=position[x],
+                                                  coil_length=self.coil_geometry,
+                                                  epsilon=TestSearchNodes.LARGE_EPSILON)
             self.assertEqual(result, expected_result[x])
 
     def test_search_init_node_small_epsilon(self):
         position = [0.0, 0.2001, 0.5001, 0.8001, 1.0]
         expected_result = [1, 21, 51, 81, 101]
         for x in range(len(position)):
-            result = SearchNodes.search_init_node(position=position[x], coil_length=self.coil_geometry, epsilon=TestSearchNodes.SMALL_EPSILON)
+            result = SearchNodes.search_init_node(position=position[x],
+                                                  coil_length=self.coil_geometry,
+                                                  epsilon=TestSearchNodes.SMALL_EPSILON)
             self.assertEqual(result, expected_result[x])
 
     def test_search_init_node_error_position_negative(self):
         position_negative = -1.0
         with self.assertRaises(Exception):
-            SearchNodes.search_init_node(position=position_negative, coil_length=self.coil_geometry, epsilon=TestSearchNodes.LARGE_EPSILON)
-            SearchNodes.search_init_node(position=position_negative, coil_length=self.coil_geometry, epsilon=TestSearchNodes.SMALL_EPSILON)
+            SearchNodes.search_init_node(position=position_negative,
+                                         coil_length=self.coil_geometry,
+                                         epsilon=TestSearchNodes.LARGE_EPSILON)
+            SearchNodes.search_init_node(position=position_negative,
+                                         coil_length=self.coil_geometry,
+                                         epsilon=TestSearchNodes.SMALL_EPSILON)
 
     def test_search_init_node_error_position_larger_than_coil(self):
         position_above_coil_length = 5000000.0
         with self.assertRaises(Exception):
-            SearchNodes.search_init_node(position=position_above_coil_length, coil_length=self.coil_geometry, epsilon=TestSearchNodes.LARGE_EPSILON)
-            SearchNodes.search_init_node(position=position_above_coil_length, coil_length=self.coil_geometry, epsilon=TestSearchNodes.SMALL_EPSILON)
+            SearchNodes.search_init_node(position=position_above_coil_length,
+                                         coil_length=self.coil_geometry,
+                                         epsilon=TestSearchNodes.LARGE_EPSILON)
+            SearchNodes.search_init_node(position=position_above_coil_length,
+                                         coil_length=self.coil_geometry,
+                                         epsilon=TestSearchNodes.SMALL_EPSILON)

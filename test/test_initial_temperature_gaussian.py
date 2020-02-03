@@ -24,10 +24,14 @@ class TestInitialTemperatureGaussian(unittest.TestCase):
         refined_array[1, 1] = 5.0
 
         # comparison of all values in array to compare
-        self.assertEqual(refined_array[0, 0], InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[0, 0])
-        self.assertEqual(refined_array[1, 0], InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[1, 0])
-        self.assertEqual(refined_array[0, 1], InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[0, 1])
-        self.assertEqual(refined_array[1, 1], InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[1, 1])
+        self.assertEqual(refined_array[0, 0],
+                         InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[0, 0])
+        self.assertEqual(refined_array[1, 0],
+                         InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[1, 0])
+        self.assertEqual(refined_array[0, 1],
+                         InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[0, 1])
+        self.assertEqual(refined_array[1, 1],
+                         InitialTemperatureGaussian.refine_gaussian_array_input_above_t_critical(array, 1.9)[1, 1])
 
 
 

@@ -2,20 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/source/gif_editors/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/9/b9975eff0fe427d85ea23ef58ff7598ab65a553a" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/myplot.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/gif_editor_quench_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/gif_editors/gif_editor_quench_state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/gif_editor_temp_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/gif_editors/gif_editor_temp_profile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/hot_spot_editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/gif_editors/hot_spot_editor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/nodes_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/quench_velocity/nodes_search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_numerical.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_numerical.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_geometry.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/test_initial_temperature_gaussian.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_initial_temperature_gaussian.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/test_nodes_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_nodes_search.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/test_quench_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_quench_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_quench_merge.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_quench_merge.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -97,20 +89,7 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test/test_quench_detection.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1785">
-              <caret line="126" column="77" lean-forward="true" selection-start-line="126" selection-start-column="77" selection-end-line="126" selection-end-column="77" />
-              <folding>
-                <element signature="e#1#16#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -176,7 +155,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/source/magnetic_field/magnetic_field.py" />
         <option value="$PROJECT_DIR$/source/magnetic_field/magnetic_field_2D_static.py" />
         <option value="$PROJECT_DIR$/source/magnetic_field/magnetic_field_map.py" />
         <option value="$PROJECT_DIR$/source/magnetic_field/magnetic_field_plotting.py" />
@@ -224,15 +202,16 @@
         <option value="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_constant.py" />
         <option value="$PROJECT_DIR$/source/physics/quench_velocity/quench_front_numerical.py" />
         <option value="$PROJECT_DIR$/test/test_quench_merge.py" />
-        <option value="$PROJECT_DIR$/test/test_nodes_search.py" />
         <option value="$PROJECT_DIR$/source/physics/quench_velocity/nodes_search.py" />
         <option value="$PROJECT_DIR$/test/test_quench_detection.py" />
+        <option value="$PROJECT_DIR$/test/test_nodes_search.py" />
+        <option value="$PROJECT_DIR$/test/test_initial_temperature_gaussian.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-1814" />
-    <option name="y" value="17" />
+    <option name="x" value="-207" />
+    <option name="y" value="-15" />
     <option name="width" value="1938" />
     <option name="height" value="1048" />
   </component>
@@ -244,6 +223,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -251,11 +231,20 @@
               <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
               <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
+              <item name="source" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -447,14 +436,8 @@
       <workItem from="1579613143250" duration="1676000" />
       <workItem from="1579797207945" duration="11577000" />
       <workItem from="1580112831898" duration="1396000" />
-      <workItem from="1580723798639" duration="2639000" />
-    </task>
-    <task id="LOCAL-00079" summary="Start of README creation">
-      <created>1570467227923</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1570467227923</updated>
+      <workItem from="1580723798639" duration="5181000" />
+      <workItem from="1580745292613" duration="658000" />
     </task>
     <task id="LOCAL-00080" summary="Start of README creation">
       <created>1570468557205</created>
@@ -792,7 +775,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579815095683</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <task id="LOCAL-00128" summary="Update of unittests">
+      <created>1580726551242</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1580726551242</updated>
+    </task>
+    <option name="localTasksCounter" value="129" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -828,7 +818,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1551962000" />
+    <option name="totallyTimeSpent" value="1555162000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -840,14 +830,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1928" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15618336" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15778251" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.6011111" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" visible="true" weight="0.24666667" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4989339" weight="0.35555556" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946696" weight="0.44555557" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -902,7 +892,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Commit of a debugged quench velocity calculation algorithm for heat balance computation" />
     <MESSAGE value="Commit of an added Wiedermann thermal conductivity formula" />
     <MESSAGE value="Commit of an added low current density formulae" />
     <MESSAGE value="Commit of a debugged formula for 1D heat generation" />
@@ -927,7 +916,8 @@
     <MESSAGE value="Commit of debugged code for deleting the file Process_Finished.txt" />
     <MESSAGE value="Addition of a hot spot editor" />
     <MESSAGE value="Addition of a quench velocity and temp. distribution editors" />
-    <option name="LAST_COMMIT_MESSAGE" value="Addition of a quench velocity and temp. distribution editors" />
+    <MESSAGE value="Update of unittests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update of unittests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1255,9 +1245,7 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/myplot.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/myplot.png" />
     <entry file="file://$PROJECT_DIR$/.gitlab-ci.yml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1293,9 +1281,7 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_geometry.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_geometry.py" />
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/unittest/case.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="765">
@@ -1334,9 +1320,6 @@ ans.terminate_analysis()</expression-string>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test/input.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_initial_temperature_gaussian.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys.py">
@@ -1386,36 +1369,6 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_nodes_search.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="63" selection-start-line="21" selection-start-column="63" selection-end-line="21" selection-end-column="63" />
-          <folding>
-            <element signature="e#1#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_quench_merge.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2000">
-          <caret line="132" column="50" lean-forward="true" selection-start-line="132" selection-start-column="50" selection-end-line="132" selection-end-column="50" />
-          <folding>
-            <element signature="e#1#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/test_quench_detection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="126" column="77" lean-forward="true" selection-start-line="126" selection-start-column="77" selection-end-line="126" selection-end-column="77" />
-          <folding>
-            <element signature="e#1#16#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_detection.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
@@ -1439,6 +1392,46 @@ ans.terminate_analysis()</expression-string>
           <caret line="211" column="11" lean-forward="true" selection-start-line="211" selection-start-column="11" selection-end-line="211" selection-end-column="11" />
           <folding>
             <element signature="e#1#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_quench_detection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="935">
+          <caret line="55" column="51" lean-forward="true" selection-start-line="55" selection-start-column="51" selection-end-line="55" selection-end-column="51" />
+          <folding>
+            <element signature="e#1#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_initial_temperature_gaussian.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
+          <folding>
+            <element signature="e#1#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_nodes_search.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="71" lean-forward="true" selection-start-line="22" selection-start-column="71" selection-end-line="22" selection-end-column="71" />
+          <folding>
+            <element signature="e#1#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/test_quench_merge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="11" lean-forward="true" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+          <folding>
+            <element signature="e#1#16#0" expanded="true" />
           </folding>
         </state>
       </provider>
