@@ -9,9 +9,10 @@ class QuenchFrontNum(QuenchFront, QuenchVelocityMap):
         self.testunit = testunit
         self.class_geometry = class_geometry
         QuenchFront.__init__(self, x_down, x_up, label, class_geometry, testunit=self.testunit)
-        QuenchVelocityMap.__init__(self, factory)
         self.quench_velocity_up = None
         self.quench_velocity_down = None
+        if testunit is False:
+            QuenchVelocityMap.__init__(self, factory)
 
     def merge(self, qf, testunit=False):
         """

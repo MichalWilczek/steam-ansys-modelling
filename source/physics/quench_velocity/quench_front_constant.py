@@ -9,7 +9,8 @@ class QuenchFrontConst(QuenchFront):
         self.factory = factory
         self.class_geometry = class_geometry
         QuenchFront.__init__(self, x_down, x_up, label, class_geometry, testunit=self.testunit)
-        self.q_v = factory.input_data.analysis_type.input.quench_velocity_value       # [m/s]
+        if testunit is False:
+            self.q_v = factory.input_data.analysis_type.input.quench_velocity_value       # [m/s]
 
     def merge(self, qf, testunit=False):
         """

@@ -4,7 +4,7 @@ import numpy as np
 
 Functions = general_functions.GeneralFunctions()
 
-directory = "C:\\skew_quad_analysis\\hot_spot_case1"
+directory = "C:\\skew_quad_analysis\\hot_spot_case3"
 filename_hot_spot = "hotspot.txt"
 files_list = Functions.make_list_of_filenames_in_directory(directory)
 hot_spot_array = np.zeros((len(files_list), 1))

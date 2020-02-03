@@ -177,3 +177,7 @@ B
 +source/ansys_interface/ansys_multiple_1D.py,5\c\5ca9a8531de54055f2dfcd3f83ac7d4f9fb380c8
 I
 source/hot_spot_editor.py,b\8\b801aa92d7d2d381283f78da3bd1983402853717
+Q
+!source/gif_editor_quench_state.py,6\5\6555bd7b8aa2d385d4f6cfb44cc5492ea09af442
+Q
+!source/gif_editor_temp_profile.py,7\d\7d20a5eefc84f472b71a38ea74abd4d48f4314db
