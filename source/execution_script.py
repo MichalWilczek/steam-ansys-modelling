@@ -2,9 +2,10 @@
 from source.analysis_engine.analysis_factory import AnalysisFactory
 
 # creation of analysis directories
-json_file_directory = "C:\\skew_quad_analysis"
+input_file_directory = "G:\\Workspaces\\a\\ANSYS_Modelling\\1_quench_velocity_modelling" \
+                       "\\documentation\\Test Simulation Workflow\\2_analysis_v_quench_map\input"
 json_filename = "input.json"
-factory = AnalysisFactory(json_file_directory, json_filename)
+factory = AnalysisFactory(input_file_directory, json_filename)
 
 ######################################################
 # DEFINITION OF INITIAL INSTANCES TO RUN THE PROGRAMME

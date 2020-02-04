@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/9/b9975eff0fe427d85ea23ef58ff7598ab65a553a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="Update of unittests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_initial_temperature_gaussian.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_initial_temperature_gaussian.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_nodes_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_nodes_search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/test_quench_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/test_quench_detection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/execution_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/execution_script.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -89,7 +85,29 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/execution_script.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="425">
+              <caret line="25" column="27" lean-forward="true" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="86" column="3" lean-forward="true" selection-start-line="86" selection-start-column="3" selection-end-line="86" selection-end-column="3" />
+              <folding>
+                <element signature="e#1#46#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -100,7 +118,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>get_temperature_profile</find>
       <find>load_temperature_and_map_onto_1d_cable</find>
       <find>Insulation</find>
       <find>merge</find>
@@ -130,6 +147,7 @@
       <find>input_dire</find>
       <find>search</find>
       <find>load</find>
+      <find>q_v_time_array</find>
     </findStrings>
     <replaceStrings>
       <replace>input_data.geometry_type.dimensionality</replace>
@@ -188,7 +206,6 @@
         <option value="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_plotting.py" />
         <option value="$PROJECT_DIR$/source/post_processor/post_processor_quench_velocity.py" />
         <option value="$PROJECT_DIR$/source/pre_processor/pre_processor_quench_velocity.py" />
-        <option value="$PROJECT_DIR$/source/execution_script.py" />
         <option value="$PROJECT_DIR$/source/solver/solver.py" />
         <option value="$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Geometry_High_Order_Corrector.inp" />
         <option value="$PROJECT_DIR$/README.md" />
@@ -206,6 +223,7 @@
         <option value="$PROJECT_DIR$/test/test_quench_detection.py" />
         <option value="$PROJECT_DIR$/test/test_nodes_search.py" />
         <option value="$PROJECT_DIR$/test/test_initial_temperature_gaussian.py" />
+        <option value="$PROJECT_DIR$/source/execution_script.py" />
       </list>
     </option>
   </component>
@@ -239,7 +257,8 @@
             <path>
               <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
               <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="source" type="462c0819:PsiDirectoryNode" />
+              <item name="post_processor" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -437,14 +456,8 @@
       <workItem from="1579797207945" duration="11577000" />
       <workItem from="1580112831898" duration="1396000" />
       <workItem from="1580723798639" duration="5181000" />
-      <workItem from="1580745292613" duration="658000" />
-    </task>
-    <task id="LOCAL-00080" summary="Start of README creation">
-      <created>1570468557205</created>
-      <option name="number" value="00080" />
-      <option name="presentableId" value="LOCAL-00080" />
-      <option name="project" value="LOCAL" />
-      <updated>1570468557205</updated>
+      <workItem from="1580745292613" duration="707000" />
+      <workItem from="1580811574303" duration="1062000" />
     </task>
     <task id="LOCAL-00081" summary="Start of README creation">
       <created>1570469804452</created>
@@ -782,7 +795,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580726551242</updated>
     </task>
-    <option name="localTasksCounter" value="129" />
+    <task id="LOCAL-00129" summary="Update of unittests">
+      <created>1580748717072</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1580748717072</updated>
+    </task>
+    <option name="localTasksCounter" value="130" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -818,7 +838,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1555162000" />
+    <option name="totallyTimeSpent" value="1556273000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -831,8 +851,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15778251" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15938166" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -979,7 +1000,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/source/execution_script.py</url>
-          <line>38</line>
+          <line>39</line>
           <option name="timeStamp" value="306" />
         </line-breakpoint>
       </breakpoints>
@@ -1052,13 +1073,6 @@ ans.terminate_analysis()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/execution_script.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="10" lean-forward="true" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1106,16 +1120,6 @@ ans.terminate_analysis()</expression-string>
         <state>
           <folding>
             <element signature="e#1#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-15">
-          <caret line="62" column="63" lean-forward="true" selection-start-line="62" selection-start-column="63" selection-end-line="62" selection-end-column="63" />
-          <folding>
-            <element signature="e#1#46#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1432,6 +1436,23 @@ ans.terminate_analysis()</expression-string>
           <caret line="8" column="11" lean-forward="true" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
           <folding>
             <element signature="e#1#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/execution_script.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="27" lean-forward="true" selection-start-line="25" selection-start-column="27" selection-end-line="25" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="86" column="3" lean-forward="true" selection-start-line="86" selection-start-column="3" selection-end-line="86" selection-end-column="3" />
+          <folding>
+            <element signature="e#1#46#0" expanded="true" />
           </folding>
         </state>
       </provider>
