@@ -32,7 +32,7 @@ class InitialTemperature(object):
             im_coil_geom=self.geometry.coil_geometry, mag_field=magnetic_field_value,
             wire_diameter=self.input_data.geometry_settings.type_input.strand_diameter,
             ref_temperature=self.input_data.temperature_settings.input.temperature_init)
-        GeneralFunctions.write_line_to_file(self.plots.output_directory_temperature, "Initial_energy_deposition.txt",
+        GeneralFunctions.write_line_to_file(self.plots.output_directory_temperature, "initial_energy_deposition_in_strand.txt",
                                             "Initial deposited energy equals: {} [J]".format(energy_deposition))
         print(self.initial_energy_deposition_to_string(energy_deposition))
         return energy_deposition

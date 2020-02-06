@@ -116,7 +116,7 @@ class GeneralFunctions(object):
         np.savetxt(path, array)
 
     @staticmethod
-    def load_file(directory, npoints, filename):
+    def load_file_ansys(directory, npoints, filename):
         """
         Loads file as numpy array if its number of rows corresponds to number of nodes in geometry
         :param directory: analysis output_directory as string
@@ -134,6 +134,17 @@ class GeneralFunctions(object):
             else:
                 exists = False
         return loaded_file
+
+    @staticmethod
+    def load_file_python(directory, filename):
+        """
+        Loads file as numpy array if its number of rows corresponds to number of nodes in geometry
+        :param directory: analysis output_directory as string
+        :param filename: filename as string, 'Temperature_Data.txt' set as default
+        """
+        os.chdir(directory)
+        path = os.path.join(directory, filename)
+        return np.loadtxt(path, ndmin=2, skiprows=1)
 
     @staticmethod
     def create_folder_in_directory(directory, foldername):

@@ -13,7 +13,7 @@ os.chdir(directory)
 
 for i in range(1, number_files+1):
     filename = "quench_state_" + str(i) + ".txt"
-    array = Functions.load_file(directory, npoints=54289, filename=filename)
+    array = Functions.load_file_ansys(directory, npoints=54289, filename=filename)
     fig = Plots.plot_quench_state(array)
     Plots.save_quench_state_plot(fig=fig, iteration=i, filename="quench")
 

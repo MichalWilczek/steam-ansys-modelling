@@ -3,6 +3,7 @@ from source.physics.quench_velocity.quench_detection import QuenchDetect
 from source.common_functions.general_functions import GeneralFunctions
 from source.post_processor.plots import Plots
 import numpy as np
+import os
 
 class PostProcessor(QuenchDetect):
 
@@ -52,10 +53,11 @@ class PostProcessor(QuenchDetect):
     def plot_temperature_profile(self):
         time_step = [self.time_step_vector[self.iteration[0]]][0]
 
-        txt_temperature_filename = "Temperature_Profile_" + str(self.iteration[0]) + ".txt"
+        txt_temperature_filename = "temperature_profile_" + str(self.iteration[0]) + ".txt"
+        temperaature_profile_array = self.geometry.create_temperature_profile_array(temperature_profile=self.temperature_profile, coil_length_array=self.geometry.coil_geometry)
         GeneralFunctions.save_array(directory=self.plots.output_directory_temperature,
                                     filename=txt_temperature_filename,
-                                    array=self.temperature_profile)
+                                    array=temperaature_profile_array)
 
         if self.input_data.temperature_settings.input.png_temperature_output:
             temperature_plot = self.plots.plot_and_save_temperature(
@@ -106,7 +108,7 @@ class PostProcessor(QuenchDetect):
 
     def make_gif(self):
         if self.input_data.temperature_settings.input.png_temperature_output:
-            Plots.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif',
+            Plots.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_profile.gif',
                              directory=self.plots.output_directory_temperature)
         if self.input_data.analysis_type.input.png_quench_state_output:
             Plots.create_gif(plot_array=self.quench_state_plots, filename='video_quench_state.gif',
@@ -119,19 +121,21 @@ class PostProcessor(QuenchDetect):
         res_voltage_array[0, 0] = time_step
         res_voltage_array[0, 1] = self.resistive_voltage / self.circuit.return_current_in_time_step()
         res_voltage_array[0, 2] = self.resistive_voltage
-        if self.iteration == 1:
+        if self.iteration[0] == 1:
+            os.chdir(self.plots.output_directory_resistive_voltage)
+            with open('resistance_voltage.txt', 'a') as file:
+                file.write('t, s;                    R, Ohm;                  V_res, V\n')
             Plots.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
-                                     filename="Res_Voltage.txt", mydata=res_voltage_array)
+                                     filename="resistance_voltage.txt", mydata=res_voltage_array, newfile=False)
         else:
             Plots.write_line_in_file(directory=self.plots.output_directory_resistive_voltage,
-                                     filename="Res_Voltage.txt", mydata=res_voltage_array,
+                                     filename="resistance_voltage.txt", mydata=res_voltage_array,
                                      newfile=False)
 
     def plot_resistive_voltage(self):
         if self.input_data.analysis_type.input.png_resistive_voltage_output:
-            res_voltage_array = GeneralFunctions.load_file(directory=self.plots.output_directory_resistive_voltage,
-                                                           npoints=len(self.time_step_vector)-1,
-                                                           filename="Res_Voltage.txt")
+            res_voltage_array = GeneralFunctions.load_file_python(directory=self.plots.output_directory_resistive_voltage,
+                                                                 filename="resistance_voltage.txt")
             self.plots.plot_resistive_voltage(time_vector=res_voltage_array[:, 0],
                                               voltage_vector=res_voltage_array[:, 2],
                                               additional_description="ansys")

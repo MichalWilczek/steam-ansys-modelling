@@ -15,7 +15,7 @@ for file in files_list:
     filename = int(float(filename))
 
     file_length = Functions.file_length(file, directory)
-    file_content = Functions.load_file(directory, file_length, file)
+    file_content = Functions.load_file_ansys(directory, file_length, file)
     hot_spot = max(file_content[:, 1])
     hot_spot_array[filename-1, 0] = hot_spot
 

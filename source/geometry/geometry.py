@@ -215,7 +215,7 @@ class Geometry(object):
         :param npoints: number of nodes in geometry as integer
         :param filename: filename as string; default: "Temperature_Data.txt"
         """
-        return GeneralFunctions.load_file(directory=directory, npoints=npoints, filename=filename)
+        return GeneralFunctions.load_file_ansys(directory=directory, npoints=npoints, filename=filename)
 
     @staticmethod
     def prepare_ansys_nodes_selection_list(real_nodes_list):
@@ -260,3 +260,10 @@ class Geometry(object):
         for quench_front in quench_fronts_list:
             quench_state_array[quench_front.x_down_node-1:quench_front.x_up_node, 1] = 1
         return quench_state_array
+
+    @staticmethod
+    def create_temperature_profile_array(coil_length_array, temperature_profile):
+        temperature_profile_array = np.zeros((len(coil_length_array[:, 0]), 2))
+        temperature_profile_array[:, 0] = coil_length_array[:, 1]
+        temperature_profile_array[:, 1] = temperature_profile[:, 1]
+        return temperature_profile_array

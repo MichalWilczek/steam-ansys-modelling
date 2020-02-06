@@ -10,14 +10,14 @@ directory_quench_state = "C:\\skew_quad_analysis\\output\\Case1\\quench_state_ou
 number_files = 495
 fig_files = []
 
-load_quench_file = Functions.load_file(directory_quench_state, npoints=54289, filename="quench_state_1.txt")
+load_quench_file = Functions.load_file_ansys(directory_quench_state, npoints=54289, filename="quench_state_1.txt")
 
 duration = 0.05
 os.chdir(directory)
 
 for i in range(1, number_files+1):
     filename = "Temperature_Profile_" + str(i) + ".txt"
-    array = Functions.load_file(directory, npoints=54289, filename=filename)
+    array = Functions.load_file_ansys(directory, npoints=54289, filename=filename)
     array[:, 0] = load_quench_file[:, 0]
     fig = Plots.plot_quench_state(array)
 

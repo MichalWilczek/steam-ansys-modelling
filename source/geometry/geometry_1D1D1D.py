@@ -254,7 +254,7 @@ class GeometryMulti1D(Geometry):
         :param filename: filename as string with temperature profile
         :returns: 2-column numpy array; 1-imaginary node number as float, 2-node temperature as float
         """
-        temperature_profile = GeneralFunctions.load_file(directory=directory, npoints=npoints, filename=filename)
+        temperature_profile = GeneralFunctions.load_file_ansys(directory=directory, npoints=npoints, filename=filename)
         coil_temperature_1d = self.map_temperature_into_1d_cable(temperature_profile=temperature_profile)
         return coil_temperature_1d
 

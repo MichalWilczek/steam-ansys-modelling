@@ -27,12 +27,12 @@ class Plots(object):
         os.chdir(self.output_directory_resistive_voltage)
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.set_xlabel('Time [s]')
+        ax.set_xlabel('t, s')
         ax.set_ylabel('V_res, V')
         ax.plot(time_vector, voltage_vector)
         plt.grid(True)
         plt.show()
-        filename = "resistive_voltage_{}.png".format(additional_description)
+        filename = "v_res_{}.png".format(additional_description)
         fig.savefig(filename)
         return fig
 
@@ -40,7 +40,7 @@ class Plots(object):
     def plot_quench_state(quench_state_array):
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.set_xlabel('L_coil, m')
+        ax.set_xlabel('x, m')
         ax.set_ylabel('Quench state')
         ax.set_yticks(ticks=[0, 1])
         ax.plot(quench_state_array[:, 0], quench_state_array[:, 1], linewidth=1.5)
@@ -109,7 +109,7 @@ class Plots(object):
         length_node_temp_array = np.column_stack((coil_length, temperature_profile_1d[:, 1]))
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.set_xlabel('L_coil, m')
+        ax.set_xlabel('x, m')
         ax.set_ylabel('T, K')
         plt.title("t = {} s".format(time_step))
         ax.plot(length_node_temp_array[:, 1], length_node_temp_array[:, 2])
@@ -126,7 +126,7 @@ class Plots(object):
         :param fig: temperature distribution as plt.figure()
         :param iteration: simulation iteration as integer
         """
-        filename = "temperature_distribution_{}.png".format(iteration)
+        filename = "temperature_profile_{}.png".format(iteration)
         fig.savefig(filename)
         return filename
 

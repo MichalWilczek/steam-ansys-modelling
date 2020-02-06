@@ -2,6 +2,7 @@
 from source.post_processor.plots import Plots
 from source.post_processor.post_processor import PostProcessor
 import numpy as np
+import os
 
 class PostProcessorHeatBalance(PostProcessor):
 
@@ -67,11 +68,14 @@ class PostProcessorHeatBalance(PostProcessor):
 
     def write_down_quench_velocity_to_file(self, q_v_time_array):
         if self.iteration[0] == 1:
+            os.chdir(self.plots.output_directory_quench_state)
+            with open('quench_velocity.txt', 'a') as file:
+                file.write('t, s;                    L_quench, m;             v_quench, m/s\n')
             Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
-                                     filename="Q_V_array.txt", mydata=q_v_time_array)
+                                     filename="quench_velocity.txt", mydata=q_v_time_array, newfile=False)
         elif self.iteration[0] > 1:
             Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
-                                     filename="Q_V_array.txt", mydata=q_v_time_array,
+                                     filename="quench_velocity.txt", mydata=q_v_time_array,
                                      newfile=False)
 
     def estimate_resistive_voltage(self):
@@ -109,5 +113,5 @@ class PostProcessorHeatBalance(PostProcessor):
         return coil_resistance
 
     def make_gif(self):
-        Plots.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_distribution.gif',
+        Plots.create_gif(plot_array=self.quench_temperature_plots, filename='video_temperature_profile.gif',
                          directory=self.plots.output_directory_temperature)
