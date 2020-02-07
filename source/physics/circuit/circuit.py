@@ -5,8 +5,8 @@ class Circuit(object):
         self.ansys_commands = ansys_commands
         self.geometry = class_geometry
         self.input_data = factory.input_data
-        self.current = [self.input_data.circuit_settings.electric_ansys_element_input.current_init]
-        self.current_update_material = self.input_data.circuit_settings.electric_ansys_element_input.current_init
+        self.current = [self.input_data.circuit_settings.electric_ansys_element_input.I_init]
+        self.current_update_material = self.input_data.circuit_settings.electric_ansys_element_input.I_init
         self.directory = factory.directory
 
         self.qds_detection = False
@@ -39,7 +39,7 @@ class Circuit(object):
         pass
 
     def check_if_analysis_is_finished(self, time_step):
-        if time_step > self.input_data.analysis_settings.time_total_simulation:
+        if time_step > self.input_data.analysis_settings.t_simulation:
             return True
         else:
             return False
@@ -47,7 +47,7 @@ class Circuit(object):
     def check_discharge_input_statement(self):
         discharge_statement = hasattr(self.input_data.circuit_settings.transient_electric_analysis_input,
                                       "current_discharge_criterion")
-        no_discharge_statement = hasattr(self.input_data.analysis_settings, "time_total_simulation")
+        no_discharge_statement = hasattr(self.input_data.analysis_settings, "t_simulation")
 
         if (discharge_statement is True and no_discharge_statement is True) or (discharge_statement is True):
             raise ValueError("Please decide whether you input total simulation time or "

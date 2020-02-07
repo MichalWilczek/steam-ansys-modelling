@@ -19,14 +19,14 @@ class GeometryMulti1D(Geometry):
             position_array=self.file_node_position, winding_set=self.dict_winding_nodes)
         self.coil_data = Geometry.calculate_coil_length_data(
             windings_lengths=self.center_plane_position,
-            number_of_windings=self.input_data.geometry_settings.type_input.number_of_windings)
+            number_of_windings=self.input_data.geometry_settings.type_input.n_windings)
         self.coil_length_1d = self.retrieve_1d_imaginary_coil(
             directory=self.output_directory_geometry, coil_data=self.coil_data)
         self.node_map_sorted = self.translate_domain_into_1d_cable(
             coil_data=self.coil_data, winding_set=self.dict_winding_nodes)
         self.dict_imaginary_nodes = Geometry.create_dict_with_imaginary_nodes(
             windings_lengths=self.center_plane_position,
-            number_of_windings=self.input_data.geometry_settings.type_input.number_of_windings)
+            number_of_windings=self.input_data.geometry_settings.type_input.n_windings)
         self.im_nodes_per_winding = Geometry.number_of_im_nodes_per_winding(self.dict_imaginary_nodes)
         self.winding_node_dict = self.create_node_dict_for_each_winding()
         self.coil_geometry = self.coil_length_1d

@@ -17,8 +17,8 @@ class Ansys(object):
         self.mapdl = CORBA.ORB_init().string_to_object(aasMapdlKey)
 
     def input_heat_generation_table(self, class_mat, magnetic_field):
-        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
-        current = self.input_data.circuit_settings.electric_ansys_element_input.current_init
+        strand_diameter = self.input_data.geometry_settings.type_input.d_strand
+        current = self.input_data.circuit_settings.electric_ansys_element_input.I_init
         heat_gen_array = class_mat.create_joule_heating_density_profile(magnetic_field, wire_diameter=strand_diameter,
                                                                         current=current)
         self.create_dim_table(dim_name="heatgen", dim_type="table", size1=len(heat_gen_array[:, 0]),

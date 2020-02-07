@@ -3,11 +3,12 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from source.common_functions.general_functions import GeneralFunctions
 import numpy as np
+import os
 
 class MagneticFieldPlotting(object):
 
     @staticmethod
-    def plot_mag_field_in_windings(x_vector, y_vector, b_field_vector, discretisation_number=51):
+    def plot_mag_field_in_windings(x_vector, y_vector, b_field_vector, output_directory, discretisation_number=51):
         discretisation_array = np.linspace(0, 1, discretisation_number)
         discrete_colors = plt.cm.jet(discretisation_array)
 
@@ -35,8 +36,11 @@ class MagneticFieldPlotting(object):
 
         sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
         sm.set_array([])
-        fig.colorbar(sm, ticks=np.linspace(Vmin, Vmax, int(discretisation_number / 5)),
-                     boundaries=np.arange(Vmin - Vrange * 0.05, Vmax + Vrange * 0.05, Vrange/10),
-                     label='Magnetic Field [T]')
-        plt.savefig(fname="test.png", dpi=200)
+        if Vmin != Vmax:
+            fig.colorbar(sm, ticks=np.linspace(Vmin, Vmax, int(discretisation_number / 5)),
+                         boundaries=np.arange(Vmin - Vrange * 0.05, Vmax + Vrange * 0.05, Vrange/10),
+                         label='Magnetic Field [T]')
+        else:
+            fig.colorbar(sm, label='Magnetic Field [T]')
+        plt.savefig(fname=os.path.join(output_directory, "magnetic_map.png"), dpi=200)
         plt.show()

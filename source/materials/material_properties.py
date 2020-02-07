@@ -14,13 +14,13 @@ class MaterialProperties(MaterialPropertiesPlotter):
         self.output_directory = factory.output_directory
         self.output_directory_materials = output_directory_materials
 
-        self.super_to_normal_ratio = self.input_data.material_settings.input.nonsupercond_to_supercond_ratio
+        self.super_to_normal_ratio = self.input_data.material_settings.input.r_nc_sc
         self.f_superconductor = self.ratio_superconductor()
         self.f_non_superconductor = self.ratio_normal_conductor()
 
         self.temperature_profile = MaterialProperties.create_temperature_step(
-            temp_min=self.input_data.material_settings.input.min_temperature_property,
-            temp_max=self.input_data.material_settings.input.max_temperature_property)
+            temp_min=self.input_data.material_settings.input.T_min_materials,
+            temp_max=self.input_data.material_settings.input.T_max_materials)
 
         self.superconductor = factory.get_superconductor_class(self.temperature_profile,
                                                                self.output_directory_materials)
@@ -30,7 +30,7 @@ class MaterialProperties(MaterialPropertiesPlotter):
                                                        self.output_directory_materials)
         self.critical_current_density = factory.get_critical_current_density_class()
 
-        magnetic_field_list = self.input_data.material_settings.input.magnetic_field_value_list
+        magnetic_field_list = self.input_data.material_settings.input.materials_output_for_B_list
         self.strand_equivalent_cv = []
         self.strand_equivalent_diffusivity = []
         self.strand_equivalent_thermal_conductivity = []
@@ -209,10 +209,10 @@ class MaterialProperties(MaterialPropertiesPlotter):
         wire_area = self.wire_area(wire_diameter*UnitConversion.milimeters_to_meters)
 
         temperature_profile = MaterialProperties.create_temperature_step(
-            temp_min=self.input_data.material_settings.input.min_temperature_property,
-            temp_max=self.input_data.material_settings.input.max_temperature_property,
-            number_temp_points=(self.input_data.material_settings.input.max_temperature_property -
-                                self.input_data.material_settings.input.min_temperature_property)*500)
+            temp_min=self.input_data.material_settings.input.T_min_materials,
+            temp_max=self.input_data.material_settings.input.T_max_materials,
+            number_temp_points=(self.input_data.material_settings.input.T_max_materials -
+                                self.input_data.material_settings.input.T_min_materials)*500)
         heat_gen_array = np.zeros((len(temperature_profile), 2))
         for i in range(len(temperature_profile)):
             eq_electrical_resistivity = self.winding_eq_resistivity(magnetic_field, temperature_profile[i])

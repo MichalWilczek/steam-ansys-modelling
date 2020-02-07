@@ -16,7 +16,7 @@ class AnsysThermalNetwork(Ansys):
         :param class_mat:
         :param element_name: ansys_interface 1D element name to be input
         """
-        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
+        strand_diameter = self.input_data.geometry_settings.type_input.d_strand
         for i in range(len(magnetic_field_map.keys())):
             self.delete_material_number(material_number=str(i + 1))
             magnetic_field = magnetic_field_map["winding" + str(i + 1)]
@@ -47,8 +47,8 @@ class AnsysThermalNetwork(Ansys):
         :param class_mat:
         :param element_name: ansys_interface 1D element name to be input
         """
-        strand_diameter = self.input_data.geometry_settings.type_input.strand_diameter
-        number_of_windings = self.input_data.geometry_settings.type_input.number_of_windings
+        strand_diameter = self.input_data.geometry_settings.type_input.d_strand
+        number_of_windings = self.input_data.geometry_settings.type_input.n_windings
 
         magnetic_field = magnetic_field_map["winding"+str(winding_number)]
         element_number = number_of_windings + winding_number
@@ -74,9 +74,9 @@ class AnsysThermalNetwork(Ansys):
 
     def calculate_insulation_length(self):
         return Insulation.get_insulation_side(
-            small_circle=self.input_data.geometry_settings.type_input.strand_diameter *
+            small_circle=self.input_data.geometry_settings.type_input.d_strand *
                          UnitConversion.milimeters_to_meters,
-            large_circle=self.input_data.geometry_settings.type_input.strand_diameter_with_insulation
+            large_circle=self.input_data.geometry_settings.type_input.d_ins
                          * UnitConversion.milimeters_to_meters)
 
     def get_temperature_profile(self, class_geometry, npoints):

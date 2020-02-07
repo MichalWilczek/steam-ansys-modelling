@@ -28,8 +28,8 @@ class Solver(object):
 
     def create_time_step_vector(self):
         return TimeStep.create_initial_time_step_vector(
-            time_step=self.input_data.analysis_settings.time_step_cosimulation,
-            total_time=self.input_data.analysis_settings.time_step_cosimulation)
+            time_step=self.input_data.analysis_settings.t_com,
+            total_time=self.input_data.analysis_settings.t_com)
 
     def check_if_analysis_is_finished(self):
         self.end_of_analysis = self.circuit.check_if_analysis_is_finished(self.time_step_vector[self.iteration[0]])
@@ -37,9 +37,9 @@ class Solver(object):
     def set_next_time_step(self, class_postprocessor):
         last_time_window = self.time_step_vector[-1]
         if class_postprocessor.is_all_coil_quenched is False:
-            new_time_window = last_time_window + self.input_data.analysis_settings.time_step_cosimulation
+            new_time_window = last_time_window + self.input_data.analysis_settings.t_com
         else:
-            new_time_window = last_time_window + self.input_data.analysis_settings.time_step_cosimulation_after_all_coil_quenched
+            new_time_window = last_time_window + self.input_data.analysis_settings.t_com_after_all_coil_quenched
         self.time_step_vector.append(new_time_window)
 
     def time_to_string(self):
@@ -60,9 +60,9 @@ class Solver(object):
         self.ansys_commands.set_analysis_setting()
 
         self.ansys_commands.set_ansys_time_step_settings(
-            min_time_step=self.input_data.analysis_settings.time_step_min_ansys * UnitConversion.miliseconds_to_seconds,
-            max_time_step=self.input_data.analysis_settings.time_step_max_ansys * UnitConversion.miliseconds_to_seconds,
-            init_time_step=self.input_data.analysis_settings.time_step_min_ansys *
+            min_time_step=self.input_data.analysis_settings.t_step_range_min * UnitConversion.miliseconds_to_seconds,
+            max_time_step=self.input_data.analysis_settings.t_step_range_max * UnitConversion.miliseconds_to_seconds,
+            init_time_step=self.input_data.analysis_settings.t_step_range_min *
                            UnitConversion.miliseconds_to_seconds)
 
     def set_time_step(self):

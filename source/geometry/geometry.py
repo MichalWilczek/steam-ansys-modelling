@@ -204,7 +204,7 @@ class Geometry(object):
         coil_length_1d = coil_data[:, 2:4]
         coil_length_1d = Geometry.delete_repetitive_rows(coil_length_1d)
         coil_length_1d_sorted = coil_length_1d[coil_length_1d[:, 0].argsort()]
-        GeneralFunctions.save_array(directory=directory, filename="Im_Coil_Length.txt", array=coil_length_1d_sorted)
+        GeneralFunctions.save_array(directory=directory, filename="im_coil_length.txt", array=coil_length_1d_sorted)
         return coil_length_1d_sorted
 
     @staticmethod

@@ -66,18 +66,18 @@ class PreProcessorQuenchVelocity(PreProcessor):
                 self.ansys_commands.select_elem_from_nodes()
 
                 # ADDED TO TAKE INTO ACCOUNT MASS ELEMENTS !!!
-                if self.input_data.geometry_settings.type_input.strand_to_strand_contact_correction_factor < 1.0 or \
-                        self.input_data.geometry_settings.type_input.resin_filling_factor > 0.0:
+                if self.input_data.geometry_settings.type_input.u_ins < 1.0 or \
+                        self.input_data.geometry_settings.type_input.u_resin > 0.0:
                     self.ansys_commands.unselect_element_type_from_set_of_elements(
                         element_number_to_unselect=2*self.input_data.
-                            geometry_settings.type_input.number_of_windings + 3)
+                            geometry_settings.type_input.n_windings + 3)
 
                 self.ansys_commands.modify_material_type(
-                    element_number=winding_number + self.input_data.geometry_settings.type_input.number_of_windings)
+                    element_number=winding_number + self.input_data.geometry_settings.type_input.n_windings)
                 self.ansys_commands.modify_material_constant(
-                    constant_number=winding_number + self.input_data.geometry_settings.type_input.number_of_windings)
+                    constant_number=winding_number + self.input_data.geometry_settings.type_input.n_windings)
                 self.ansys_commands.modify_material_number(
-                    material_number=winding_number + self.input_data.geometry_settings.type_input.number_of_windings)
+                    material_number=winding_number + self.input_data.geometry_settings.type_input.n_windings)
 
     def start_discharge_after_qds_switch(self, class_circuit, class_postprocessor):
         if class_circuit.check_quench_with_qds(class_postprocessor):

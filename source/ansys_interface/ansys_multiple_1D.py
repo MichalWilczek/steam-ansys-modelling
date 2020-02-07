@@ -7,15 +7,15 @@ class AnsysMultiple1D(AnsysThermalNetwork):
         AnsysThermalNetwork.__init__(self, factory, ansys_input_directory)
 
     def check_if_point_mass_is_applied(self):
-        if self.input_data.geometry_settings.type_input.strand_to_strand_contact_correction_factor == 1.0 and \
-                self.input_data.geometry_settings.type_input.resin_filling_factor <= 10e-10:
+        if self.input_data.geometry_settings.type_input.u_ins == 1.0 and \
+                self.input_data.geometry_settings.type_input.u_resin <= 10e-10:
             return False
         else:
             return True
 
     def create_point_mass_material_properties(self, class_mat, element_name="mass71"):
         self.enter_preprocessor()
-        element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 3
+        element_number = 2*self.input_data.geometry_settings.type_input.n_windings + 3
         self.define_element_type(element_number=element_number, element_name=element_name)
         self.define_element_constant(element_number=element_number, element_constant="point_mass_volume")
         # real constant interpreted as volume with density and specific heat defined as material properties
@@ -36,7 +36,7 @@ class AnsysMultiple1D(AnsysThermalNetwork):
         """
         # normal insulation elements
         self.enter_preprocessor()
-        element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 1
+        element_number = 2*self.input_data.geometry_settings.type_input.n_windings + 1
         self.define_element_type(element_number=element_number, element_name="link33")
         self.define_element_constant(
             element_number=element_number,
@@ -55,7 +55,7 @@ class AnsysMultiple1D(AnsysThermalNetwork):
 
         # corner insulation elements
         self.enter_preprocessor()
-        element_number = 2*self.input_data.geometry_settings.type_input.number_of_windings + 2
+        element_number = 2*self.input_data.geometry_settings.type_input.n_windings + 2
         self.define_element_type(element_number=element_number, element_name="link33")
         self.define_element_constant(
             element_number=element_number,

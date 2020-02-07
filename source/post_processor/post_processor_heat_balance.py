@@ -15,10 +15,10 @@ class PostProcessorHeatBalance(PostProcessor):
                                       class_geometry=self.geometry)]
 
     def define_initial_quench_position(self):
-        x_down = self.input_data.analysis_settings.quench_init_position - \
-            self.input_data.analysis_settings.quench_init_length/2.0
-        x_up = self.input_data.analysis_settings.quench_init_position + \
-            self.input_data.analysis_settings.quench_init_length/2.0
+        x_down = self.input_data.analysis_settings.x_quench_init - \
+            self.input_data.analysis_settings.L_quench_init/2.0
+        x_up = self.input_data.analysis_settings.x_quench_init + \
+            self.input_data.analysis_settings.L_quench_init/2.0
 
         if x_down < self.min_coil_length:
             x_down = 0.0
@@ -108,7 +108,7 @@ class PostProcessorHeatBalance(PostProcessor):
                 qf_resistance = self.mat_props.calculate_qf_resistance(
                     qf_down=n_down, qf_up=n_up, im_temp_profile=self.temperature_profile,
                     im_coil_geom=self.geometry.coil_geometry, mag_field=mag_field,
-                    wire_diameter=self.input_data.geometry_settings.type_input.strand_diameter)
+                    wire_diameter=self.input_data.geometry_settings.type_input.d_strand)
             coil_resistance += qf_resistance
         return coil_resistance
 

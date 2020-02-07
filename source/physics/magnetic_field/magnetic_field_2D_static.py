@@ -1,21 +1,28 @@
 
 import numpy as np
+import os
 from source.physics.magnetic_field.magnetic_field_map import MagneticFieldMap
 from source.physics.magnetic_field.magnetic_field_plotting import MagneticFieldPlotting
+from source.common_functions.general_functions import GeneralFunctions
 
 class MagneticField2DStatic(MagneticFieldMap):
 
     def __init__(self, factory):
         MagneticFieldMap.__init__(self, factory)
         winding_data = self.assign_magnetic_field_to_windings(current=self.input_data.circuit_settings.
-                                                              electric_ansys_element_input.current_init)
+                                                              electric_ansys_element_input.I_init)
         self.mag_dict = winding_data[0]
         self.mag_map_array = winding_data[1]
         MagneticFieldPlotting.plot_mag_field_in_windings(x_vector=self.mag_map_array[:, 0],
                                                          y_vector=self.mag_map_array[:, 1],
-                                                         b_field_vector=self.mag_map_array[:, 2])
+                                                         b_field_vector=self.mag_map_array[:, 2],
+                                                         output_directory=self.output_directory_magnetic_field)
         self.im_short_mag_dict = self.simplify_the_magnetic_field_dictionary(self.mag_dict)
         print("CURRENT MAGNETIC FIELD MAP: {}".format(self.im_short_mag_dict))
+        GeneralFunctions.copy_object_to_another_object(
+            directory_to_copy=os.path.join(factory.input_directory, factory.
+                                           input_data.magnetic_field_settings.input.B_map_foldername),
+            directory_destination=os.path.join(factory.input_copy_directory, "magnetic_field"))
 
     def update_magnetic_field_during_analysis(self, current):
         winding_data = self.assign_magnetic_field_to_windings(current=current)

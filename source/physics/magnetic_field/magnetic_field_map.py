@@ -10,14 +10,13 @@ class MagneticFieldMap(MagneticField):
 
     def __init__(self, factory):
         MagneticField.__init__(self, factory)
-        self.layers = self.input_data.geometry_settings.type_input.number_layers
-        self.magnetic_field_map_directory = factory.input_data.magnetic_field_settings.\
-            input.magnetic_field_map_repository
+        self.layers = self.input_data.geometry_settings.type_input.n_layers
+        self.magnetic_field_map_directory = os.path.join(
+            factory.input_directory, factory.input_data.magnetic_field_settings.input.B_map_foldername)
         self.mag_map_interpolation = self.get_magnetic_interpolation_function()
 
-        self.winding_side = self.input_data.geometry_settings.type_input.winding_side * \
-            UnitConversion.milimeters_to_meters
-        self.number_turns_in_layer = self.input_data.geometry_settings.type_input.number_turns_in_layer
+        self.winding_side = self.input_data.geometry_settings.type_input.a_strand * UnitConversion.milimeters_to_meters
+        self.number_turns_in_layer = self.input_data.geometry_settings.type_input.n_turns_in_layer
 
         self.pos_x_winding = self.make_winding_pos_x(winding_side=self.winding_side,
                                                      number_turns_in_layer=self.number_turns_in_layer,

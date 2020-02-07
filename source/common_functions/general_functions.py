@@ -168,6 +168,11 @@ class GeneralFunctions(object):
         shutil.copytree(directory_to_copy, directory_destination)
 
     @staticmethod
+    def copy_file_to_directory(filename, filename_directory, desired_filename_directory):
+        filename_path = os.path.join(filename_directory, filename)
+        shutil.copy(filename_path, desired_filename_directory)
+
+    @staticmethod
     def write_line_to_file(directory, filename, input_value):
         path = os.path.join(directory, filename)
         os.chdir(directory)

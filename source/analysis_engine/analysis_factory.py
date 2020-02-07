@@ -47,6 +47,7 @@ class AnalysisFactory(AnalysisLauncher):
     def __init__(self, json_directory, json_filename):
         self.input_data = self.get_input_data_class(json_directory, json_filename)
         AnalysisLauncher.__init__(self, self.input_data, json_directory, json_filename)
+        self.input_file_directory = json_directory
 
     @staticmethod
     def get_input_data_class(json_directory, json_filename):
@@ -90,7 +91,7 @@ class AnalysisFactory(AnalysisLauncher):
         :return: Class
         """
         if self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
-                self.input_data.geometry_settings.type == "skew_quadrupole":
+                self.input_data.geometry_settings.type == "high_order_corrector":
             return AnsysMultiple1DHighOrderCorrector(factory, ansys_input_directory=self.get_ansys_scripts_directory())
         elif self.input_data.geometry_settings.dimensionality == "multiple_1D" and \
                 self.input_data.geometry_settings.type == "slab":
@@ -128,11 +129,11 @@ class AnalysisFactory(AnalysisLauncher):
 
     def get_solver_type(self, factory, ansys_commands, class_geometry, circuit,
                         ic_temperature_class, mat_props, mag_map):
-        if self.input_data.analysis_type.type == "quench_velocity":
+        if self.input_data.analysis_type.type == "v_quench_based_approach":
             return SolverQuenchVelocity(ansys_commands=ansys_commands, class_geometry=class_geometry,
                                         circuit=circuit, factory=factory,
                                         ic_temperature_class=ic_temperature_class, mag_map=mag_map, mat_props=mat_props)
-        elif self.input_data.analysis_type.type == "heat_balance":
+        elif self.input_data.analysis_type.type == "standard":
             return SolverHeatBalance(ansys_commands=ansys_commands, class_geometry=class_geometry,
                                      factory=factory, circuit=circuit,
                                      ic_temperature_class=ic_temperature_class, mag_map=mag_map, mat_props=mat_props)
@@ -158,17 +159,17 @@ class AnalysisFactory(AnalysisLauncher):
                              "\n Please check the user input file carefully.")
 
     def get_preprocessor_class(self, factory, mat_props, ansys_commands):
-        if self.input_data.analysis_type.type == "quench_velocity":
+        if self.input_data.analysis_type.type == "v_quench_based_approach":
             return PreProcessorQuenchVelocity(mat_props, ansys_commands, factory)
-        elif self.input_data.analysis_type.type == "heat_balance":
+        elif self.input_data.analysis_type.type == "standard":
             return PreProcessorHeatBalance(mat_props, ansys_commands, factory)
         else:
             raise ValueError("Please, type 'quench_velocity' or 'heat_balance' in analysis type.")
 
     def get_postprocessor_class(self, factory, class_geometry, ansys_commands, v_quench, solver):
-        if self.input_data.analysis_type.type == "quench_velocity":
+        if self.input_data.analysis_type.type == "v_quench_based_approach":
             return PostProcessorQuenchVelocity(class_geometry, ansys_commands, v_quench, solver, factory)
-        elif self.input_data.analysis_type.type == "heat_balance":
+        elif self.input_data.analysis_type.type == "standard":
             return PostProcessorHeatBalance(class_geometry, ansys_commands, v_quench, solver, factory)
         else:
             raise ValueError("Class PostProcessor was not properly defined - change the name of 'analysis type'")
@@ -183,13 +184,13 @@ class AnalysisFactory(AnalysisLauncher):
         :return: Class instance
         """
         if self.input_data.material_settings.type == "nonlinear":
-            if self.input_data.material_settings.input.superconductor_name == "Nb-Ti":
+            if self.input_data.material_settings.input.sc_name == "Nb-Ti":
                 return NbTiMaterialProperties(
                     temperature_profile,
                     txt_output=self.input_data.material_settings.input.txt_material_output,
                     png_output=self.input_data.material_settings.input.png_material_output,
                     output_directory=output_directory_materials,
-                    magnetic_field_list=self.input_data.material_settings.input.magnetic_field_value_list)
+                    magnetic_field_list=self.input_data.material_settings.input.materials_output_for_B_list)
             else:
                 raise ValueError("Material does not exist in the library.")
         elif self.input_data.material_settings.type == "linear":
@@ -212,11 +213,11 @@ class AnalysisFactory(AnalysisLauncher):
         :return: Class instance
         """
         if self.input_data.material_settings.type == "nonlinear":
-            magnetic_field_value_list = self.input_data.material_settings.input.magnetic_field_value_list
-            if self.input_data.material_settings.input.normal_conductor_name == "Cu":
+            magnetic_field_value_list = self.input_data.material_settings.input.materials_output_for_B_list
+            if self.input_data.material_settings.input.nc_name == "Cu":
                 return CuMaterialProperties(
                     temperature_profile,
-                    rrr=self.input_data.material_settings.input.rrr,
+                    rrr=self.input_data.material_settings.input.RRR,
                     txt_output=self.input_data.material_settings.input.txt_material_output,
                     png_output=self.input_data.material_settings.input.png_material_output,
                     output_directory=output_directory_materials,
@@ -242,7 +243,7 @@ class AnalysisFactory(AnalysisLauncher):
         :return: Class instance
         """
         if self.input_data.material_settings.type == "nonlinear":
-            if self.input_data.material_settings.input.insulation_name == "G10":
+            if self.input_data.material_settings.input.ins_name == "G10":
                 return G10MaterialProperties(
                     temperature_profile,
                     txt_output=self.input_data.material_settings.input.txt_material_output,
@@ -260,9 +261,9 @@ class AnalysisFactory(AnalysisLauncher):
             raise ValueError("Type of the material does not exist.")
 
     def get_critical_current_density_class(self):
-        if self.input_data.material_settings.input.current_density_formula == "low_current_jc":
+        if self.input_data.material_settings.input.J_c_formula == "low_current_jc":
             return NbTiJcLowCurrent()
-        elif self.input_data.material_settings.input.current_density_formula == "russenschuck_jc":
+        elif self.input_data.material_settings.input.J_c_formula == "russenschuck_jc":
             return NbTiJcRussenschuck()
 
     @staticmethod
