@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="" />
+    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="Commit of the final code version">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,8 +98,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="272">
-                <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
+              <first_editor relative-caret-position="289">
+                <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
               </first_editor>
               <second_editor />
             </state>
@@ -238,22 +240,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
-              <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
-              <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
-              <item name="documentation" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -467,42 +454,7 @@
       <workItem from="1581326690569" duration="1803000" />
       <workItem from="1581356531707" duration="2302000" />
       <workItem from="1582028097135" duration="719000" />
-      <workItem from="1582040956651" duration="1259000" />
-    </task>
-    <task id="LOCAL-00086" summary="Commit of Material Properties Classes - finished&#10;Division into NIST and CUDI standards&#10;Code ready for further development with other superconducting materials">
-      <created>1570801625472</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1570801625472</updated>
-    </task>
-    <task id="LOCAL-00087" summary="README update">
-      <created>1570802735038</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1570802735038</updated>
-    </task>
-    <task id="LOCAL-00088" summary="README update">
-      <created>1570802977288</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1570802977288</updated>
-    </task>
-    <task id="LOCAL-00089" summary="README update on the definition of material properties">
-      <created>1570803479778</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1570803479778</updated>
-    </task>
-    <task id="LOCAL-00090" summary="README update on the definition of material properties">
-      <created>1570804158766</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1570804158767</updated>
+      <workItem from="1582040956651" duration="2081000" />
     </task>
     <task id="LOCAL-00091" summary="Update of APDL scripts for geometry creation. &#10;Update of insulation calculation in Ansys Class.">
       <created>1571150189140</created>
@@ -812,7 +764,42 @@
       <option name="project" value="LOCAL" />
       <updated>1582041821421</updated>
     </task>
-    <option name="localTasksCounter" value="135" />
+    <task id="LOCAL-00135" summary="Commit of the final code version">
+      <created>1582042235023</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1582042235023</updated>
+    </task>
+    <task id="LOCAL-00136" summary="Commit of the final code version">
+      <created>1582042249736</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1582042249736</updated>
+    </task>
+    <task id="LOCAL-00137" summary="Commit of the final code version">
+      <created>1582042428758</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1582042428758</updated>
+    </task>
+    <task id="LOCAL-00138" summary="Commit of the final code version">
+      <created>1582042563366</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1582042563366</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Commit of the final code version">
+      <created>1582042578023</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1582042578023</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -848,7 +835,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1589901000" />
+    <option name="totallyTimeSpent" value="1590723000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -861,8 +848,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.117803834" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17590618" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -1098,9 +1086,6 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/nodes_search.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/quench_detection.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2205">
@@ -1450,11 +1435,18 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="272">
-            <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
+          <first_editor relative-caret-position="289">
+            <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
           </first_editor>
           <second_editor />
         </state>
