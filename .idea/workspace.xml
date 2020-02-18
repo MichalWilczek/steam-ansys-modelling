@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="Commit of the final code version">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -98,8 +98,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="289">
-                <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+              <first_editor relative-caret-position="323">
+                <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
               </first_editor>
               <second_editor />
             </state>
@@ -454,21 +454,7 @@
       <workItem from="1581326690569" duration="1803000" />
       <workItem from="1581356531707" duration="2302000" />
       <workItem from="1582028097135" duration="719000" />
-      <workItem from="1582040956651" duration="2081000" />
-    </task>
-    <task id="LOCAL-00091" summary="Update of APDL scripts for geometry creation. &#10;Update of insulation calculation in Ansys Class.">
-      <created>1571150189140</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1571150189140</updated>
-    </task>
-    <task id="LOCAL-00092" summary="Update of APDL scripts for geometry creation. &#10;Update of insulation calculation in Ansys Class.">
-      <created>1571403628397</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1571403628397</updated>
+      <workItem from="1582040956651" duration="2339000" />
     </task>
     <task id="LOCAL-00093" summary="Update of APDL scripts for geometry creation. &#10;Update of insulation calculation in Ansys Class.">
       <created>1571649983048</created>
@@ -799,7 +785,21 @@
       <option name="project" value="LOCAL" />
       <updated>1582042578023</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="Commit of the final code version">
+      <created>1582043050458</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1582043050458</updated>
+    </task>
+    <task id="LOCAL-00141" summary="Commit of the final code version">
+      <created>1582043281789</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1582043281789</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -835,7 +835,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1590723000" />
+    <option name="totallyTimeSpent" value="1590981000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -863,7 +863,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="SonarLint" order="8" weight="0.3211111" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5010661" side_tool="true" weight="0.40555555" />
+      <window_info active="true" anchor="bottom" id="Event Log" order="10" sideWeight="0.5010661" side_tool="true" visible="true" weight="0.40555555" />
       <window_info anchor="bottom" id="Version Control" order="11" weight="0.32873562" />
       <window_info anchor="bottom" id="Terminal" order="12" weight="0.32873562" />
       <window_info anchor="bottom" id="Python Console" order="13" weight="0.32873562" />
@@ -1445,8 +1445,8 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="289">
-            <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+          <first_editor relative-caret-position="323">
+            <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
           </first_editor>
           <second_editor />
         </state>
