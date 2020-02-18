@@ -1,5 +1,5 @@
 ## **STEAM** 
-#### 3D Quench Velocity Modelling in ANSYS
+#### Multi-dimensional quench velocity-based approach in ANSYS APDL and Python
 (Copyright © 2019, CERN, Switzerland. All rights reserved.)
 
 ## Abstract
