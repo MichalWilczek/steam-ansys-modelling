@@ -16,3 +16,4 @@ The code documentation is stored in the documentation folder with two files: (i)
 The first one describes step by step the usage of the code whereas the second one presents the theoretical background 
 required to understand the quench velocity-based approach.
 
+
