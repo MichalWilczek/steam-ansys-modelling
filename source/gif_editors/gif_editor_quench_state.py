@@ -4,7 +4,7 @@ from source.post_processor.plots import Plots
 from source.common_functions import general_functions
 
 Functions = general_functions.GeneralFunctions()
-directory = "C:\\skew_quad_analysis\\output\\Case1\\quench_state_output"
+directory = "C:\\skew_quad_analysis\\postprocessing"
 number_files = 476
 fig_files = []
 
