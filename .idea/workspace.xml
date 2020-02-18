@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/documentation/Finite_Element_Analysis_of_Magneto_Thermal_Transient_Effects_in_Superconducting_Accelerator_Magnets.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/documentation/Quench_Velocity_Based_Approach_in_ANSYS.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-    </list>
+    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,8 +96,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="221">
-                <caret line="13" column="81" selection-start-line="13" selection-start-column="81" selection-end-line="13" selection-end-column="81" />
+              <first_editor relative-caret-position="272">
+                <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
               </first_editor>
               <second_editor />
             </state>
@@ -472,14 +467,7 @@
       <workItem from="1581326690569" duration="1803000" />
       <workItem from="1581356531707" duration="2302000" />
       <workItem from="1582028097135" duration="719000" />
-      <workItem from="1582040956651" duration="741000" />
-    </task>
-    <task id="LOCAL-00085" summary="Commit of Material Properties Classes - in progress">
-      <created>1570732392201</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1570732392201</updated>
+      <workItem from="1582040956651" duration="1259000" />
     </task>
     <task id="LOCAL-00086" summary="Commit of Material Properties Classes - finished&#10;Division into NIST and CUDI standards&#10;Code ready for further development with other superconducting materials">
       <created>1570801625472</created>
@@ -817,7 +805,14 @@
       <option name="project" value="LOCAL" />
       <updated>1582028399296</updated>
     </task>
-    <option name="localTasksCounter" value="134" />
+    <task id="LOCAL-00134" summary="Commit of the final code version">
+      <created>1582041821420</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1582041821421</updated>
+    </task>
+    <option name="localTasksCounter" value="135" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -853,7 +848,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1589383000" />
+    <option name="totallyTimeSpent" value="1589901000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -866,7 +861,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.117803834" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -1459,8 +1453,8 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="221">
-            <caret line="13" column="81" selection-start-line="13" selection-start-column="81" selection-end-line="13" selection-end-column="81" />
+          <first_editor relative-caret-position="272">
+            <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
           </first_editor>
           <second_editor />
         </state>
