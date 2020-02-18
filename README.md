@@ -1,6 +1,6 @@
 ## **STEAM** 
 #### Multi-dimensional quench velocity-based approach in ANSYS APDL and Python
-(Copyright © 2019, CERN, Switzerland. All rights reserved.)
+(Copyright © 2020, CERN, Switzerland. All rights reserved.)
 
 ## Abstract
 This repository presents the Python code for the multi-dimensional quench analysis with the quench-velocity based 
