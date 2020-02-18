@@ -15,3 +15,4 @@ The code documentation is stored in the documentation folder with two files: (i)
 (ii) Finite_Element_Analysis_of_Magneto_Thermal_Transient_Effects_in_Superconducting_Accelerator_Magnets.pdf. 
 The first one describes step by step the usage of the code whereas the second one presents the theoretical background 
 required to understand the quench velocity-based approach.
+
