@@ -1,0 +1,115 @@
+
+allsel
+solve
+
+! ADDED 19/10/04
+save 
+finish
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Post Analysis !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+allsel
+cmsel,s,magnet_coil
+allsel,below,elem
+*get,maxnode,node,,num,max
+*get,minnode,node,,num,min
+*get,numnode,node,,count
+
+*dim,node_Temp,array,numnode,2
+*vget,node_Temp(1,1),node,,nlist
+*vget,node_Temp(1,2),node,,temp,
+*mwrite,node_Temp,Temperature_Data,txt
+(2E20.10)
+
+*if,electric_analysis,eq,1,then
+*get,resistive_voltage,node,minnode,volt
+*cfopen,Resistive_Voltage,txt
+*vwrite,resistive_voltage
+(1(ES16.7))
+*cfclose
+*endif
+
+! added 30.07.2019
+/post1
+
+/AUTO,1
+/DSCALE,1,OFF
+
+/PLOPTS,INFO,1
+/PLOPTS,LEG1,1
+/PLOPTS,LEG2,0
+/PLOPTS,LEG3,1
+/PLOPTS,FRAME,1
+/PLOPTS,TITLE,1
+/PLOPTS,MINM,1
+/PLOPTS,FILE,0
+/PLOPTS,WINS,1
+/PLOPTS,WP,0
+/PLOPTS,DATE,0
+/TRIAD,OFF
+
+/RGB,INDEX,100,100,100, 0
+/RGB,INDEX, 80, 80, 80,13
+/RGB,INDEX, 60, 60, 60,14
+/RGB,INDEX, 0, 0, 0,15
+
+allsel
+
+/SHOW,png,,0
+cmsel,s,magnet_coil
+allsel,below,elem
+plnsol,temp
+/GFILE,1000,
+/REPLOT
+/SHOW,CLOSE
+/DEVICE,VECTOR,0
+/rename,Quench000,png,,STRCAT('Coil-Nodal-Temp',chrval(time_step)),png,
+/delete,Quench001,png
+
+*if,electric_analysis,eq,1,then
+	cmsel,s,magnet_coil
+	allsel,below,elem
+	/SHOW,png,,0
+	plnsol,volt
+	/GFILE,1000,
+	/REPLOT
+	/SHOW,CLOSE
+	/DEVICE,VECTOR,0
+	/rename,Quench000,png,,STRCAT('Coil-Nodal-Volt',chrval(time_step)),png,
+	/delete,Quench001,png
+*endif
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Circuit post-processing !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+/post26
+lines,10000    !avoid repeating headers < 1000 lines
+numvar,100     !set number of variables great than the default of 10
+ref_number = 10
+
+! Results from the dump resistor
+enum = dump_res_elem
+esol,ref_number+6,enum,,nmisc,1,pr_dump      !power
+esol,ref_number+5,enum,,smisc,1,vr_dump      !voltage
+esol,ref_number+4,enum,,smisc,2,ir_dump      !current
+/output,sol_dump_resistor,inp
+prvar,ir_dump,vr_dump,pr_dump
+/output
+
+! Results from the inductor
+enum = inductor_elem
+esol,ref_number+9,enum,,nmisc,1,pi      !power
+esol,ref_number+8,enum,,smisc,1,vi      !voltage
+esol,ref_number+7,enum,,smisc,2,ii      !current
+/output,sol_inductor,inp
+prvar,ii,vi,pi
+/output
+
+*dim,process_finished,array,1,1,1
+process_finished(1) = 1
+*mwrite,process_finished,Process_Finished,txt
+(1E20.10)
+*del,process_finished
+
+*del,node_Temp
+
