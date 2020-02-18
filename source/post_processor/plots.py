@@ -43,6 +43,7 @@ class Plots(object):
         ax.set_xlabel('x, m')
         ax.set_ylabel('Quench state')
         ax.set_yticks(ticks=[0, 1])
+        ax.set_ylim(-0.1 , 1.1)
         ax.plot(quench_state_array[:, 0], quench_state_array[:, 1], linewidth=1.5)
         plt.grid(True)
         plt.show()

@@ -1,34 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/analysis_engine/analysis_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/analysis_engine/analysis_factory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/ansys_interface/ansys.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_slab.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_slab.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/common_functions/general_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/common_functions/general_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/execution_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/execution_script.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/geometry/geometry.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/geometry/geometry.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/geometry/geometry_1D1D1D.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/geometry/geometry_1D1D1D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/materials/material_properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/materials/material_properties.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/circuit/circuit.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/circuit/circuit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_with_circuit.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_with_circuit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_gaussian.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_gaussian.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_uniform.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_uniform.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_2D_static.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_2D_static.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_constant.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_constant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_map.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_map.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_plotting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/physics/quench_velocity/quench_velocity_map.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/physics/quench_velocity/quench_velocity_map.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/post_processor/post_processor_heat_balance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/pre_processor/pre_processor_quench_velocity.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/pre_processor/pre_processor_quench_velocity.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/solver/solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/solver/solver.py" afterDir="false" />
-    </list>
+    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +38,7 @@
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$interpolation_functions.coverage" NAME="interpolation_functions Coverage Results" MODIFIED="1574702606368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/factory" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script_plotting.coverage" NAME="execution_script_plotting Coverage Results" MODIFIED="1565958748939" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/Execution_Scripts" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$Unittests_in_test.coverage" NAME="Unittests in test Coverage Results" MODIFIED="1581092200017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
-    <SUITE FILE_PATH="coverage/steam_ansys_modelling$gif_editor_quench_state.coverage" NAME="gif_editor_quench_state Coverage Results" MODIFIED="1579813638601" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
+    <SUITE FILE_PATH="coverage/steam_ansys_modelling$gif_editor_quench_state.coverage" NAME="gif_editor_quench_state Coverage Results" MODIFIED="1582041808991" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/gif_editors" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$model_input.coverage" NAME="model_input Coverage Results" MODIFIED="1570088193072" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/solver" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$initial_temperature_gaussian.coverage" NAME="initial_temperature_gaussian Coverage Results" MODIFIED="1570092104683" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/solver/initial_temperature" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$Unittests_in_test_quench_detection_py.coverage" NAME="Unittests in test_quench_detection.py Coverage Results" MODIFIED="1580726512178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
@@ -78,7 +51,7 @@
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$nb_ti_jc_low_current.coverage" NAME="nb_ti_jc_low_current Coverage Results" MODIFIED="1571749703556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/materials" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$test_script.coverage" NAME="test_script Coverage Results" MODIFIED="1562052596153" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$winding_remap.coverage" NAME="winding_remap Coverage Results" MODIFIED="1566730416857" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
-    <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script.coverage" NAME="execution_script Coverage Results" MODIFIED="1581088509089" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
+    <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script.coverage" NAME="execution_script Coverage Results" MODIFIED="1581332421501" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$gif_editor.coverage" NAME="gif_editor Coverage Results" MODIFIED="1579804174955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$execution_script_power_source.coverage" NAME="execution_script_power_source Coverage Results" MODIFIED="1567441505408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/source/Execution_Scripts" />
     <SUITE FILE_PATH="coverage/steam_ansys_modelling$test_initial_temperature_gaussian.coverage" NAME="test_initial_temperature_gaussian Coverage Results" MODIFIED="1570182208231" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
@@ -110,11 +83,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/execution_script.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
+            <state relative-caret-position="493">
+              <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="272">
+                <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -137,7 +122,6 @@
       <find>os</find>
       <find>plot_resistive_voltage</find>
       <find>quench</find>
-      <find>quench_state</find>
       <find>q_v_time_array</find>
       <find>input_data</find>
       <find>inpu</find>
@@ -160,6 +144,7 @@
       <find>copy_ansys_analysis_files_to_output_results_directory</find>
       <find>input</find>
       <find>plot_mag_field_in_windings</find>
+      <find>quench_state</find>
     </findStrings>
     <replaceStrings>
       <replace>input_data.geometry_type.dimensionality</replace>
@@ -185,7 +170,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/source/solver/solver_heat_balance.py" />
         <option value="$PROJECT_DIR$/source/solver/time_step.py" />
         <option value="$PROJECT_DIR$/source/solver/initial_temperature/initial_temperature_gaussian.py" />
         <option value="$PROJECT_DIR$/source/solver/initial_temperature/initial_temperature_uniform.py" />
@@ -194,7 +178,6 @@
         <option value="$PROJECT_DIR$/source/pre_processor/pre_processor.py" />
         <option value="$PROJECT_DIR$/source/post_processor/post_processor_quench_velocity.py" />
         <option value="$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Geometry_High_Order_Corrector.inp" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/source/gif_editor.py" />
         <option value="$PROJECT_DIR$/gif_editor_temp_profile.py" />
         <option value="$PROJECT_DIR$/source/gif_editor_quench_state.py" />
@@ -207,7 +190,6 @@
         <option value="$PROJECT_DIR$/test/test_quench_detection.py" />
         <option value="$PROJECT_DIR$/test/test_nodes_search.py" />
         <option value="$PROJECT_DIR$/test/test_initial_temperature_gaussian.py" />
-        <option value="$PROJECT_DIR$/source/post_processor/plots.py" />
         <option value="$PROJECT_DIR$/source/ansys_interface/ansys.py" />
         <option value="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py" />
         <option value="$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py" />
@@ -236,6 +218,9 @@
         <option value="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_2D_static.py" />
         <option value="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_plotting.py" />
         <option value="$PROJECT_DIR$/source/execution_script.py" />
+        <option value="$PROJECT_DIR$/source/post_processor/plots.py" />
+        <option value="$PROJECT_DIR$/source/gif_editors/gif_editor_quench_state.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -263,7 +248,7 @@
             <path>
               <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
               <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
-              <item name="source" type="462c0819:PsiDirectoryNode" />
+              <item name="documentation" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -284,19 +269,19 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\gitlab\steam-ansys-modelling\documentation" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source\gif_editors" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source\physics\time_stepping" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source\geometry\apdl_scripts" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\gitlab\steam-ansys-modelling\source\geometry\apdl_scripts" />
       <recent name="C:\gitlab\steam-ansys-modelling" />
       <recent name="C:\" />
       <recent name="C:\gitlab\steam-ansys-modelling\source\apdl_scripts\1D_1D_1D" />
       <recent name="C:\gitlab\steam-ansys-modelling\source\Execution_Scripts" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\gitlab\steam-ansys-modelling\source\gif_editors" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source\physics\time_stepping" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source\geometry\apdl_scripts" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source\physics\quench_velocity" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -311,7 +296,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Unittests in test">
+  <component name="RunManager" selected="Python.gif_editor_quench_state">
     <configuration name="execution_script" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="steam-ansys-modelling" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -326,6 +311,28 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/source/execution_script.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="gif_editor_quench_state" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="steam-ansys-modelling" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/source/gif_editors" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/source/gif_editors/gif_editor_quench_state.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -379,28 +386,13 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Unittests in test_quench_merge.py" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
-      <module name="steam-ansys-modelling" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/test/test_quench_merge.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Unittests in test" />
+        <item itemvalue="Python.gif_editor_quench_state" />
         <item itemvalue="Python.execution_script" />
+        <item itemvalue="Python tests.Unittests in test" />
         <item itemvalue="Python tests.Unittests in test_quench_detection.py" />
         <item itemvalue="Python tests.Unittests in test_nodes_search.py" />
-        <item itemvalue="Python tests.Unittests in test_quench_merge.py" />
       </list>
     </recent_temporary>
   </component>
@@ -471,28 +463,11 @@
       <workItem from="1580723798639" duration="5181000" />
       <workItem from="1580745292613" duration="707000" />
       <workItem from="1580811574303" duration="7121000" />
-      <workItem from="1580998623096" duration="21413000" />
-    </task>
-    <task id="LOCAL-00083" summary="Commit of preliminary working version of an updated OOP programme">
-      <created>1570623400435</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1570623400435</updated>
-    </task>
-    <task id="LOCAL-00084" summary="Commit of an updated version of Quench Velocity Software">
-      <created>1570636381760</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1570636381760</updated>
-    </task>
-    <task id="LOCAL-00085" summary="Commit of Material Properties Classes - in progress">
-      <created>1570732392201</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1570732392201</updated>
+      <workItem from="1580998623096" duration="21486000" />
+      <workItem from="1581326690569" duration="1803000" />
+      <workItem from="1581356531707" duration="2302000" />
+      <workItem from="1582028097135" duration="719000" />
+      <workItem from="1582040956651" duration="1259000" />
     </task>
     <task id="LOCAL-00086" summary="Commit of Material Properties Classes - finished&#10;Division into NIST and CUDI standards&#10;Code ready for further development with other superconducting materials">
       <created>1570801625472</created>
@@ -816,13 +791,31 @@
       <option name="project" value="LOCAL" />
       <updated>1581001847151</updated>
     </task>
-    <option name="localTasksCounter" value="132" />
+    <task id="LOCAL-00132" summary="Commit of the working simulations with an updated naming convention to fit the thesis convention and the documentation.">
+      <created>1581092286666</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1581092286666</updated>
+    </task>
+    <task id="LOCAL-00133" summary="Commit of the final code version">
+      <created>1582028399295</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1582028399296</updated>
+    </task>
+    <task id="LOCAL-00134" summary="Commit of the final code version">
+      <created>1582041821420</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1582041821421</updated>
+    </task>
+    <option name="localTasksCounter" value="135" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_in_test_nodes_search_py - 2020.02.03 at 11h 22m 59s.xml">
-      <configuration name="Unittests in test_nodes_search.py" configurationId="tests" />
-    </history-entry>
     <history-entry file="Unittests_in_test_nodes_search_py - 2020.02.03 at 11h 24m 15s.xml">
       <configuration name="Unittests in test_nodes_search.py" configurationId="tests" />
     </history-entry>
@@ -850,9 +843,12 @@
     <history-entry file="Unittests_in_test - 2020.02.04 at 13h 15m 36s.xml">
       <configuration name="Unittests in test" configurationId="tests" />
     </history-entry>
+    <history-entry file="Unittests_in_test - 2020.02.07 at 17h 16m 41s.xml">
+      <configuration name="Unittests in test" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1583745000" />
+    <option name="totallyTimeSpent" value="1589901000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -865,9 +861,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16950959" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.117803834" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -927,8 +922,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Commit of an added low current density formulae" />
-    <MESSAGE value="Commit of a debugged formula for 1D heat generation" />
     <MESSAGE value="Commit of a debugged Insulation Classes" />
     <MESSAGE value="Commit of heat generation boundary condition application" />
     <MESSAGE value="First update on Geometry Classes concerning application of temperature initial condition on both cable and insulation" />
@@ -952,7 +945,9 @@
     <MESSAGE value="Addition of a quench velocity and temp. distribution editors" />
     <MESSAGE value="Update of unittests" />
     <MESSAGE value="Update of output files before the change in naming convention" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update of output files before the change in naming convention" />
+    <MESSAGE value="Commit of the working simulations with an updated naming convention to fit the thesis convention and the documentation." />
+    <MESSAGE value="Commit of the final code version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit of the final code version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1103,13 +1098,6 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_uniform.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="583">
-          <caret line="74" column="52" lean-forward="true" selection-start-line="74" selection-start-column="52" selection-end-line="74" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/physics/quench_velocity/nodes_search.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1144,16 +1132,6 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     </entry>
     <entry file="file://$PROJECT_DIR$/source/physics/time_stepping/time_step.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/post_processor/plots.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="549">
-          <caret line="136" column="101" selection-start-line="136" selection-start-column="101" selection-end-line="136" selection-end-column="101" />
-          <folding>
-            <element signature="e#1#71#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/post_processor/post_processor.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -1241,20 +1219,8 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/test">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="47" column="57" lean-forward="true" selection-start-line="47" selection-start-column="57" selection-end-line="47" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/test.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/source/test" />
+    <entry file="file://$PROJECT_DIR$/source/test.json" />
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36/Lib/_bootlocale.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -1310,9 +1276,6 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/source/gif_editors/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/gif_editors/gif_editor_quench_state.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/source/common_functions/unit_conversion.py">
@@ -1463,10 +1426,37 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/source/post_processor/plots.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="45" column="30" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
+          <folding>
+            <element signature="e#1#71#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/gif_editors/gif_editor_quench_state.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="30" selection-start-line="3" selection-start-column="30" selection-end-line="3" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/execution_script.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="38" lean-forward="true" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
+        <state relative-caret-position="493">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="272">
+            <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
