@@ -3,3 +3,4 @@ numpy
 scipy
 matplotlib
 imageio
+ansys_corba
