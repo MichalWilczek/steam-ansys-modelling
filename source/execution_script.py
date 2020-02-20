@@ -2,8 +2,7 @@
 from source.analysis_engine.analysis_factory import AnalysisFactory
 
 # creation of analysis directories
-input_files_directory = "G:\\Workspaces\\a\\ANSYS_Modelling\\1_quench_velocity_modelling\\documentation" \
-                        "\\Test_Simulation_Workflow\\4_analysis_high_order_corrector\\input"
+input_files_directory = r"\\cern.ch\dfs\Workspaces\a\ANSYS_Modelling\1_quench_velocity_modelling\documentation\Test_Simulation_Workflow\4_analysis_high_order_corrector\input"
 json_filename = "input.json"
 factory = AnalysisFactory(input_files_directory, json_filename)
 
