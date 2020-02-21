@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="Commit of the updated requirements.txt">
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/c/5/c50d9bb321b920be54b1384f9e271230d6597c84" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/c/5/c50d9bb321b920be54b1384f9e271230d6597c84" afterDir="false" />
+    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/execution_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/execution_script.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -90,8 +88,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/execution_script.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+            <state relative-caret-position="17">
+              <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
             </state>
           </provider>
         </entry>
@@ -240,6 +238,11 @@
             <path>
               <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
               <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
+              <item name="documentation" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
               <item name="source" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -261,19 +264,19 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\gitlab\steam-ansys-modelling\documentation" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source\gif_editors" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source\physics\time_stepping" />
-      <recent name="C:\gitlab\steam-ansys-modelling\source\geometry\apdl_scripts" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\gitlab\steam-ansys-modelling\source\geometry\apdl_scripts" />
       <recent name="C:\gitlab\steam-ansys-modelling" />
       <recent name="C:\" />
       <recent name="C:\gitlab\steam-ansys-modelling\source\apdl_scripts\1D_1D_1D" />
       <recent name="C:\gitlab\steam-ansys-modelling\source\Execution_Scripts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\gitlab\steam-ansys-modelling\documentation" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source\gif_editors" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source\physics\time_stepping" />
+      <recent name="C:\gitlab\steam-ansys-modelling\source\geometry\apdl_scripts" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -463,13 +466,8 @@
       <workItem from="1582124460065" duration="5283000" />
       <workItem from="1582197125012" duration="2151000" />
       <workItem from="1582208434198" duration="2183000" />
-    </task>
-    <task id="LOCAL-00096" summary="Commit of an added low current density formulae">
-      <created>1571745632465</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1571745632465</updated>
+      <workItem from="1582211716367" duration="1299000" />
+      <workItem from="1582281741655" duration="576000" />
     </task>
     <task id="LOCAL-00097" summary="Commit of an added low current density formulae">
       <created>1571749848870</created>
@@ -807,7 +805,14 @@
       <option name="project" value="LOCAL" />
       <updated>1582124907535</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="Update of the documentation">
+      <created>1582211803771</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1582211803771</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -843,7 +848,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1601503000" />
+    <option name="totallyTimeSpent" value="1603378000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -856,9 +861,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18070363" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18443497" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -918,7 +922,6 @@
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Commit of heat generation boundary condition application" />
     <MESSAGE value="First update on Geometry Classes concerning application of temperature initial condition on both cable and insulation" />
     <MESSAGE value="2nd update on Geometry Classes concerning application of temperature initial condition on both cable and insulation" />
     <MESSAGE value="Commit of an updated Geometry Class with a debugged case when only 1D cable without insulation is considered" />
@@ -943,7 +946,8 @@
     <MESSAGE value="Commit of the working simulations with an updated naming convention to fit the thesis convention and the documentation." />
     <MESSAGE value="Commit of the final code version" />
     <MESSAGE value="Commit of the updated requirements.txt" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit of the updated requirements.txt" />
+    <MESSAGE value="Update of the documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update of the documentation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1458,8 +1462,8 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     </entry>
     <entry file="file://$PROJECT_DIR$/source/execution_script.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        <state relative-caret-position="17">
+          <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
         </state>
       </provider>
     </entry>
