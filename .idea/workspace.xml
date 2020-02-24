@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/documentation/Quench_Velocity_Based_Approach_in_ANSYS.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/Quench_Velocity_Based_Approach_in_ANSYS.pdf" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -88,8 +89,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/execution_script.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
+            <state relative-caret-position="306">
+              <caret line="18" column="25" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -215,8 +216,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-207" />
-    <option name="y" value="-15" />
+    <option name="x" value="-31" />
+    <option name="y" value="69" />
     <option name="width" value="1938" />
     <option name="height" value="1048" />
   </component>
@@ -467,14 +468,8 @@
       <workItem from="1582197125012" duration="2151000" />
       <workItem from="1582208434198" duration="2183000" />
       <workItem from="1582211716367" duration="1299000" />
-      <workItem from="1582281741655" duration="576000" />
-    </task>
-    <task id="LOCAL-00097" summary="Commit of an added low current density formulae">
-      <created>1571749848870</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1571749848870</updated>
+      <workItem from="1582281741655" duration="1191000" />
+      <workItem from="1582531020165" duration="121000" />
     </task>
     <task id="LOCAL-00098" summary="Commit of a debugged formula for 1D heat generation">
       <created>1571820313694</created>
@@ -812,7 +807,14 @@
       <option name="project" value="LOCAL" />
       <updated>1582211803771</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="Update of the documentation">
+      <created>1582288539500</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1582288539501</updated>
+    </task>
+    <option name="localTasksCounter" value="147" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -848,7 +850,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1603378000" />
+    <option name="totallyTimeSpent" value="1603993000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -862,7 +864,7 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18443497" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.36940297" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -1462,8 +1464,8 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     </entry>
     <entry file="file://$PROJECT_DIR$/source/execution_script.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="67" selection-start-line="1" selection-start-column="67" selection-end-line="1" selection-end-column="67" />
+        <state relative-caret-position="306">
+          <caret line="18" column="25" lean-forward="true" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
         </state>
       </provider>
     </entry>
