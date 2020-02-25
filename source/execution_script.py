@@ -3,7 +3,7 @@ from source.analysis_engine.analysis_factory import AnalysisFactory
 
 # creation of analysis directories
 input_files_directory = r"G:\Workspaces\a\ANSYS_Modelling\1_quench_velocity_modelling\documentation\Test_Simulation_Workflow\3_analysis_mpz\input"
-json_filename = "input.json"
+json_filename = "input_different_winding_distance.json"
 factory = AnalysisFactory(input_files_directory, json_filename)
 
 ######################################################

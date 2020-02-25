@@ -21,7 +21,7 @@ class AnsysMultiple1DHighOrderCorrector(AnsysMultiple1D):
         data.write_text('number_of_windings_in_reel =' + str(
             self.input_data.geometry_settings.type_input.n_turns_in_layer))
         data.write_text('trans_dimension_winding =' + str(
-            self.input_data.geometry_settings.type_input.a_strand * UnitConversion.milimeters_to_meters))
+            self.input_data.geometry_settings.type_input.trans_dimension_winding * UnitConversion.milimeters_to_meters))
         data.write_text('division_long_side =' + str(
             self.input_data.geometry_settings.type_input.type_mesh_settings.n_divisions_e_coil))
         data.write_text('division_short_side =' + str(

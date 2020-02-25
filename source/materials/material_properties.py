@@ -150,7 +150,7 @@ class MaterialProperties(MaterialPropertiesPlotter):
         diffusivity_array[:, 1] = eq_thermal_conductivity[:, 1] / winding_cv[:, 1]
         return diffusivity_array
 
-    def calculate_winding_eq_cv(self, magnetic_field):
+    def calculate_winding_eq_cv(self, magnetic_field, kappa_cv=1):
         """
         Returns strand equivalent volumetric heat capacity array
         :param magnetic_field: magnetic field as float
@@ -159,7 +159,7 @@ class MaterialProperties(MaterialPropertiesPlotter):
         winding_cv_array = np.zeros((len(self.temperature_profile), 2))
         for i in range(len(self.temperature_profile)):
             winding_cv_array[i, 0] = self.temperature_profile[i]
-            winding_cv_array[i, 1] = self.winding_eq_cv(magnetic_field, temperature=self.temperature_profile[i])
+            winding_cv_array[i, 1] = kappa_cv*self.winding_eq_cv(magnetic_field, temperature=self.temperature_profile[i])
         return winding_cv_array
 
     def winding_eq_cv(self, magnetic_field, temperature):
@@ -182,15 +182,15 @@ class MaterialProperties(MaterialPropertiesPlotter):
                                                                          temperature=self.temperature_profile[i])
         return winding_k_array
 
-    def winding_eq_thermal_conductivity(self, magnetic_field, temperature):
-        return self.normal_conductor.thermal_conductivity(magnetic_field, temperature, self.normal_conductor.rrr) * \
+    def winding_eq_thermal_conductivity(self, magnetic_field, temperature, kappa_cond=1):
+        return kappa_cond*self.normal_conductor.thermal_conductivity(magnetic_field, temperature, self.normal_conductor.rrr) * \
                self.f_non_superconductor
 
-    def calculate_winding_eq_resistivity(self, magnetic_field):
+    def calculate_winding_eq_resistivity(self, magnetic_field, kappa_res=1):
         winding_rho_array = np.zeros((len(self.temperature_profile), 2))
         for i in range(len(self.temperature_profile)):
             winding_rho_array[i, 0] = self.temperature_profile[i]
-            winding_rho_array[i, 1] = self.winding_eq_resistivity(magnetic_field,
+            winding_rho_array[i, 1] = kappa_res*self.winding_eq_resistivity(magnetic_field,
                                                                   temperature=self.temperature_profile[i])
         return winding_rho_array
 

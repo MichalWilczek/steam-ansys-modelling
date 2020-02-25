@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="" />
+    <list default="true" id="b650bb66-d62b-4170-8aae-4ce69a0f8531" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/execution_script.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/execution_script.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/materials/material_properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/source/materials/material_properties.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +95,29 @@
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
         <counts>
-          <entry key="git.branch.rebase" value="2" />
+          <entry key="git.branch.rebase" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="inp" value="1" />
+          <entry key="py" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="PLAIN_TEXT" value="1" />
+          <entry key="Python" value="3" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="py" value="56" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="Python" value="56" />
         </counts>
       </usages-collector>
     </session>
@@ -107,6 +133,45 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="23" column="80" selection-start-line="23" selection-start-column="80" selection-end-line="23" selection-end-column="80" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="320">
+              <caret line="28" column="80" selection-start-line="28" selection-start-column="57" selection-end-line="28" selection-end-column="80" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/materials/material_properties.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3072">
+              <caret line="192" column="48" selection-start-line="192" selection-start-column="48" selection-end-line="192" selection-end-column="48" />
+              <folding>
+                <element signature="e#1#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Geometry_High_Order_Corrector.inp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="378">
+              <caret line="662" column="37" selection-start-line="662" selection-start-column="14" selection-end-line="662" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -118,11 +183,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>coil_data</find>
-      <find>write_down_resistive_voltage_to_file</find>
-      <find>os</find>
-      <find>plot_resistive_voltage</find>
-      <find>quench</find>
       <find>q_v_time_array</find>
       <find>input_data</find>
       <find>inpu</find>
@@ -148,6 +208,11 @@
       <find>quench_state</find>
       <find>temperature</find>
       <find>constant</find>
+      <find>calculate_winding_eq_thermal_conductivity</find>
+      <find>winding_eq_thermal_conductivity</find>
+      <find>kappa_cond</find>
+      <find>calculate_winding_eq_cv</find>
+      <find>resistivity</find>
     </findStrings>
     <replaceStrings>
       <replace>input_data.geometry_type.dimensionality</replace>
@@ -196,7 +261,6 @@
         <option value="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D.py" />
         <option value="$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py" />
         <option value="$PROJECT_DIR$/source/geometry/geometry_1D1D1D.py" />
-        <option value="$PROJECT_DIR$/source/materials/material_properties.py" />
         <option value="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_no_circuit.py" />
         <option value="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature.py" />
         <option value="$PROJECT_DIR$/source/physics/initial_temperature/initial_temperature_gaussian.py" />
@@ -214,7 +278,6 @@
         <option value="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_map.py" />
         <option value="$PROJECT_DIR$/source/analysis_engine/analysis_factory.py" />
         <option value="$PROJECT_DIR$/source/physics/quench_velocity/quench_velocity_map.py" />
-        <option value="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" />
         <option value="$PROJECT_DIR$/source/physics/circuit/circuit.py" />
         <option value="$PROJECT_DIR$/source/physics/circuit/circuit_electric_analysis_with_circuit.py" />
         <option value="$PROJECT_DIR$/source/physics/magnetic_field/magnetic_field_2D_static.py" />
@@ -223,6 +286,8 @@
         <option value="$PROJECT_DIR$/source/gif_editors/gif_editor_quench_state.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py" />
+        <option value="$PROJECT_DIR$/source/materials/material_properties.py" />
         <option value="$PROJECT_DIR$/source/execution_script.py" />
       </list>
     </option>
@@ -263,6 +328,18 @@
               <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
               <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
               <item name="source" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
+              <item name="source" type="462c0819:PsiDirectoryNode" />
+              <item name="ansys_interface" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="steam-ansys-modelling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="steam-ansys-modelling" type="462c0819:PsiDirectoryNode" />
+              <item name="source" type="462c0819:PsiDirectoryNode" />
+              <item name="materials" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -888,8 +965,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-4" y="-4" width="1928" height="1044" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.157082" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2742279" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -1138,22 +1216,6 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/source/common_functions/unit_conversion.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/geometry/geometric_functions.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/geometry/geometry.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4131">
-          <caret line="243" column="43" lean-forward="true" selection-start-line="243" selection-start-column="43" selection-end-line="243" selection-end-column="43" />
-          <folding>
-            <element signature="e#1#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/source/geometry/geometry_1D1D1D.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2057">
@@ -1193,9 +1255,6 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/source/materials/insulation_linear_material_properties.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/materials/material_properties.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/source/materials/material_properties_plotter.py">
@@ -1371,6 +1430,37 @@ Plots.write_line_in_file(directory=self.plots.output_directory_quench_state,
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
           <caret line="108" column="78" selection-start-line="108" selection-start-column="70" selection-end-line="108" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_multiple_1D_high_order_corrector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="23" column="80" selection-start-line="23" selection-start-column="80" selection-end-line="23" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/geometry/apdl_scripts/1D_1D_1D_Geometry_High_Order_Corrector.inp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="662" column="37" selection-start-line="662" selection-start-column="14" selection-end-line="662" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/ansys_interface/ansys_thermal_network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="28" column="80" selection-start-line="28" selection-start-column="57" selection-end-line="28" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/materials/material_properties.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3072">
+          <caret line="192" column="48" selection-start-line="192" selection-start-column="48" selection-end-line="192" selection-end-column="48" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
